@@ -7,7 +7,7 @@ import { logout } from "../../services/auth/authService.js";
 import { showLoadingMessage, removeLoadingMessage } from "./profileHelpers.js";
 import { fetchProfile } from "./fetchProfile.js";
 import { generateFormField } from "./generators.js";
-import { profilGen } from "./renderUserProfile.js";
+import  profilGen  from "./renderUserProfile.js";
 
 
 // Display the profile content in the profile section
@@ -17,12 +17,10 @@ async function displayProfile(isLoggedIn, content) {
         try {
             const profile = await fetchProfile();
             if (profile) {
-                console.log(profile);
                 const profileElement = profilGen(profile, isLoggedIn);
-                console.log(profile);
                 content.appendChild(profileElement);
                 attachProfileEventListeners(content); // Attach event listeners for buttons
-                displayFollowSuggestions();
+                // displayFollowSuggestions();
             } else {
                 const loginMessage = document.createElement("p");
                 loginMessage.textContent = "Please log in to see your profile.";
@@ -39,7 +37,7 @@ async function displayProfile(isLoggedIn, content) {
 }
 
 // Attach event listeners for the profile page
-function attachProfileEventListeners() {
+function attachProfileEventListeners(content) {
     const editButton = document.querySelector('[data-action="edit-profile"]');
     const deleteButton = document.querySelector('[data-action="delete-profile"]');
 
@@ -151,7 +149,7 @@ async function updateProfile(formData) {
         const fieldName = key.replace("edit-", "");
         const trimmedValue = value.trim();
 
-        // Compare trimmed values to detect changes
+        console.log(`Comparing: "${trimmedValue}" with "${currentProfile[fieldName] || ""}"`);
         if (trimmedValue !== (currentProfile[fieldName] || "").trim()) {
             updatedFields[fieldName] = trimmedValue;
         }
@@ -168,7 +166,7 @@ async function updateProfile(formData) {
         const updateFormData = new FormData();
         Object.entries(updatedFields).forEach(([key, value]) => updateFormData.append(key, value));
 
-        const updatedProfile = await apiFetch("/profile", "PUT", updateFormData);
+        const updatedProfile = await apiFetch("/profile/edit", "PUT", updateFormData);
         if (!updatedProfile) throw new Error("No response received for the profile update.");
 
         state.userProfile = { ...currentProfile, ...updatedProfile };
@@ -183,8 +181,6 @@ async function updateProfile(formData) {
         removeLoadingMessage();
     }
 }
-
-
 
 
 async function displaySuggested() {
@@ -217,10 +213,10 @@ async function deleteProfile() {
     }
 
     try {
-        await apiFetch('/profile', 'DELETE');
+        await apiFetch('/profile/delete', 'DELETE');
 
         Snackbar("Profile deleted successfully.", 3000);
-        logout();
+        logout(true);
     } catch (error) {
 
         Snackbar(`Failed to delete profile: ${error.message}`, 3000);
@@ -228,4 +224,4 @@ async function deleteProfile() {
 };
 
 
-export { displayProfile, deleteProfile, displayFollowSuggestions, editProfile, updateProfile, displaySuggested };
+export { displayProfile, deleteProfile, displayFollowSuggestions, editProfile, updateProfile, displaySuggested, attachProfileEventListeners };

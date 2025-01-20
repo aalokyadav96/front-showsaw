@@ -197,7 +197,7 @@ async function deletePlace(isLoggedIn, placeId) {
             await apiFetch(`/places/place/${placeId}`, 'DELETE');
 
             SnackBar("Place deleted successfully.", 3000);
-            navigate('/'); // Redirect to home or another page
+            navigate('/places'); // Redirect to home or another page
         } catch (error) {
 
             SnackBar(`Error deleting place: ${error.message || 'Unknown error'}`, 3000);

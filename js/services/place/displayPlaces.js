@@ -1,6 +1,7 @@
-import { fetchPlaces } from "./fetchPlaces";
+import { fetchPlaces } from "./fetchPlaces.js";
 import Snackbar from '../../components/ui/Snackbar.mjs';
 import {createElement} from "../../components/createElement.js";
+import { SRC_URL } from "../../state/state.js";
 
 // Function to display the list of places
 async function displayPlaces(isLoggedIn, content) {
@@ -32,7 +33,7 @@ function createPlaceCard(place) {
         createElement('a', { href: `/place/${place.placeid}` }, [
             createElement('h1', {}, [place.name]),
             createElement('img', {
-                src: `/placepic/${place.banner}`,
+                src: `${SRC_URL}/placepic/${place.banner}`,
                 alt: `${place.name} Banner`,
                 style: "width: 100%; max-height: 300px; object-fit: cover;"
             }),

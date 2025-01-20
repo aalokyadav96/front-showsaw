@@ -1,17 +1,13 @@
-// import Carousel from '../components/ui/Carousel.mjs';
-import { createElement } from "../components/createElement.js";
-
 function Home(isLoggedIn, content) {
-  // const images = [
-  //   'https://i.pinimg.com/736x/f5/a6/92/f5a692d40734225d8712bf24cc1938e5.jpg',
-  //   'https://i.pinimg.com/736x/ca/99/04/ca9904671537679701ba7cd582b4f9a8.jpg',
-  //   'https://i.pinimg.com/736x/eb/d6/76/ebd6762d60db3f885832d3e48b688d73.jpg',
-  // ];
+  // Hero Section with Search Bar
+  const heroSection = createHeroSection();
+  content.appendChild(heroSection);
 
-  // const carousel = Carousel(images);
-  // content.appendChild(carousel);
+  // Personalized Recommendations
+  const recommendations = createRecommendationsSection();
+  content.appendChild(recommendations);
 
-
+  // Category Tabs
   const tabs = [
     { label: 'Food', contentLoader: loadFoodContent },
     { label: 'Shopping', contentLoader: loadShoppingContent },
@@ -19,11 +15,42 @@ function Home(isLoggedIn, content) {
     { label: 'Entertainment', contentLoader: loadEntertainmentContent },
     { label: 'Healthcare', contentLoader: loadHealthcareContent },
   ];
-
-  // Attach the tabbed interface to the content container
   content.appendChild(createTabbedInterface(tabs));
 }
 
+// Create the Hero Section
+function createHeroSection() {
+  const hero = document.createElement('div');
+  hero.className = 'hero-section  tab-container';
+  hero.innerHTML = `
+    <div class="hero-content">
+      <h1>Discover Amazing Events and Places Nearby</h1>
+      <p>Find food, fun, and more, all in one place.</p>
+      <div class="search-bar">
+        <input type="text" placeholder="Search events or places..." />
+        <button>Search</button>
+      </div>
+    </div>
+  `;
+  return hero;
+}
+
+// Create Personalized Recommendations Section
+function createRecommendationsSection() {
+  const recommendations = document.createElement('div');
+  recommendations.className = 'recsec tab-container';
+  recommendations.innerHTML = `
+    <h2>Recommended for You</h2>
+    <div class="grid">
+      <div class="card"><h3>Popular Event</h3><p>Join the biggest events in town.</p></div>
+      <div class="card"><h3>New Cafe</h3><p>Try out the latest coffee spots.</p></div>
+      <div class="card"><h3>Top Park</h3><p>Relax and unwind in nature.</p></div>
+    </div>
+  `;
+  return recommendations;
+}
+
+// Create Tabbed Interface for Categories
 function createTabbedInterface(tabs) {
   const container = document.createElement('div');
   container.className = 'tab-container';
@@ -40,22 +67,15 @@ function createTabbedInterface(tabs) {
     tab.textContent = label;
     tab.dataset.index = index;
 
-    // Handle tab click
     tab.addEventListener('click', async () => {
-      // Remove 'active' class from all tabs
       Array.from(tabList.children).forEach((t) => t.classList.remove('active'));
-      // Add 'active' class to the clicked tab
       tab.classList.add('active');
 
-      // Clear previous content
       contentContainer.innerHTML = '';
-
-      // Load content for the clicked tab
       const content = await contentLoader();
       contentContainer.appendChild(content);
     });
 
-    // Set the first tab as active by default
     if (index === 0) {
       tab.classList.add('active');
       contentLoader().then((content) => {
@@ -72,7 +92,7 @@ function createTabbedInterface(tabs) {
   return container;
 }
 
-// Category-specific content loaders
+// Category-specific content loaders remain the same
 async function loadFoodContent() {
   const div = document.createElement('div');
   div.innerHTML = `
@@ -125,3 +145,67 @@ async function loadHealthcareContent() {
 }
 
 export { Home };
+
+
+// <div class="d3 " style="width:100%; ">
+//              <input name="text" class="search-field" placeholder="Finds anything">
+//              <label class="search-btn">
+//                <input type="submit" style="display:none">
+//                <svg class="srchicon" viewBox="0 0 24 24" width="100%" height="100%" role="img" stroke="#000000">
+//                    <circle cx="11" cy="11" r="8"></circle>
+//                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+//                </svg>
+//              </label>
+//              </div>
+
+// .search-btn {
+//   height: 4rem;
+//   width: 4rem;
+//   padding: 0.3rem 0.6rem;
+//   background-color: #ffffff00;
+//   border: none;
+//   outline: none;
+//   border-radius: 0 6px 6px 0;
+//   display: flex;
+//   border-left: 1px solid #f3f3f3;
+//   align-items: center;
+// }
+// .search-field {
+//   border: 0px;
+//   outline: none;
+//   padding: 0rem 0.8rem;
+//   background: transparent;
+//   height: 4rem;
+//   color: #000;
+//   font-size: 1.5rem;
+//   width: 100%;
+// }
+// .d3 {
+//   display: flex;
+//   background: #ffffff;
+//    border: 2px solid #797979; 
+//   align-items: center;
+//   border-radius: 6px;
+//   box-shadow: rgb(0 0 0 / 20%) 0 2px 12px 0;
+// }
+// .homeform {
+//   max-width: 600px;
+//   width: 100%;
+//   margin: 0;/*
+//   padding: 10px;
+//   background: #fff;
+//   border-radius: 5px;*/
+// }
+ 
+// .srchicon {
+//   stroke-width: 1.4;
+//   border-radius: 5px;
+//   width: 3rem;
+//   height: 2.5rem;
+//   fill: none;
+//   stroke: #4f4f4f;
+//   box-shadow: none;
+//   display: block;
+//   stroke-linecap: round;
+//   stroke-linejoin: round;
+// }

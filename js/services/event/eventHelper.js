@@ -27,8 +27,8 @@ function createList(id, classes = []) {
     return list;
 }
 
-function createContainer(classes = [], id = '') {
-    const container = document.createElement('div');
+function createContainer(classes = [], id = '', containerType = 'div') {
+    const container = document.createElement(containerType);
     container.classList.add(...classes);
     if (id) container.id = id;
     return container;

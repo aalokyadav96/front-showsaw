@@ -1,5 +1,8 @@
 const API_URL = "http://localhost:4000/api"; // Adjust the URL as needed
-// const API_URL = "https://showsaw.onrender.com/api"; // Adjust the URL as needed
+const SOCK_URL = "ws://localhost:4000/ws"; // Adjust the URL as needed
+const SRC_URL = "http://localhost:4000"; // Adjust the URL as needed
+// const SRC_URL = "https://zincate.onrender.com/"; // Adjust the URL as needed
+// const API_URL = "https://zincate.onrender.com/api"; // Adjust the URL as needed
 
 // State management
 const state = {
@@ -16,4 +19,4 @@ function setState(newState) {
 }
 
 
-export { API_URL, state, setState }
+export { API_URL, SOCK_URL, SRC_URL, state, setState }

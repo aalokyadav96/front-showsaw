@@ -2,7 +2,7 @@ import Pagination from '../../components/ui/Pagination.mjs';
 import { apiFetch } from "../../api/api.js";
 // import Breadcrumb from '../../components/ui/Breadcrumb.mjs';
 import SnackBar from '../../components/ui/Snackbar.mjs';
-import { navigate } from "../../routes/index.js";
+import { SRC_URL } from '../../state/state.js';
 
 let abortController = null;
 
@@ -19,7 +19,6 @@ async function fetchEvents(page = 1, limit = 10) {
         // Use apiFetch to fetch events and pass the signal for aborting
         const queryParams = new URLSearchParams({ page: page, limit: limit }).toString();
         const events = await apiFetch(`/events/events?${queryParams}`, 'GET', null, { signal });
-        console.log(events);
         return events;
     } catch (error) {
         // If error is due to abort, return null
@@ -34,19 +33,26 @@ async function fetchEvents(page = 1, limit = 10) {
 }
 
 async function fetchTotalEventCount() {
-    return 5;
+    
+    const eventData = await apiFetch(`/events/events/count`);
+    // if (!eventData || !Array.isArray(eventData.tickets)) {
+    //     throw new Error("Invalid event data received.");
+    // }
+    return eventData;
+
+    // return 5;
 }
 
 
-// Event listener for navigation
-document.addEventListener('click', function (e) {
-    const link = e.target.closest('a');
-    if (link && link.id.startsWith('a-')) {
-        e.preventDefault(); // Prevent page reload
-        const eventId = link.id.split('-')[1]; // Extract event ID
-        navigate(`/event/${eventId}`); // Handle navigation
-    }
-});
+// // Event listener for navigation
+// document.addEventListener('click', function (e) {
+//     const link = e.target.closest('a');
+//     if (link && link.id.startsWith('a-')) {
+//         e.preventDefault(); // Prevent page reload
+//         const eventId = link.id.split('-')[1]; // Extract event ID
+//         navigate(`/event/${eventId}`); // Handle navigation
+//     }
+// });
 
 
 async function displayEvents(isLoggedIn, content, contentcon, page = 1) {
@@ -102,7 +108,7 @@ function generateEventHTML(event) {
         <div class="event" id="event-${event.eventid}">
             <a href="/event/${event.eventid}" title="View event details" id="a-${event.eventid}">
                 <h1>${event.title}</h1>
-                <img src="/eventpic/${event.banner_image}" alt="${event.title} Banner" style="width: 100%; max-height: 300px; object-fit: cover;" />
+                <img src="${SRC_URL}/eventpic/${event.banner_image}" alt="${event.title} Banner" style="width: 100%; max-height: 300px; object-fit: cover;" />
                 <p><strong>Place:</strong> ${event.place}</p>
                 <p><strong>Address:</strong> ${event.location}</p>
                 <p><strong>Description:</strong> ${event.description}</p>

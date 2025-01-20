@@ -1,58 +1,55 @@
 import { apiFetch } from "../../api/api.js";
-import Tooltip from '../../components/ui/Tooltip.mjs';
-import Toast from '../../components/ui/Toast.mjs';
+import Tooltip from "../../components/ui/Tooltip.mjs";
+import Toast from "../../components/ui/Toast.mjs";
 
-// Function to display media for the event
+// Function to display the search section
 async function displaySearch(isLoggedIn, searchsec) {
-    // let searchsec = document.getElementById("search-section");
     const srchsec = document.createElement("div");
     srchsec.id = "srch";
     searchsec.appendChild(srchsec);
     displaySearchForm(srchsec);
 }
 
-async function displaySearchForm(seatmap) {
+async function displaySearchForm(container) {
     // Create search container
     const searchContainer = document.createElement("div");
     searchContainer.classList.add("search-container");
 
-    // Create and append the heading
+    // Heading
     const heading = document.createElement("h1");
-    heading.textContent = "Find Events and Places";
+    heading.textContent = "Search for Events, Places, Businesses, and People";
     searchContainer.appendChild(heading);
 
-    // Create and append the search bar
+    // Search input
     const searchInput = document.createElement("input");
     searchInput.id = "search-query";
-    searchInput.placeholder = "Search for events, places, or users...";
+    searchInput.placeholder = "Search by name, keyword, or category...";
+    searchInput.required = true;
     searchContainer.appendChild(searchInput);
 
-    // Create and append the filter options container
+    // Filter options container
     const filters = document.createElement("div");
     filters.id = "filters";
 
-    // Category filter
-    const categoryFilter = document.createElement("select");
-    categoryFilter.id = "category-filter";
-    categoryFilter.innerHTML = `
-        <option value="">Select Category</option>
-        <option value="concert">Concert</option>
-        <option value="conference">Conference</option>
-        <option value="workshop">Workshop</option>
-        <!-- More categories -->
+    // Search type filter
+    const searchTypeFilter = document.createElement("select");
+    searchTypeFilter.id = "search-type-filter";
+    searchTypeFilter.innerHTML = `
+        <option value="">Select Type</option>
+        <option value="events">Events</option>
+        <option value="places">Places</option>
+        <option value="businesses">Businesses</option>
+        <option value="people">People</option>
     `;
-    filters.appendChild(categoryFilter);
+    searchTypeFilter.required = true;
+    filters.appendChild(searchTypeFilter);
 
     // Location filter
-    const locationFilter = document.createElement("select");
+    const locationFilter = document.createElement("input");
+    locationFilter.type = "text";
     locationFilter.id = "location-filter";
-    locationFilter.innerHTML = `
-        <option value="">Select Location</option>
-        <option value="New York">New York</option>
-        <option value="Los Angeles">Los Angeles</option>
-        <option value="Chicago">Chicago</option>
-        <!-- More locations -->
-    `;
+    locationFilter.placeholder = "Enter location...";
+    locationFilter.required = true;
     filters.appendChild(locationFilter);
 
     // Price range
@@ -64,112 +61,128 @@ async function displaySearchForm(seatmap) {
     priceRange.step = 10;
     filters.appendChild(priceRange);
 
-    // Price value display
     const priceValue = document.createElement("span");
     priceValue.id = "price-value";
     priceValue.textContent = "$0 - $1000";
     filters.appendChild(priceValue);
 
-    const tooltip = Tooltip('This is a helpful tooltip!');
+    // Tooltip for assistance
+    const tooltip = Tooltip("Use filters to refine your search.");
     filters.appendChild(tooltip);
 
     // Apply filters button
     const applyFiltersButton = document.createElement("button");
     applyFiltersButton.id = "apply-filters";
     applyFiltersButton.textContent = "Apply Filters";
-    applyFiltersButton.onclick = () => Toast('Filters applied successfully!', 'success');
     filters.appendChild(applyFiltersButton);
 
     searchContainer.appendChild(filters);
 
-    // Create and append the search results container
+    // Search results container
     const searchResultsContainer = document.createElement("div");
     searchResultsContainer.id = "search-results";
     searchContainer.appendChild(searchResultsContainer);
 
-    // Append search container to the seatmap
-    seatmap.appendChild(searchContainer);
+    container.appendChild(searchContainer);
 
-    afgjfhgj();
+    initializeSearchListeners();
 }
 
-function afgjfhgj() {
-    // Select DOM elements
+function initializeSearchListeners() {
     const searchInput = document.getElementById("search-query");
-    const categoryFilter = document.getElementById("category-filter");
+    const searchTypeFilter = document.getElementById("search-type-filter");
     const locationFilter = document.getElementById("location-filter");
     const priceRange = document.getElementById("price-range");
     const priceValue = document.getElementById("price-value");
     const applyFiltersButton = document.getElementById("apply-filters");
     const searchResultsContainer = document.getElementById("search-results");
 
-    // Display the selected price range
-    priceRange.addEventListener('input', function () {
+    // Display price range dynamically
+    priceRange.addEventListener("input", () => {
         priceValue.textContent = `$0 - $${priceRange.value}`;
     });
 
-    // Function to construct the search/filter query
-    function buildQuery() {
-        return {
-            query: searchInput.value,
-            category: categoryFilter.value,
-            location: locationFilter.value,
-            maxPrice: priceRange.value
-        };
+    // Validate inputs
+    function validateInputs() {
+        let isValid = true;
+
+        if (!searchInput.value.trim()) {
+            isValid = false;
+            searchInput.classList.add("error");
+        } else {
+            searchInput.classList.remove("error");
+        }
+
+        if (!searchTypeFilter.value) {
+            isValid = false;
+            searchTypeFilter.classList.add("error");
+        } else {
+            searchTypeFilter.classList.remove("error");
+        }
+
+        if (!locationFilter.value.trim()) {
+            isValid = false;
+            locationFilter.classList.add("error");
+        } else {
+            locationFilter.classList.remove("error");
+        }
+
+        return isValid;
     }
 
-    // Function to fetch search results from the backend
+    // Fetch results from backend
     async function fetchSearchResults() {
-        const queryParams = buildQuery();
-        const searchParams = new URLSearchParams(queryParams);
-        const data = await apiFetch(`/search/events?${searchParams.toString()}`);
+        if (!validateInputs()) {
+            Toast("Please fill out all required fields.", "error");
+            return;
+        }
 
+        const queryParams = {
+            query: searchInput.value,
+            type: searchTypeFilter.value,
+            location: locationFilter.value,
+            maxPrice: priceRange.value,
+        };
+        const searchParams = new URLSearchParams(queryParams);
+        const data = await apiFetch(`/search/${queryParams.type}?${searchParams.toString()}`);
         displaySearchResults(data);
     }
 
-    // Function to display search results
+    // Display search results
     function displaySearchResults(data) {
-        // Clear previous results
-        searchResultsContainer.innerHTML = ''; 
+        searchResultsContainer.innerHTML = ""; // Clear old results
 
         if (data && data.length > 0) {
-            data.forEach(event => {
-                const eventCard = document.createElement("div");
-                eventCard.classList.add("event-card");
+            data.forEach((item) => {
+                const card = document.createElement("div");
+                card.classList.add("result-card");
 
-                const eventName = document.createElement("h3");
-                eventName.textContent = event.name;
-                eventCard.appendChild(eventName);
+                const name = document.createElement("h3");
+                name.textContent = item.name;
+                card.appendChild(name);
 
-                const eventCategory = document.createElement("p");
-                eventCategory.innerHTML = `<strong>Category:</strong> ${event.category}`;
-                eventCard.appendChild(eventCategory);
+                const details = document.createElement("p");
+                details.innerHTML = `
+                    <strong>Type:</strong> ${item.type} <br>
+                    <strong>Location:</strong> ${item.location || "N/A"} <br>
+                    <strong>Price:</strong> $${item.price || "Free"}
+                `;
+                card.appendChild(details);
 
-                const eventLocation = document.createElement("p");
-                eventLocation.innerHTML = `<strong>Location:</strong> ${event.location}`;
-                eventCard.appendChild(eventLocation);
-
-                const eventPrice = document.createElement("p");
-                eventPrice.innerHTML = `<strong>Price:</strong> $${event.price}`;
-                eventCard.appendChild(eventPrice);
-
-                searchResultsContainer.appendChild(eventCard);
+                searchResultsContainer.appendChild(card);
             });
         } else {
-            const noResultsMessage = document.createElement("p");
-            noResultsMessage.textContent = "No results found.";
-            searchResultsContainer.appendChild(noResultsMessage);
+            const noResults = document.createElement("p");
+            noResults.textContent = "No results found. Try refining your search.";
+            searchResultsContainer.appendChild(noResults);
         }
     }
 
-    // Event listener for Apply Filters button
-    applyFiltersButton.addEventListener('click', fetchSearchResults);
-
-    // Event listener for the search input (optional)
-    searchInput.addEventListener('input', fetchSearchResults);
-
-    // Initial fetch when page loads (optional, you can skip this if you want only search/filter)
-    // fetchSearchResults();
+    // Add event listeners
+    applyFiltersButton.addEventListener("click", fetchSearchResults);
+    searchInput.addEventListener("input", () => searchInput.classList.remove("error"));
+    searchTypeFilter.addEventListener("change", () => searchTypeFilter.classList.remove("error"));
+    locationFilter.addEventListener("input", () => locationFilter.classList.remove("error"));
 }
 
 export { displaySearch, displaySearchForm };

@@ -136,12 +136,11 @@
 
 /* Place details */
 #place-details {
-  /* margin: 20px 0; */
-  padding: 10px;
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  flex: 2;
+  display: flex;
+  gap: 8px;
+  padding: 0 8px;
+  flex-wrap: wrap;
+  flex: 3;
 }
 
 #place-details h3 {
@@ -152,6 +151,19 @@
 #place-details p {
   margin: 5px 0;
 }
+
+.placedetails {
+  flex: 2;
+  border-radius: 8px;
+  padding: 10px;
+  background: #fff;
+  border: 1px solid #ddd;
+}
+
+.place-tabs{
+  padding: 8px;
+}
+
 
 /* Booking form */
 form {

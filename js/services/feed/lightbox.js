@@ -1,4 +1,4 @@
-
+import {SRC_URL} from "../../state/state.js";
 // Open Lightbox with the clicked image
 function opensLightbox(image, totalImages, postIndex, media) {
     const lightbox = document.getElementById("lightbox");
@@ -9,7 +9,7 @@ function opensLightbox(image, totalImages, postIndex, media) {
     lightbox.style.display = "flex";
 
     // Set the lightbox image and caption
-    lightboxImage.src = `${image}`;
+    lightboxImage.src = `${SRC_URL}${image}`;
     lightboxCaption.innerHTML = `Image ${postIndex + 1} of ${totalImages}`;
     currentImageIndex = postIndex;
     totalImagesInLightbox = totalImages;
@@ -40,7 +40,7 @@ function changesImage(direction) {
     currentImageIndex = (currentImageIndex + direction + totalImagesInLightbox) % totalImagesInLightbox;
 
     // Update the lightbox image and caption
-    lightboxImage.src = `${media[currentImageIndex]}`;
+    lightboxImage.src = `${SRC_URL}${media[currentImageIndex]}`;
     lightboxCaption.innerHTML = `Image ${currentImageIndex + 1} of ${totalImagesInLightbox}`;
 }
 

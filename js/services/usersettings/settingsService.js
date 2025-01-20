@@ -2,50 +2,17 @@ import { apiFetch } from "../../api/api.js";
 import ToggleSwitch from '../../components/ui/ToggleSwitch.mjs';
 import Dropdown from '../../components/ui/Dropdown.mjs';
 
-// Function to display settings
 async function displaySettings(isLoggedIn, settingsSec) {
-    // const settingsSec = document.getElementById("settings");
     const settingsContainer = createContainer();
     settingsSec.appendChild(settingsContainer);
 
-    // Loading indicator and error section
     const loadingIndicator = createLoadingIndicator();
     const errorContainer = createErrorContainer();
 
     settingsContainer.appendChild(loadingIndicator);
     settingsContainer.appendChild(errorContainer);
 
-    const hd = document.createElement('h3');
-    hd.textContent = "Theme";
-    settingsContainer.appendChild(hd);
-
-    const dropdownOptions = ['Option 1', 'Option 2', 'Option 3'];
-    const onOptionChange = (selectedOption) => {
-      console.log('Selected option:', selectedOption);
-    };
-  
-    const dropdown = Dropdown(dropdownOptions, onOptionChange);
-  
-    settingsContainer.appendChild(dropdown);
-  
-    // Create the form elements
-    const heading = document.createElement('h3');
-    heading.textContent = "Notifs";
-    settingsContainer.appendChild(heading);
-
-  
-    const togglelabel = document.createElement('label');
-    togglelabel.textContent = 'Enable Notifications: ';
-
-    const toggle = ToggleSwitch((state) => {
-        alert(`Notifications are now ${state ? 'enabled' : 'disabled'}`);
-    });
-
-    togglelabel.appendChild(toggle);
-    settingsContainer.appendChild(togglelabel);
-
     try {
-        // Load and display the settings
         const settings = await loadSettings();
 
         if (settings && settings.length > 0) {
@@ -64,14 +31,12 @@ async function displaySettings(isLoggedIn, settingsSec) {
     }
 }
 
-// Function to create a container for settings
 function createContainer() {
     const container = document.createElement("div");
     container.id = "settings-container";
     return container;
 }
 
-// Function to create a loading indicator
 function createLoadingIndicator() {
     const loadingIndicator = document.createElement("div");
     loadingIndicator.id = "loading";
@@ -79,86 +44,137 @@ function createLoadingIndicator() {
     return loadingIndicator;
 }
 
-// Function to create an error container
 function createErrorContainer() {
     const errorContainer = document.createElement("div");
     errorContainer.id = "error";
     return errorContainer;
 }
 
-// Function to fetch the settings from the API
 async function loadSettings() {
     const settings = await apiFetch('/settings/all');
     return settings && Array.isArray(settings) ? settings : [];
 }
 
-// Function to create the setting form
 function createSettingForm(setting) {
     const form = document.createElement('form');
     form.dataset.type = setting.type;
 
-    // Create the form elements
     const heading = document.createElement('h3');
     heading.textContent = setting.type;
 
+    const inputId = `input-${setting.type}`;
     const label = document.createElement('label');
-    label.setAttribute('for', `${setting.type}-value`);
     label.textContent = setting.description;
+    label.setAttribute('for', inputId);
 
-    const input = document.createElement('input');
-    input.id = `${setting.type}-value`;
-    input.type = getInputType(setting.value);
-    input.value = setting.value;
-    input.required = true;
+    let inputElement;
 
-    const button = document.createElement('button');
-    button.type = 'submit';
-    button.textContent = 'Save';
+    switch (setting.type) {
+        case 'theme':
+            inputElement = createDropdown(['Light', 'Dark'], setting.value, (selectedOption) => {
+                handleSettingUpdate(setting.type, selectedOption);
+            });
+            break;
 
+        case 'notifications':
+        case 'privacy_mode':
+        case 'auto_logout':
+            inputElement = createToggleSwitch(setting.value, (state) => {
+                handleSettingUpdate(setting.type, state);
+            });
+            break;
 
-    // Append elements to the form
+        case 'language':
+            inputElement = createDropdown(['English', 'Spanish', 'French'], setting.value, (selectedOption) => {
+                handleSettingUpdate(setting.type, selectedOption);
+            });
+            break;
+
+        case 'time_zone':
+            inputElement = createDropdown(['UTC', 'PST', 'EST'], setting.value, (selectedOption) => {
+                handleSettingUpdate(setting.type, selectedOption);
+            });
+            break;
+
+        case 'daily_reminder':
+            inputElement = document.createElement('input');
+            inputElement.type = 'time';
+            inputElement.id = inputId;
+            inputElement.value = setting.value || '';
+            inputElement.addEventListener('change', () => {
+                handleSettingUpdate(setting.type, inputElement.value);
+            });
+            break;
+
+        default:
+            inputElement = document.createElement('input');
+            inputElement.type = 'text';
+            inputElement.id = inputId;
+            inputElement.value = setting.value || '';
+            inputElement.addEventListener('blur', () => {
+                handleSettingUpdate(setting.type, inputElement.value);
+            });
+            console.warn(`Unsupported setting type: ${setting.type}`);
+            break;
+    }
+
     form.appendChild(heading);
     form.appendChild(label);
-    form.appendChild(input);
-    form.appendChild(button);
-
-    // Handle form submission
-    form.addEventListener('submit', (event) => handleFormSubmit(event, setting.type, input));
+    form.appendChild(inputElement);
 
     return form;
 }
 
-// Function to determine the input type based on the value type
-function getInputType(value) {
-    if (typeof value === 'boolean') return 'checkbox';
-    if (typeof value === 'number') return 'number';
-    if (typeof value === 'string' && value.includes('@')) return 'email';
-    return 'text';
+function createDropdown(options, selectedValue, onChange) {
+    const dropdown = document.createElement('select');
+    dropdown.classList.add('dropdown');
+    
+    // Add a default "Select" option
+    const defaultOption = document.createElement('option');
+    defaultOption.value = '';
+    defaultOption.textContent = 'Select';
+    defaultOption.disabled = true;
+    dropdown.appendChild(defaultOption);
+
+    // Populate options
+    options.forEach(option => {
+        const opt = document.createElement('option');
+        opt.value = option.toLowerCase();
+        opt.textContent = option;
+        if (option.toLowerCase() === selectedValue.toLowerCase()) {
+            opt.selected = true;
+        }
+        dropdown.appendChild(opt);
+    });
+
+    dropdown.addEventListener('change', (event) => {
+        onChange(event.target.value);
+    });
+
+    return dropdown;
 }
 
-// Function to handle form submission
-async function handleFormSubmit(event, settingType, input) {
-    event.preventDefault();
+function createToggleSwitch(initialValue, onChange) {
+    const toggleSwitch = document.createElement('input');
+    toggleSwitch.type = 'checkbox';
+    toggleSwitch.classList.add('toggle-switch');
+    toggleSwitch.checked = initialValue;
+    toggleSwitch.addEventListener('change', (event) => {
+        onChange(event.target.checked);
+    });
+    return toggleSwitch;
+}
 
-    const value = input.type === 'checkbox' ? input.checked : input.value;
 
-    const loadingIndicator = document.getElementById("loading");
-    const errorContainer = document.getElementById("error");
-
+async function handleSettingUpdate(settingType, value) {
     try {
-        loadingIndicator.style.display = 'block';
-
-        // Update the setting via the API
         await apiFetch(`/settings/setting/${settingType}`, 'PUT', JSON.stringify({ value }), {
-            headers: { 'Content-Type': 'application/json' }
+            headers: { 'Content-Type': 'application/json' },
         });
-
         alert(`Setting "${settingType}" updated successfully!`);
     } catch (error) {
         console.error(`Error updating setting "${settingType}":`, error);
-        errorContainer.textContent = `Failed to update setting "${settingType}": ${error.message}`;
-    } finally {
-        loadingIndicator.style.display = 'none';
+        alert(`Failed to update setting "${settingType}".`);
     }
 }
 

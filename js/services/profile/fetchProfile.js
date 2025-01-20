@@ -16,7 +16,7 @@ async function fetchProfile() {
     // If there is no cached profile, fetch from the API
     if (state.token) {
         try {
-            const response = await fetch(`${API_URL}/profile`, {
+            const response = await fetch(`${API_URL}/profile/profile`, {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${state.token}`,

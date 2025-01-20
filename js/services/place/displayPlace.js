@@ -1,186 +1,384 @@
-import { state } from "../../state/state.js";
+import { SRC_URL, state } from "../../state/state.js";
 import { createElement } from "../../components/createElement.js";
 import { renderPlaceDetails } from "./renderPlaceDetails.js";
-import { displayReviews } from "../../components/Reviews.js";
 import { displayMedia } from "../media/mediaService.js";
 import BookingForm from "../../components/ui/BookingForm.mjs";
 import Snackbar from "../../components/ui/Snackbar.mjs";
 import Button from "../../components/base/Button.js";
-import RenderMenu from "../../components/ui/RenderMenu.mjs"; // Assuming RenderMenu is the module we created
+import RenderMenu from "../../components/ui/RenderMenu.mjs";
+import { displayReviews } from "../reviews/displayReviews.js";
 import { apiFetch } from "../../api/api.js";
-// import { MediaModal } from "./placeModals.js";
+import { createButton, createContainer } from "../event/eventHelper.js";
 
-
-let placeMenu = {
-    "menu": [
-        {
-            "name": "Appetizers",
-            "items": [
-                { "name": "Garlic Bread", "price": 5 },
-                { "name": "Spring Rolls", "price": 6 }
-            ]
-        },
-        {
-            "name": "Desserts",
-            "items": [
-                { "name": "Cheesecake", "price": 7 },
-                { "name": "Chocolate Mousse", "price": 6 }
-            ]
-        },
-        {
-            "name": "Beverages",
-            "items": [
-                { "name": "Coffee", "price": 3 },
-                { "name": "Fresh Lemonade", "price": 4 }
-            ]
-        }
-    ]
-}
-    ;
-
-
-async function displayPlace(isLoggedIn, placeId, content) {
+async function displayPlace(isLoggedIn, placeId, contentContainer) {
     try {
-        const place = await apiFetch(`/places/place/${placeId}`);
-        const isCreator = isLoggedIn && state.user === place.createdBy;
-        if (!content) {
-            content = document.getElementById('content');
-        }
-        content.innerHTML = ""; // Clear existing content
+        const placeData = await apiFetch(`/places/place/${placeId}`);
+        const isCreator = isLoggedIn && state.user === placeData.createdBy;
 
-        // Fallback menu and gallery
-        if (!place.menu) {
-            place.menu = placeMenu.menu;
+        if (!contentContainer) {
+            contentContainer = document.getElementById("content");
         }
-        // const galleryImages = place.gallery || [
-        //     { src: "http://localhost:5173/placepic/FiKYsTSl5cN7ot.jpg", alt: "Image 1" },
-        //     { src: "http://localhost:5173/placepic/FiKYsTSl5cN7ot.jpg", alt: "Image 2" },
-        //     { src: "http://localhost:5173/placepic/FiKYsTSl5cN7ot.jpg", alt: "Image 3" },
-        // ];
+        contentContainer.innerHTML = "";
 
-        // Create main structure
+        // Display Banner
         const banner = createElement("div", { id: "place-banner" }, [
-            createElement("img", { src: `/placepic/${place.banner}` || "default-banner.jpg", alt: place.name })
+            createElement("img", {
+                src: placeData.banner ? `${SRC_URL}/placepic/${placeData.banner}` : "default-banner.jpg",
+                alt: placeData.name,
+            }),
         ]);
+        contentContainer.appendChild(banner);
 
-        const flexy = createElement("div", { class: "hvflex" });
         const details = createElement("div", { id: "place-details", class: "detail-section" });
-        renderPlaceDetails(isLoggedIn, details, place, isCreator);
+        renderPlaceDetails(isLoggedIn, details, placeData, isCreator);
+
+        contentContainer.appendChild(details);
 
         const bookingForm = isLoggedIn && !isCreator ? BookingForm((details) => {
-            alert(`Booking Confirmed!\nName: ${details.name}\nDate: ${details.date}\nSeats: ${details.seats}`);
+            Snackbar("Booking Confirmed!", 3000);
         }) : null;
+        // if (bookingForm) details.appendChild(bookingForm);
+        if (bookingForm) details.appendChild(bookingForm);
 
-        const tabs = createTabs(isLoggedIn, isCreator, place, bookingForm);
+        // contentContainer.appendChild(details);
+        
+        // Create and Render Tabs
+        const tabContainer = createContainer(["place-tabs"]);
+        const tabButtons = createContainer(["tab-buttons"]);
+        const tabContents = createContainer(["tab-contents"]);
 
-        content.appendChild(banner);
-        // content.appendChild(details);
-        flexy.appendChild(details);
+        const tabContentContainers = [
+            createElement("article", { id: "home-container", classes: ["home-container"] }),
+            createElement("article", { id: "notices-container", classes: ["notices-container"] }),
+            createElement("article", { id: "menu-container", classes: ["menu-container"] }),
+            createElement("article", { id: "gallery-container", classes: ["gallery-container"] }),
+            createElement("article", { id: "reviews-container", classes: ["reviews-container"] }),
+            createElement("article", { id: "nearby-container", classes: ["nearby-container"] }),
+            createElement("article", { id: "info-container", classes: ["info-container"] }),
+        ];
 
-        // details.appendChild(createElement("div", { id: "sda-container", class: "sda-container" }));
+        const tabs = [
+            {
+                title: "Home",
+                id: "home-tab",
+                render: () => displayPlaceHome(tabContentContainers[0], placeData),
+            },
+            {
+                title: "Notices",
+                id: "notices-tab",
+                render: () => displayPlaceNotices(tabContentContainers[1], isCreator),
+            },
+            {
+                title: "Menu",
+                id: "menu-tab",
+                render: () => RenderMenu(isCreator, tabContentContainers[2], placeData.menu),
+            },
+            {
+                title: "Gallery",
+                id: "gallery-tab",
+                render: () => displayMedia("place", placeId, isLoggedIn, tabContentContainers[3]),
+            },
+            {
+                title: "Reviews",
+                id: "reviews-tab",
+                render: () => displayReviews(isCreator, isLoggedIn, tabContentContainers[4], "place", placeId),
+            },
+            {
+                title: "Nearby",
+                id: "nearby-tab",
+                render: () => displayPlaceNearby(tabContentContainers[5], placeData),
+            },
+            {
+                title: "Info",
+                id: "info-tab",
+                render: () => displayPlaceInfo(tabContentContainers[6], placeData, isCreator),
+            },
+        ];
 
-        // (function () {
-        //     var yourscript = document.createElement('script');
-        //     yourscript.type = 'text/javascript';
-        //     yourscript.async = true;
-        //     yourscript.src = '/js/utils/sdacript.js';
-        //     (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(yourscript);
-        // })();
+        tabs.forEach(({ title, id, render }, index) => {
+            const tabButton = createButton({
+                text: title,
+                classes: ["tab-button"],
+                events: {
+                    click: () => activateTab(id, render, tabContentContainers[index]),
+                },
+            });
+            tabButtons.appendChild(tabButton);
 
-        if (bookingForm) flexy.appendChild(bookingForm);
-        content.appendChild(flexy);
-        content.appendChild(tabs);
+            const tabContent = createContainer(["tab-content"], id);
+            tabContents.appendChild(tabContent);
+        });
+
+        tabContainer.appendChild(tabButtons);
+        tabContainer.appendChild(tabContents);
+        contentContainer.appendChild(tabContainer);
+
+        // Activate the first tab by default
+        activateTab(tabs[0].id, tabs[0].render, tabContentContainers[0]);
+
+        function activateTab(tabId, renderContent, contentContainer) {
+            document.querySelectorAll(".tab-button").forEach((btn, index) => {
+                btn.classList.toggle("active", tabs[index].id === tabId);
+            });
+
+            document.querySelectorAll(".tab-content").forEach((content) => {
+                content.classList.toggle("active", content.id === tabId);
+            });
+
+            const activeTabContent = document.querySelector(`#${tabId}`);
+            if (activeTabContent && !activeTabContent.contains(contentContainer)) {
+                activeTabContent.innerHTML = "";
+                activeTabContent.appendChild(contentContainer);
+            }
+
+            if (contentContainer && !contentContainer.innerHTML.trim()) {
+                renderContent(contentContainer);
+            }
+
+            history.pushState({ placeId, tabId }, "", `/place/${placeId}#${tabId}`);
+        }
     } catch (error) {
-        content.innerHTML = ""; // Clear content on error
-        content.appendChild(createElement("h2", {}, ["Error"]));
-        content.appendChild(createElement("p", {}, [`Failed to load place details: ${error.message}`]));
-        Snackbar(`Error fetching place details: ${error.message}`, 3000);
+        contentContainer.innerHTML = "";
+        contentContainer.appendChild(
+            createElement("h1", {}, [`Error loading place details: ${error.message}`])
+        );
+        Snackbar("Failed to load place details. Please try again later.", 3000);
     }
 }
 
-// Function to create tabs
-function createTabs(isLoggedIn, isCreator, place, bookingForm) {
-    const tabsContainer = createElement("div", { id: "tabs-container" });
-    const tabsHeader = createElement("ul", { id: "tabs-header" }, [
-        "Home", "Notices", "Menu", "Gallery", "Reviews", "Nearby", "Info"
-    ].map((tabName) =>
-        createElement("li", { class: "tab", "data-tab": tabName.toLowerCase() }, [tabName])
-    ));
+function displayPlaceHome(container, placeData) {
+    container.innerHTML = "";
+    container.appendChild(createElement("h3", {}, [placeData.name]));
+    container.appendChild(
+        createElement("p", {}, [placeData.description || "No description available."])
+    );
+}
 
-    const tabsContent = createElement("div", { id: "tabs-content" });
+// function displayPlaceNotices(container, isCreator) {
+//     container.innerHTML = "";
+//     const notices = [];
 
-    // Tab-specific content
-    const tabsMap = {
-        home: createElement("div", { class: "tabcontent" }, [
-            createElement("h3", {}, ["Welcome to the Place!"]),
-            createElement("p", {}, [place.description || "No description available."]),
-        ]),
-        notices: createElement("div", { class: "tabcontent" }, [
-            createElement("h3", {}, ["Notices"]),
-        ]),
-        menu: createElement("div", { class: "tabcontent" }, []),
-        gallery: createElement("div", { class: "tabcontent" }, []),
-        reviews: createElement("div", { class: "tabcontent" }, []),
-        nearby: createElement("div", { class: "tabcontent" }, [
-            createElement("h3", {}, ["Nearby Places"]),
-            createElement("p", {}, ["No nearby places found."])
-        ]),
-        info: createElement("div", { class: "tabcontent" }, [
-            createElement("p", {}, [`Capacity: ${place.capacity || "N/A"}`]),
-            createElement("p", {}, [`Category: ${place.category || "N/A"}`]),
-        ]),
+//     const renderNotices = () => {
+//         container.innerHTML = "";
+//         const noticesList = createElement("div", { class: "notices-list" }, [
+//             ...notices.map((notice, index) =>
+//                 createElement("div", { class: "notice-item" }, [
+//                     createElement("p", {}, [notice]),
+//                     Button("Remove", "remove-notice-btn", {
+//                         click: () => {
+//                             notices.splice(index, 1);
+//                             renderNotices();
+//                         },
+//                     }),
+//                 ])
+//             ),
+//         ]);
+
+//         container.appendChild(noticesList);
+//     };
+
+//     if (isCreator) {
+//         const addButton = Button("Add Notice", "add-notice-btn", {
+//             click: () => {
+//                 const notice = prompt("Enter your notice:");
+//                 if (notice) {
+//                     notices.push(notice);
+//                     renderNotices();
+//                 }
+//             },
+//         });
+//         container.appendChild(addButton);
+//     }
+
+//     renderNotices();
+
+//     if (notices.length === 0) {
+//         container.appendChild(createElement("p", {}, ["No notices available."]));
+//     }
+// }
+
+function displayPlaceNotices(container, isCreator) {
+    // Clear the container
+    container.innerHTML = "";
+
+    // Initialize an array to store notices
+    const notices = [];
+
+    // Function to render the notices
+    const renderNotices = () => {
+        container.innerHTML = "";
+
+        // Display "No notices available" if the list is empty
+        if (notices.length === 0) {
+            container.appendChild(
+                createElement("p", {}, ["No notices available."])
+            );
+        } else {
+            // Create a list of notices
+            const noticesList = createElement(
+                "div",
+                { class: "notices-list" },
+                notices.map((notice, index) =>
+                    createElement("div", { class: "notice-item" }, [
+                        createElement("p", {}, [notice]),
+                        Button("Remove", "remove-notice-btn", {
+                            click: () => {
+                                // Remove the selected notice and re-render the list
+                                notices.splice(index, 1);
+                                renderNotices();
+                            },
+                        }),
+                    ])
+                )
+            );
+            container.appendChild(noticesList);
+        }
+
+        // Add "Add Notice" button for creators
+        if (isCreator) {
+            const addButton = Button("Add Notice", "add-notice-btn", {
+                click: () => {
+                    const notice = prompt("Enter your notice:");
+                    if (notice) {
+                        notices.push(notice);
+                        renderNotices();
+                    }
+                },
+            });
+            container.appendChild(addButton);
+        }
     };
 
-
-    if (isCreator) {
-        const noticeButton = Button("Add Notice", "add-notice-btn", { click: () => alert("Button clicked!"), });
-        const menuButton = Button("Add Menu", "add-menu-btn", { click: () => alert("Button clicked!"), });
-        const infoButton = Button("Add Info", "add-info-btn", { click: () => alert("Button clicked!"), });
-
-        tabsMap.notices.append(noticeButton, createElement("p", {}, ["No notices available."]));
-        tabsMap.menu.prepend(createElement('h3', {}, ['Menu']), menuButton);
-        tabsMap.info.prepend(createElement("h3", {}, ["Additional Information"]), infoButton);
-    }
-
-    if (isLoggedIn) {
-        let mediaList = createElement("div", { class: "media-list" }, []);
-        tabsMap.gallery.prepend(createElement("h3", {}, ["Gallery"]), mediaList);
-        displayMedia(place.media, "place", place.placeid, isLoggedIn, mediaList);
-    }
-
-    // if (isLoggedIn) {
-    //     const galleryButton = Button("Add Media", "add-media-btn", { click: () => MediaModal(place.placeid, isLoggedIn), });
-    //     let mediaList =  createElement("div", { class: "media-list" }, []);
-    //     tabsMap.gallery.prepend(mediaList, createElement("h3", {}, ["Gallery"]), galleryButton);
-    //     displayMedia(place.media, "place", place.placeid, isLoggedIn, mediaList);
-    // }
-
-    if (isLoggedIn && !isCreator) {
-        const reviewButton = Button("Add Review", "add-review-btn", { click: () => alert("Button clicked!"), });
-
-        tabsMap.reviews.prepend(createElement("h3", {}, ["Reviews"]), reviewButton);
-    }
-
-    RenderMenu(tabsMap.menu, place.menu)
-    displayReviews(tabsMap.reviews, "place", place.placeid);
-    // displayReviews(document.getElementById('review-section'), 'events', '12345');
-
-
-    // Add default active tab content
-    tabsContent.appendChild(tabsMap.home);
-
-    // Tab click logic
-    tabsHeader.addEventListener("click", (event) => {
-        if (!event.target.classList.contains("tab")) return;
-
-        const tabName = event.target.getAttribute("data-tab");
-        tabsContent.innerHTML = ""; // Clear existing content
-        tabsContent.appendChild(tabsMap[tabName]);
-    });
-
-    tabsContainer.appendChild(tabsHeader);
-    tabsContainer.appendChild(tabsContent);
-    return tabsContainer;
+    // Initial render
+    renderNotices();
 }
+
+
+function displayPlaceNearby(container, placeData) {
+    container.innerHTML = "";
+
+    const nearbyPlaces = [
+        { name: "Place A", category: "Cafe", distance: "500m" },
+        { name: "Place B", category: "Restaurant", distance: "800m" },
+    ];
+
+    // container.appendChild(
+    //     createElement("div", { class: "place-info" }, [
+    //         createElement("p", {}, [`Category: ${placeData.category || "N/A"}`]),
+    //         createElement("p", {}, [`Capacity: ${placeData.capacity || "N/A"}`]),
+    //     ])
+    // );
+
+    const nearbySection = createElement("div", { class: "nearby-section" }, [
+        createElement("h3", {}, ["Nearby Places"]),
+        ...nearbyPlaces.map((place) =>
+            createElement("div", { class: "nearby-item" }, [
+                createElement("p", {}, [`Name: ${place.name}`]),
+                createElement("p", {}, [`Category: ${place.category}`]),
+                createElement("p", {}, [`Distance: ${place.distance}`]),
+            ])
+        ),
+    ]);
+
+    container.appendChild(nearbySection);
+}
+
+// function displayPlaceInfo(container, placeData, isCreator) {
+//     container.innerHTML = "";
+//     if (isCreator) {
+//         container.appendChild(Button("Add Info", "add-info-btn", { click: () => alert("Add Info") }));
+//     }
+
+//     const info = {
+//         capacity: placeData.capacity || "N/A",
+//         accessibility: placeData.accessibility || "Not specified",
+//         services: placeData.services || [],
+//     };
+
+//     const renderInfo = () => {
+//         container.innerHTML = "";
+//         container.appendChild(
+//             createElement("div", { class: "place-info" }, [
+//                 createElement("p", {}, [`Capacity: ${info.capacity}`]),
+//                 createElement("p", {}, [`Accessibility: ${info.accessibility}`]),
+//                 createElement(
+//                     "p",
+//                     {},
+//                     [`Services: ${info.services.length > 0 ? info.services.join(", ") : "None"}`]
+//                 ),
+//             ])
+//         );
+//     };
+
+//     if (isCreator) {
+//         const addInfoButton = Button("Add Info", "add-info-btn", {
+//             click: () => {
+//                 const accessibility = prompt("Enter accessibility info:");
+//                 const service = prompt("Enter a service to add:");
+
+//                 if (accessibility) info.accessibility = accessibility;
+//                 if (service) info.services.push(service);
+
+//                 renderInfo();
+//             },
+//         });
+//         container.appendChild(addInfoButton);
+//     }
+
+//     renderInfo();
+// }
+
+function displayPlaceInfo(container, placeData, isCreator) {
+    // Clear the container
+    container.innerHTML = "";
+
+    // Initialize place information
+    const info = {
+        capacity: placeData.capacity || "N/A",
+        accessibility: placeData.accessibility || "Not specified",
+        services: placeData.services || [],
+    };
+
+    // Function to render place information
+    const renderInfo = () => {
+        container.innerHTML = "";
+
+        // Create the info display
+        const infoDisplay = createElement("div", { class: "place-info" }, [
+            createElement("p", {}, [`Capacity: ${info.capacity}`]),
+            createElement("p", {}, [`Accessibility: ${info.accessibility}`]),
+            createElement(
+                "p",
+                {},
+                [`Services: ${info.services.length > 0 ? info.services.join(", ") : "None"}`]
+            ),
+        ]);
+
+        container.appendChild(infoDisplay);
+
+        // Add the "Add Info" button if the user is the creator
+        if (isCreator) {
+            const addInfoButton = Button("Add Info", "add-info-btn", {
+                click: handleAddInfo,
+            });
+            container.appendChild(addInfoButton);
+        }
+    };
+
+    // Function to handle adding new information
+    const handleAddInfo = () => {
+        const accessibility = prompt("Enter accessibility info:");
+        const service = prompt("Enter a service to add:");
+
+        if (accessibility) info.accessibility = accessibility;
+        if (service) info.services.push(service);
+
+        renderInfo(); // Re-render the updated information
+    };
+
+    // Initial render
+    renderInfo();
+}
+
 
 export default displayPlace;

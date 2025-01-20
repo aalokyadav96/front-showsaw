@@ -1,5 +1,5 @@
 // Navigation Component
-import { state } from "../state/state.js";
+import { SRC_URL, state } from "../state/state.js";
 import { navigate } from "../routes/index.js";
 import { logout } from "../services/auth/authService.js";
 
@@ -66,7 +66,7 @@ function createProfileDropdown(user) {
     toggle.tabIndex = 0;
 
     const image = document.createElement("img");
-    image.src = `/userpic/thumb/${user || 'default'}.jpg`;
+    image.src = SRC_URL+`/userpic/thumb/${user || 'default'}.jpg`;
     image.alt = "Profile Picture";
     image.className = "profile-image";
 
@@ -77,7 +77,7 @@ function createProfileDropdown(user) {
 
     const links = [
         { href: "/profile", text: "Profile" },
-        { href: "/settings", text: "Settings" },
+        // { href: "/settings", text: "Settings" },
     ];
 
     links.forEach(link => {
@@ -104,6 +104,7 @@ function createNav() {
     const navItems = [
         { href: '/', label: 'Home' },
         { href: '/events', label: 'Events' },
+        // { href: '/gigs', label: 'Gigs' },
         { href: '/places', label: 'Places' },
         { href: '/feed', label: 'Feed' },
         { href: '/search', label: 'Search' },
@@ -133,6 +134,7 @@ function createNav() {
     // Add Create Dropdown
     const createDrop = createDropdown("create-menu", "Create", [
         { href: "/create-event", text: "Eva" },
+        // { href: "/create-gig", text: "Gig" },
         { href: "/create-place", text: "Loca" },
     ]);
     ul.appendChild(createDrop);
