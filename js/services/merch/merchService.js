@@ -222,7 +222,7 @@ function addMerchForm(eventId) {
     cancelButton.textContent = "Cancel";
     cancelButton.addEventListener("click", clearMerchForm);
 
-    editEventDiv.append(heading, addButton, merchNameInput, merchPriceInput, merchStockInput, merchImageInput, cancelButton);
+    editEventDiv.append(heading, merchNameInput, merchPriceInput, merchStockInput, merchImageInput, addButton, cancelButton);
 }
 
 function displayNewMerchandise(merchData) {

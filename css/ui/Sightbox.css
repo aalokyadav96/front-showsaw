@@ -27,9 +27,10 @@
   
   .sightbox-content img,
   .sightbox-content video {
-    width: 100%;
+    max-width: 100%;
     border-radius: 8px;
     max-height: 98vh;
+    margin: 0 auto;
   }
   
   .sightbox-close {

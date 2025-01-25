@@ -107,6 +107,7 @@ function createNav() {
         // { href: '/gigs', label: 'Gigs' },
         { href: '/places', label: 'Places' },
         { href: '/feed', label: 'Feed' },
+        { href: '/blogs', label: 'Blogs' },
         { href: '/search', label: 'Search' },
     ];
 

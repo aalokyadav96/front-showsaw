@@ -7,17 +7,8 @@ import { generateBannerForm, generateAvatarForm } from "./generators.js";
 import Snackbar from '../../components/ui/Snackbar.mjs';
 import Button from '../../components/base/Button.js';
 import { attachProfileEventListeners } from "./userProfileService.js";
+import { displayUserProfileData } from "./otherUserProfileService.js";
 
-// function createButton({ text, className, dataset = {}, onClick }) {
-//     const button = document.createElement('button');
-//     button.textContent = text;
-//     button.className = className;
-//     Object.entries(dataset).forEach(([key, value]) => {
-//         button.dataset[key] = value;
-//     });
-//     if (onClick) button.addEventListener('click', onClick);
-//     return button;
-// }
 
 function appendChildren(parent, ...children) {
     children.forEach(child => parent.appendChild(child));
@@ -94,12 +85,6 @@ function profilGen(profile, isLoggedIn) {
 
     // Add click event to display the image
     bgImg.addEventListener('click', () => Sightbox(`${SRC_URL}/userpic/banner/${bannerPicture}`, 'image'));
-
-    // // Background Image
-    // const bgImg = document.createElement('span');
-    // bgImg.className = 'bg_img';
-    // bgImg.style.backgroundImage = `url(${SRC_URL}/userpic/banner/${profile.banner_picture})`;
-    // bgImg.addEventListener('click', () => Sightbox(`${SRC_URL}/userpic/banner/${profile.banner_picture}`, 'image'));
 
     if (profile.userid == state.user) {
         const showEditButton = document.createElement('button');
@@ -242,6 +227,24 @@ function profilGen(profile, isLoggedIn) {
 
     appendChildren(section, bgImg, profileArea, profileDetails);
     // appendChildren(section, bgImg, profileArea, profileDetails, statistics, followSuggestions);
+
+    // const addInfoButton = Button("Load UserData", "load-user-data", {
+    //     click: displayUserProfileData(isLoggedIn, section, profile.userid),
+    // });
+    // section.appendChild(addInfoButton);
+
+    const udata = document.createElement('div');
+    udata.className = 'udata-info';
+
+    function displayUserData() {
+        displayUserProfileData(isLoggedIn, udata, profile.userid)
+    }
+
+    const addInfoButton = Button("Load UserData", "load-user-data", {
+        click: displayUserData,
+    });
+    section.appendChild(addInfoButton);
+    section.appendChild(udata);
 
     if (profile.userid == state.user) {
         const deleteProfileButton = document.createElement("button");

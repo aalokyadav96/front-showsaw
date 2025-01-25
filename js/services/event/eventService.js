@@ -92,7 +92,7 @@ async function displayEvent(isLoggedIn, eventId, contentContainer) {
                 renderContent(tabcon);
             }
 
-            history.pushState({ eventId, tabId }, '', `/event/${eventId}#${tabId}`);
+            // history.pushState({ eventId, tabId }, '', `/event/${eventId}#${tabId}`);
         }
     } catch (error) {
         contentContainer.innerHTML = '';

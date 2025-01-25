@@ -1,0 +1,235 @@
+/* Vidpop.css */
+
+/* General Styles */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    overflow-x: hidden;
+  }
+  
+  /* Sightbox Overlay */
+  .sightbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .sightbox-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    cursor: pointer;
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  .sightbox-content {
+    position: relative;
+    max-width: 90%;
+    max-height: 80%;
+    z-index: 1001;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: #000;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+    overflow: hidden;
+    animation: slideIn 0.4s ease-in-out;
+  }
+  
+  .sightbox-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    color: #fff;
+    font-size: 24px;
+    border: none;
+    cursor: pointer;
+    z-index: 1002;
+  }
+  
+  .sightbox-close:hover {
+    color: #f00;
+  }
+  
+  /* Video Player */
+  #video-player {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #000;
+    width: 100%;
+    height: auto;
+  }
+  
+  #main-video {
+    max-width: 100%;
+    height: auto;
+    outline: none;
+    border-radius: 12px 12px 0 0;
+  }
+  
+  /* Controls */
+  .controls {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.7);
+  }
+  
+  .progress-bar {
+    width: 100%;
+    height: 8px;
+    background-color: #444;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .progress {
+    width: 0%;
+    height: 100%;
+    background: #ff5722;
+    transition: width 0.2s linear;
+  }
+  
+  .buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20%;
+  }
+  
+  button,
+  select {
+    background: #444;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 6px;
+    margin: 0 5px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  button:hover,
+  select:hover {
+    background: #555;
+  }
+  
+  button:focus,
+  select:focus {
+    outline: none;
+    background: #ff5722;
+  }
+  
+  /* Playback Speed and Quality Selectors */
+  .playback-speed,
+  .quality-selector {
+    padding: 5px 10px;
+    border-radius: 6px;
+    background: #333;
+    color: #fff;
+    border: 1px solid #444;
+  }
+  
+  .playback-speed:hover,
+  .quality-selector:hover {
+    background: #444;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .sightbox-content {
+      max-width: 100%;
+      max-height: 90%;
+    }
+  
+    #main-video {
+      height: auto;
+      width: 100%;
+    }
+  
+    .controls {
+      padding: 8px;
+    }
+  
+    button,
+    select {
+      font-size: 12px;
+      padding: 4px 8px;
+    }
+  }
+  
+  /* Animations */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  @keyframes slideIn {
+    from {
+      transform: translateY(50px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  /* Themes */
+  .theme-light .sightbox-content {
+    background: #f9f9f9;
+    color: #000;
+  }
+  
+  .theme-light .controls {
+    background: rgba(255, 255, 255, 0.8);
+  }
+  
+  .theme-light button {
+    background: #ddd;
+    color: #000;
+  }
+  
+  .theme-light button:hover {
+    background: #ccc;
+  }
+  
+  .theme-dark .sightbox-content {
+    background: #121212;
+    color: #fff;
+  }
+  
+  .theme-dark .controls {
+    background: rgba(0, 0, 0, 0.7);
+  }
+  
+  .theme-dark button {
+    background: #444;
+    color: #fff;
+  }
+  
+  .theme-dark button:hover {
+    background: #555;
+  }
+  

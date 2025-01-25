@@ -19,7 +19,7 @@ async function loadContent(url) {
     // Create Footer
     const footer = document.createElement("footer");
     const footerText = document.createElement("p");
-    footerText.textContent = "© 2024 My SPA Platform";
+    footerText.textContent = "© 2025 Zincate";
     footer.appendChild(footerText);
 
     // Append all sections to the app container

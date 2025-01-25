@@ -1,8 +1,28 @@
+import ZoomBox from "../components/ui/ZoomBox.mjs";
+
 function Home(isLoggedIn, content) {
   // Hero Section with Search Bar
   const heroSection = createHeroSection();
   content.appendChild(heroSection);
 
+  // const images = [
+  //   { src: 'https://pbs.twimg.com/media/GiCklS9XsAELt8E?format=jpg&name=large', alt: 'Image 1' },
+  //   { src: 'https://pbs.twimg.com/media/Gh5tD6XaEAAwNYl?format=jpg&name=large', alt: 'Image 2' },
+  //   { src: 'https://pbs.twimg.com/media/Gh_LKxEbcAABan_?format=jpg&name=large', alt: 'Image 2' },
+  // ];
+
+  const images = [
+    'https://pbs.twimg.com/media/GiCklS9XsAELt8E?format=jpg&name=large',
+    'https://pbs.twimg.com/media/Gh5tD6XaEAAwNYl?format=jpg&name=large',
+    'https://pbs.twimg.com/media/Gh_LKxEbcAABan_?format=jpg&name=large',
+  ];
+
+  document.getElementById('open-zoombox').addEventListener('click', () => {
+    // ZoomBox(images, 0); // Open zoombox with the first image
+    ZoomBox(images, 0, { theme: 'dark', metadata: ['Image 1 Description', 'Image 2 Description', 'Image 3 Description'] });
+ // Open zoombox with the first image
+  });
+  
   // Personalized Recommendations
   const recommendations = createRecommendationsSection();
   content.appendChild(recommendations);
@@ -20,9 +40,11 @@ function Home(isLoggedIn, content) {
 
 // Create the Hero Section
 function createHeroSection() {
+  
   const hero = document.createElement('div');
   hero.className = 'hero-section  tab-container';
   hero.innerHTML = `
+  <button id="open-zoombox">Open ZoomBox</button>
     <div class="hero-content">
       <h1>Discover Amazing Events and Places Nearby</h1>
       <p>Find food, fun, and more, all in one place.</p>
@@ -32,6 +54,7 @@ function createHeroSection() {
       </div>
     </div>
   `;
+
   return hero;
 }
 

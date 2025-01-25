@@ -57,9 +57,14 @@ async function renderPageContent(isLoggedIn, path, contentContainer) {
             Settings(isLoggedIn, contentContainer);
         },
         "/feed": async () => {
-            const { Feed } = await import("../pages/feed.js");
+            const { Feed } = await import("../pages/feed/feed.js");
             contentContainer.innerHTML = "";
             Feed(isLoggedIn, contentContainer);
+        },
+        "/blogs": async () => {
+            const { Blog } = await import("../pages/blog/blog.js");
+            contentContainer.innerHTML = "";
+            Blog(isLoggedIn, contentContainer);
         },
     };
 
@@ -89,10 +94,20 @@ async function renderPageContent(isLoggedIn, path, contentContainer) {
             handler: async (matches) => {
                 const { Place } = await import("../pages/places/placePage.js");
                 try {
-                    // await Place(matches[1]);
                     Place(isLoggedIn, matches[1],content);
                 } catch {
                     content.innerHTML = `<h1>Place Not Found</h1>`;
+                }
+            },
+        },
+        {
+            pattern: /^\/post\/([\w-]+)$/,
+            handler: async (matches) => {
+                const { Post } = await import("../pages/feed/postDisplay.js");
+                try {
+                    Post(isLoggedIn, matches[1],content);
+                } catch {
+                    content.innerHTML = `<h1>Post Not Found</h1>`;
                 }
             },
         },

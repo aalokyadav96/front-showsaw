@@ -60,4 +60,28 @@ async function fetchUserProfile(username) {
     }
 }
 
-export {fetchProfile, fetchUserProfile};
+// // Fetch the user profile
+// async function fetchUserProfileData(username) {
+//     try {
+//         const data = await apiFetch(`/user/${username}/data`);
+//         return data;
+//     } catch (error) {
+//         console.error("Error fetching user profile:", error);
+//         return null;
+//     }
+// }
+
+
+// Fetch user profile data for a specific entity type
+async function fetchUserProfileData(username, entityType) {
+    try {
+        const response = await apiFetch(`/user/${username}/data?entity_type=${entityType}`);
+        return response; // Assuming response is JSON
+    } catch (error) {
+        console.error(`Error fetching ${entityType} data for user:`, error);
+        throw error;
+    }
+}
+
+
+export {fetchProfile, fetchUserProfile, fetchUserProfileData};

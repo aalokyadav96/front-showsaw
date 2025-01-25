@@ -4,7 +4,7 @@ import AudioPlayer from '../../components/ui/AudioPlayer.mjs';
 import SnackBar from '../../components/ui/Snackbar.mjs';
 import { opensLightbox, closesLightbox, changesImage } from "./lightbox.js";
 import { apiFetch } from "../../api/api.js";
-import { fetchFeed } from "./fetchFeed.js";
+import { fetchBlog } from "./fetchBlog.js";
 
 
 function renderNewPost(post, i) {
@@ -48,56 +48,22 @@ function createPostHeader(post) {
     `;
 }
 
-// Create Media Content
-function createMediaContent(post, media) {
+function createMediaContent(post) {
     const mediaContainer = document.createElement('div');
     mediaContainer.className = 'post-media';
 
-    if (post.type === "image" && media.length > 0) {
-        const mediaClasses = [
-            'PostPreviewImageView_-one__-6MMx',
-            'PostPreviewImageView_-two__WP8GL',
-            'PostPreviewImageView_-three__HLsVN',
-            'PostPreviewImageView_-four__fYIRN',
-            'PostPreviewImageView_-five__RZvWx',
-            'PostPreviewImageView_-six__EG45r',
-            'PostPreviewImageView_-seven__65gnj',
-            'PostPreviewImageView_-eight__SoycA'
-        ];
-        const classIndex = Math.min(media.length - 1, mediaClasses.length - 1);
-        const assignedClass = mediaClasses[classIndex];
+    const blogtit = document.createElement('h3');
+    blogtit.innerText = post.title;
+    const blogcunt = document.createElement('div');
+    blogcunt.innerText = post.content;
 
-        const imageList = document.createElement('ul');
-        imageList.className = `preview_image_wrap__Q29V8 PostPreviewImageView_-artist__WkyUA PostPreviewImageView_-bottom_radius__Mmn-- ${assignedClass}`;
-        media.forEach((img, index) => {
-            const listItem = document.createElement('li');
-            listItem.className = 'PostPreviewImageView_image_item__dzD2P';
 
-            const image = document.createElement('img');
-            image.src = `${SRC_URL + img}`;
-            image.alt = "Post Image";
-            image.className = 'post-image PostPreviewImageView_post_image__zLzXH';
-            image.addEventListener("click", () => opensLightbox(img, media.length, index, media));
-            listItem.appendChild(image);
-            imageList.appendChild(listItem);
-        });
-
-        mediaContainer.appendChild(imageList);
-    } else if (post.type === "video" && media.length > 0) {
-        media.forEach(videoSrc => {
-            const videox = VideoPlayer({
-                // src: `${SRC_URL}${videoSrc}`,
-                src: `${videoSrc}`,
-                className: 'post-video',
-                muted: true,
-                poster: '',
-                controls: false,
-            });
-            mediaContainer.appendChild(videox);
-        });
-    }
+    mediaContainer.appendChild(blogtit);
+    mediaContainer.appendChild(blogcunt);
     return mediaContainer;
 }
+
+
 
 // Create Actions
 function createActions(post, isLoggedIn, isCreator) {
@@ -146,7 +112,7 @@ function updateTimelineStyles() {
 
 // Main Render Post Function
 function renderPost(post, postsContainer, i) {
-    const media = Array.isArray(post.media) ? post.media : [];
+    // const media = Array.isArray(post.media) ? post.media : [];
     const isLoggedIn = state.token;
     const isCreator = isLoggedIn && state.user === post.userid;
 
@@ -159,16 +125,9 @@ function renderPost(post, postsContainer, i) {
 
     postElement.innerHTML = createPostHeader(post);
 
-    if (post.type === "text") {
-        postElement.innerHTML += `<div class="post-text">${post.text}</div>`;
-    } else if (post.type === "audio") {
-        postElement.innerHTML += `<div class="post-text">${post.text}</div>`;
-        const audio = AudioPlayer({ src: '#' });
-        postElement.appendChild(audio);
-    } else {
-        const mediaContent = createMediaContent(post, media);
-        postElement.appendChild(mediaContent);
-    }
+    const mediaContent = createMediaContent(post);
+    postElement.appendChild(mediaContent);
+
 
     const actions = createActions(post, isLoggedIn, isCreator);
     postElement.appendChild(actions);
@@ -189,9 +148,9 @@ async function deletePost(postId, isLoggedIn) {
 
     if (confirm("Are you sure you want to delete this post?")) {
         try {
-            await apiFetch(`/feed/post/${postId}`, 'DELETE');
+            await apiFetch(`/blog/post/${postId}`, 'DELETE');
             SnackBar("Post deleted successfully.", 3000);
-            fetchFeed(); // Refresh the feed after deleting
+            fetchBlog(); // Refresh the blog after deleting
         } catch (error) {
             SnackBar(`Error deleting post: ${error.message}`, 3000);
         }
