@@ -47,7 +47,7 @@ async function renderPageContent(isLoggedIn, path, contentContainer) {
             Places(isLoggedIn, contentContainer);
         },
         "/search": async () => {
-            const { Search } = await import("../pages/search.js");
+            const { Search } = await import("../pages/search/search.js");
             contentContainer.innerHTML = "";
             Search(isLoggedIn, contentContainer);
         },
@@ -104,6 +104,17 @@ async function renderPageContent(isLoggedIn, path, contentContainer) {
             pattern: /^\/post\/([\w-]+)$/,
             handler: async (matches) => {
                 const { Post } = await import("../pages/feed/postDisplay.js");
+                try {
+                    Post(isLoggedIn, matches[1],content);
+                } catch {
+                    content.innerHTML = `<h1>Post Not Found</h1>`;
+                }
+            },
+        },        
+        {
+            pattern: /^\/blog\/([\w-]+)$/,
+            handler: async (matches) => {
+                const { Post } = await import("../pages/blog/blogpostDisplay.js");
                 try {
                     Post(isLoggedIn, matches[1],content);
                 } catch {

@@ -63,35 +63,6 @@ async function displayEventFAQ(isCreator, faqContainer, eventId, faqs) {
     displayEventFAQs(isCreator, faqContainer, eventId, faqs);
 }
 
-// async function displayEventFAQ(isCreator, faqContainer) {
-//     // const faqContainer = document.getElementById("event-faq");
-//     faqContainer.innerHTML = ''; // Clear existing content
-
-//         if (isCreator) {
-//         const button = Button("Add FAQs", "add-faq-btn", {
-//             click: () => alert("Button clicked!"),
-//             mouseenter: () => console.log("Button hovered"),
-//         });
-//         faqContainer.appendChild(button);
-//     }
-
-//     const sections = [
-//         { title: 'What is this event?', content: 'This is an example event.' },
-//         { title: 'How to register?', content: 'You can register through the registration form.' },
-//         { title: 'What is the refund policy?', content: 'Refunds are not available.' },
-//     ];
-
-//     sections.forEach(({ title, content }) => {
-//         const faqItem = createElement('div', { classes: ['faq-item'] });
-//         const faqTitle = createElement('h3', { textContent: title, classes: ['faq-title'] });
-//         const faqContent = createElement('p', { textContent: content, classes: ['faq-content'] });
-
-//         faqItem.appendChild(faqTitle);
-//         faqItem.appendChild(faqContent);
-//         faqContainer.appendChild(faqItem);
-//     });
-// }
-
 function getTabs(eventData) {
     const tabs = [
         { title: 'Tickets', id: 'ticket-list' },

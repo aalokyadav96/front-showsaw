@@ -138,7 +138,8 @@ const ZoomBox = (images, initialIndex = 0) => {
   content.appendChild(closeButton);
 
   zoombox.appendChild(content);
-  document.getElementById('app').appendChild(zoombox);
+  // document.getElementById('app').appendChild(zoombox);
+  document.body.appendChild(zoombox);
 };
 
 export default ZoomBox;

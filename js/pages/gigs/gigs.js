@@ -1,6 +1,6 @@
 import { displayGigs } from "../../services/gigs/displayGigsService.js";
 
-function Gigs(isLoggedIn, contentContainer) {
+async function Gigs(isLoggedIn, contentContainer) {
     contentContainer.innerHTML = '';
 
     const efventhead = document.createElement("h1");

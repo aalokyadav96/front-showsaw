@@ -39,22 +39,7 @@ function generateBlogHTML() {
     titleInput.type = 'text';
     titleInput.placeholder = 'Enter post title';
 
-    const categorySelector = document.createElement('select');
-    categorySelector.id = 'categorySelector';
-    categorySelector.className = 'category-selector';
-
-    const defaultOption = new Option('Select Category', '');
-    const techOption = new Option('Tech', 'tech');
-    const lifestyleOption = new Option('Lifestyle', 'lifestyle');
-    const travelOption = new Option('Travel', 'travel');
-
-    categorySelector.add(defaultOption);
-    categorySelector.add(techOption);
-    categorySelector.add(lifestyleOption);
-    categorySelector.add(travelOption);
-
     postHeader.appendChild(titleInput);
-    postHeader.appendChild(categorySelector);
 
     // Create the content input area
     const contentInput = document.createElement('textarea');

@@ -1,9 +1,7 @@
-import { state, API_URL } from "../../state/state.js";
+import { API_URL, setState } from "../../state/state.js";
 import { escapeHTML } from "../../utils/utils.js";
 import { renderPage, navigate } from "../../routes/index.js";
-import Snackbar from '../../components/ui/Snackbar.mjs';
-
-
+import Snackbar from "../../components/ui/Snackbar.mjs";
 
 async function login(event) {
     event.preventDefault();
@@ -19,21 +17,27 @@ async function login(event) {
         });
 
         const res = await response.json();
+
         if (response.ok) {
-            state.token = res.data.token;
-            state.user = res.data.userid;
-            localStorage.setItem("token", state.token);
-            localStorage.setItem("user", state.user);
-            localStorage.setItem("refreshToken", res.data.refreshToken); // Save the refresh token
-            navigate('/');
+            // Store tokens & user data securely
+            setState(
+                {
+                    token: res.data.token,
+                    user: res.data.userid,
+                    refreshToken: res.data.refreshToken,
+                },
+                true // Persist in localStorage
+            );
+
+            navigate("/");
             renderPage();
+            Snackbar("Login successful!", 2000);
         } else {
-            Snackbar(res.message || "Error logging in.", 3000);
+            Snackbar(res.message || "Invalid credentials.", 3000);
         }
     } catch (error) {
-        Snackbar("Error logging in. Please try again.", 3000);
+        Snackbar("Network error. Please try again.", 3000);
     }
 }
-
 
 export { login };

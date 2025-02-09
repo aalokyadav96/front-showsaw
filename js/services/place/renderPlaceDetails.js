@@ -3,8 +3,8 @@ import {editPlaceForm, deletePlace} from "./placeService.js";
 import Button from "../../components/base/Button.js";
 
 function renderPlaceDetails(isLoggedIn, content, place, isCreator) {
-    const createdDate = new Date(place.created).toLocaleString();
-    const updatedDate = new Date(place.updated).toLocaleString();
+    const createdDate = new Date(place.created_at).toLocaleString();
+    const updatedDate = new Date(place.updated_at).toLocaleString();
     const latitude = place.coordinates?.lat || "N/A";
     const longitude = place.coordinates?.lng || "N/A";
 
@@ -17,7 +17,7 @@ function renderPlaceDetails(isLoggedIn, content, place, isCreator) {
         // }),
         createElement('p', {}, [createElement('strong', {}, ["Description: "]), place.description || "N/A"]),
         createElement('p', {}, [createElement('strong', {}, ["Address: "]), place.address || "N/A"]),
-        // createElement('p', {}, [createElement('strong', {}, ["Created On: "]), createdDate]),
+        createElement('p', {}, [createElement('strong', {}, ["Created On: "]), createdDate]),
         createElement('p', {}, [createElement('strong', {}, ["Last Updated: "]), updatedDate]),
         // createElement('p', {}, [createElement('strong', {}, ["Coordinates: "]), `Lat: ${latitude}, Lng: ${longitude}`]),
         createElement('p', {}, [createElement('strong', {}, ["Category: "]), place.category || "N/A"]),

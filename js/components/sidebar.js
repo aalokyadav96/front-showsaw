@@ -1,66 +1,63 @@
-const sidebar = (() => {
-    const sidebarElement = document.createElement('div');
-    sidebarElement.id = 'mySidenav';
-    sidebarElement.className = 'sidenav';
+import { navigate } from "../routes/index.js";
 
-    // Close button
-    const closeBtn = document.createElement('a');
-    closeBtn.href = 'javascript:void(0)';
-    closeBtn.className = 'closebtn';
-    closeBtn.innerHTML = '&times;';
-    closeBtn.addEventListener('click', closeNav);
-    sidebarElement.appendChild(closeBtn);
+function handleNavigation(event, href) {
+    event.preventDefault();
+    navigate(href);
+}
 
-    // Helper function to create a list item
-    const createSidebarItem = (href, label) => {
-        const a = document.createElement('a');
-        a.href = href;
-        a.textContent = label;
-        return a;
-    };
+function createMenuItem(href, label) {
+    const li = document.createElement("li");
+    li.className = "footlincon";
 
-    // Sidebar items
-    const sidebarItems = [
-        { href: '/profile', label: 'Profile' },
-        { href: '/feed', label: 'Feed' },
-        { href: '/search', label: 'Search' },
-        { href: '/settings', label: 'Settings' }
-    ];
+    const anchor = document.createElement("a");
+    anchor.href = href;
+    anchor.textContent = label;
+    anchor.className = "footlink";
 
-    // Create and append list items
-    sidebarItems.forEach(item => sidebarElement.appendChild(createSidebarItem(item.href, item.label)));
+    anchor.addEventListener("click", (e) => handleNavigation(e, href));
 
-    // Append to the body
-    document.body.appendChild(sidebarElement);
+    li.appendChild(anchor);
+    return li;
+}
 
-    // Create the aside content container
-    const aside = document.getElementById('aside') || document.createElement('div');
-    aside.id = 'aside';
-    if (!aside.parentNode) {
-        document.body.appendChild(aside);
-    }
+function createNavAndSidebar(container, isLoggedIn) {
 
-    // Open the sidebar
-    function openNav() {
-        sidebarElement.style.width = '250px';
-        aside.style.marginLeft = '250px';
-    }
+    // Sidebar Items
+    const sidebarItems = isLoggedIn
+        ? [
+              { href: '/chat', label: 'Chat' },
+              { href: '/crowdfunding', label: 'Crowdfunding' },
+              { href: '/donations', label: 'Donations' },
+              { href: '/analytics', label: 'Analytics' },
+              { href: '/streaming', label: 'Streaming' },
+              { href: '/forums', label: 'Forums' },
+          ]
+        : [
+              { href: '/gigs', label: 'Gigs' },
+          ];
 
-    // Close the sidebar
-    function closeNav() {
-        sidebarElement.style.width = '0';
-        aside.style.marginLeft = '0';
-    }
+    // Create Sidebar
+    const sidebarElement = document.createElement("div");
+    sidebarElement.className = "sidebar";
 
-    // Add a button to open the sidebar
-    const openButton = document.createElement('span');
-    openButton.style.fontSize = '30px';
-    openButton.style.cursor = 'pointer';
-    openButton.innerHTML = '&#9776; open';
-    openButton.addEventListener('click', openNav);
-    aside.insertBefore(openButton, aside.firstChild);
+    const sidebarTitle = document.createElement("h2");
+    sidebarTitle.textContent = "Menu";
+    sidebarElement.appendChild(sidebarTitle);
 
-    return sidebarElement;
-})();
+    const sidebarMenuList = document.createElement("ul");
+    sidebarMenuList.className = "menu-list";
 
-export { sidebar };
+    // Add Sidebar Items
+    sidebarItems.forEach((item) =>
+        sidebarMenuList.appendChild(createMenuItem(item.href, item.label))
+    );
+
+    sidebarElement.appendChild(sidebarMenuList);
+
+    // Clear the container and add both components
+    // container.innerHTML = "";
+    // container.appendChild(header);
+    container.appendChild(sidebarElement);
+}
+
+export { createNavAndSidebar as sidebar };

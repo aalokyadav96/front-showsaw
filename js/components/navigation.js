@@ -66,7 +66,7 @@ function createProfileDropdown(user) {
     toggle.tabIndex = 0;
 
     const image = document.createElement("img");
-    image.src = SRC_URL+`/userpic/thumb/${user || 'default'}.jpg`;
+    image.src = SRC_URL + `/userpic/thumb/${user || 'default'}.jpg`;
     image.alt = "Profile Picture";
     image.className = "profile-image";
 
@@ -102,9 +102,8 @@ function createNav() {
     const isLoggedIn = Boolean(state.token);
 
     const navItems = [
-        { href: '/', label: 'Home' },
+        // { href: '/', label: 'Home' },
         { href: '/events', label: 'Events' },
-        // { href: '/gigs', label: 'Gigs' },
         { href: '/places', label: 'Places' },
         { href: '/feed', label: 'Feed' },
         { href: '/blogs', label: 'Blogs' },

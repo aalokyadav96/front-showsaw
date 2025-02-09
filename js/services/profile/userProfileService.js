@@ -1,4 +1,4 @@
-import { state } from "../../state/state.js";
+import { SRC_URL, state } from '../../state/state.js';
 import { apiFetch } from "../../api/api.js";
 import { handleError } from "../../utils/utils.js";
 import Snackbar from '../../components/ui/Snackbar.mjs';
@@ -7,7 +7,7 @@ import { logout } from "../../services/auth/authService.js";
 import { showLoadingMessage, removeLoadingMessage } from "./profileHelpers.js";
 import { fetchProfile } from "./fetchProfile.js";
 import { generateFormField } from "./generators.js";
-import  profilGen  from "./renderUserProfile.js";
+import profilGen from "./renderUserProfile.js";
 
 
 // Display the profile content in the profile section
@@ -20,7 +20,7 @@ async function displayProfile(isLoggedIn, content) {
                 const profileElement = profilGen(profile, isLoggedIn);
                 content.appendChild(profileElement);
                 attachProfileEventListeners(content); // Attach event listeners for buttons
-                // displayFollowSuggestions();
+                displayFollowSuggestions(profile.userid);
             } else {
                 const loginMessage = document.createElement("p");
                 loginMessage.textContent = "Please log in to see your profile.";
@@ -32,7 +32,7 @@ async function displayProfile(isLoggedIn, content) {
             content.appendChild(errorMessage);
         }
     } else {
-    navigate("/login");        
+        navigate("/login");
     }
 }
 
@@ -54,33 +54,62 @@ function attachProfileEventListeners(content) {
     }
 }
 
-
-async function displayFollowSuggestions() {
+async function displayFollowSuggestions(userid) {
     const suggestionsSection = document.getElementById("follow-suggestions");
     suggestionsSection.textContent = ""; // Clear existing content
 
     try {
-        const suggestions = await apiFetch('/suggestions/follow');
+        const suggestions = await apiFetch(`/suggestions/follow?${userid}`);
 
         if (suggestions && suggestions.length > 0) {
             const heading = document.createElement("h3");
             heading.textContent = "Suggested Users to Follow:";
             suggestionsSection.appendChild(heading);
 
-            const suggestionsList = document.createElement("ul");
+            const suggestionsList = document.createElement("div");
             suggestionsList.id = "suggestions-list";
 
             suggestions.forEach(user => {
-                const listItem = document.createElement("li");
-                listItem.textContent = user.username;
+                const listItem = document.createElement("div");
+                listItem.className = "suggestion-item";
 
-                const viewProfileButton = document.createElement("button");
-                viewProfileButton.className = "view-profile-btn";
-                viewProfileButton.textContent = "View Profile";
-                viewProfileButton.dataset.username = user.username;
-                viewProfileButton.addEventListener("click", () => navigate(`/user/${user.username}`));
+                // Profile picture (fallback if empty)
+                const profilePic = document.createElement("img");
+                profilePic.className = "profile-picture";
+                profilePic.src = user.userid ? SRC_URL + `/userpic/thumb/${user.userid}.jpg` : "/default-avatar.jpg";
+                profilePic.alt = `${user.username}'s profile`;
+                profilePic.setAttribute("loading", "lazy");
+                profilePic.addEventListener("click", () => navigate(`/user/${user.username}`));
 
-                listItem.appendChild(viewProfileButton);
+                // Username
+                const username = document.createElement("span");
+                username.className = "username";
+                username.textContent = user.username;
+
+                // Bio
+                const bio = document.createElement("span");
+                bio.className = "bio";
+                bio.textContent = user.bio;
+
+                // View Profile Button
+                // const viewProfileButton = document.createElement("button");
+                // viewProfileButton.className = "view-profile-btn";
+                // viewProfileButton.textContent = "View Profile";
+                // viewProfileButton.addEventListener("click", () => navigate(`/user/${user.username}`));
+
+                // // Follow Button
+                // const followButton = document.createElement("button");
+                // followButton.className = "follow-btn";
+                // followButton.textContent = user.is_following ? "Following" : "Follow";
+                // followButton.dataset.userid = user.userid;
+                // followButton.onclick = () => toggleFollow(user.userid, followButton);
+
+                // Append elements
+                listItem.appendChild(profilePic);
+                listItem.appendChild(username);
+                listItem.appendChild(bio);
+                // listItem.appendChild(viewProfileButton);
+                // listItem.appendChild(followButton);
                 suggestionsList.appendChild(listItem);
             });
 
@@ -97,10 +126,25 @@ async function displayFollowSuggestions() {
         errorMessage.textContent = "Failed to load suggestions.";
         suggestionsSection.appendChild(errorMessage);
 
-
         Snackbar("Error loading follow suggestions.", 3000);
     }
 }
+
+// // Follow/unfollow toggle function
+// async function toggleFollow(userId, button) {
+//     try {
+//         const response = await apiFetch(`/follow/${userId}`, { method: "POST" });
+//         if (response.success) {
+//             button.textContent = button.textContent === "Follow" ? "Following" : "Follow";
+//         } else {
+//             Snackbar("Failed to follow/unfollow.", 3000);
+//         }
+//     } catch (error) {
+//         console.error("Follow/unfollow error:", error);
+//         Snackbar("Error performing action.", 3000);
+//     }
+// }
+
 
 async function editProfile(content) {
     content.textContent = ""; // Clear existing content
@@ -183,22 +227,6 @@ async function updateProfile(formData) {
 }
 
 
-async function displaySuggested() {
-    const content = document.getElementById("suggested");
-
-    // Check if userProfile is available
-    if (state.userProfile) {
-        // If userProfile exists, display relevant details from the profile
-        content.innerHTML = `
-            <h1>Suggested for ${state.userProfile.username || state.user}</h1>
-            <p>Email: ${state.userProfile.email || 'N/A'}</p>
-            <p>Location: ${state.userProfile.location || 'N/A'}</p>
-        `;
-    } else {
-        // If no userProfile is available, fall back to displaying the username
-        content.innerHTML = `<h1>Welcome, ${state.user || 'Guest'}</h1>`;
-    }
-}
 
 async function deleteProfile() {
     if (!state.token) {
@@ -224,4 +252,4 @@ async function deleteProfile() {
 };
 
 
-export { displayProfile, deleteProfile, displayFollowSuggestions, editProfile, updateProfile, displaySuggested, attachProfileEventListeners };
+export { displayProfile, deleteProfile, displayFollowSuggestions, editProfile, updateProfile,  attachProfileEventListeners };

@@ -1,6 +1,6 @@
 import { displayEvents } from "../../services/event/displayEventsService.js";
 
-function Events(isLoggedIn, contentContainer) {
+async function Events(isLoggedIn, contentContainer) {
     contentContainer.innerHTML = '';
 
     const efventhead = document.createElement("h1");

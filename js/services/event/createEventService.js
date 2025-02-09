@@ -74,9 +74,19 @@ async function createEventForm(isLoggedIn, content) {
     }
 }
 
+function debounce(func, delay) {
+    let timeout;
+    return function (...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), delay);
+    };
+}
+
 function addEventEventListeners(eventPlaceInput, placeSuggestionsBox, createButton) {
-    // Event listener for place input
-    eventPlaceInput.addEventListener("input", async function () {
+        // Add event listener to the create button
+        createButton.addEventListener("click", createEvent);
+        
+    async function fetchPlaceSuggestions() {
         const query = eventPlaceInput.value.trim();
         if (!query) {
             placeSuggestionsBox.style.display = "none";
@@ -107,7 +117,12 @@ function addEventEventListeners(eventPlaceInput, placeSuggestionsBox, createButt
             console.error("Error fetching place suggestions:", error);
             placeSuggestionsBox.style.display = "none";
         }
-    });
+    }
+
+    const debouncedFetchSuggestions = debounce(fetchPlaceSuggestions, 300); // Adjust delay as needed
+
+    // Event listener for place input with debouncing
+    eventPlaceInput.addEventListener("input", debouncedFetchSuggestions);
 
     // Close suggestions when clicking outside
     document.addEventListener("click", (event) => {
@@ -115,9 +130,6 @@ function addEventEventListeners(eventPlaceInput, placeSuggestionsBox, createButt
             placeSuggestionsBox.style.display = "none";
         }
     });
-
-    // Add event listener to the create button
-    createButton.addEventListener("click", createEvent);
 }
 
 async function createEvent(isLoggedIn) {

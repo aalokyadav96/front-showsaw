@@ -1,4 +1,3 @@
-
 /* Main content styling */
 /* main#content {
     max-width: 800px;
@@ -9,30 +8,30 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
    */
-  main#content h1 {
-    font-size: 2rem;
-    margin-bottom: 10px;
-    color: #333;
-  }
-  
-  /* main#content img {
+main#content h1 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+/* main#content img {
     display: block;
     margin: 10px auto 20px auto;
     border-radius: 5px;
   } */
-  
-  main#content p {
-    margin: 10px 0;
-    line-height: 1.5;
-  }
-  
-  main#content p strong {
-    color: #555;
-  }
-  
-  /* Buttons */
-  /* button {
-    background: #007bff;
+
+main#content p {
+  margin: 10px 0;
+  line-height: 1.5;
+}
+
+main#content p strong {
+  color: #555;
+}
+
+/* Buttons */
+/* button {
+    background: #0065d2;
     color: white;
     border: none;
     padding: 10px 15px;
@@ -42,30 +41,30 @@
     margin-right: 10px;
     transition: background 0.3s ease;
   } */
-  
-  /* button:hover {
+
+/* button:hover {
     background: #0056b3;
   }
   
   button:active {
     transform: scale(0.98);
   } */
-  
-  /* Responsive adjustments */
-  @media (max-width: 600px) {
-    main#content {
-      padding: 15px;
-    }
-  
-    button {
-      width: 100%;
-      margin: 5px 0;
-    }
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  main#content {
+    padding: 15px;
   }
 
-  /*******************************/
+  button {
+    width: 100%;
+    margin: 5px 0;
+  }
+}
 
-  
+/*******************************/
+
+
 #tabs-container {
   margin-top: 20px;
   border-top: 2px solid #ddd;
@@ -105,7 +104,7 @@
   background: #fff;
   color: #000;
   font-weight: bold;
-  border-bottom: 2px solid #007bff;
+  border-bottom: 2px solid #0065d2;
 }
 
 /* Tab content styles */
@@ -117,7 +116,8 @@
 }
 
 .tabcontent.active {
-  display: block; /* Show the active tab content */
+  display: block;
+  /* Show the active tab content */
 }
 
 /* Banner styles */
@@ -132,6 +132,7 @@
   object-fit: cover;
   border-radius: 8px;
   border: 1px solid #ddd;
+  aspect-ratio: 1/6;
 }
 
 /* Place details */
@@ -145,7 +146,7 @@
 
 #place-details h3 {
   margin: 0;
-  color: #007bff;
+  color: #0065d2;
 }
 
 #place-details p {
@@ -160,7 +161,7 @@
   border: 1px solid #ddd;
 }
 
-.place-tabs{
+.place-tabs {
   padding: 8px;
 }
 
@@ -180,7 +181,9 @@ form label {
   font-weight: bold;
 }
 
-form input, form select, form button {
+form input,
+form select,
+form button {
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -188,7 +191,7 @@ form input, form select, form button {
 }
 
 form button {
-  background: #007bff;
+  background: #0065d2;
   color: #fff;
   border: none;
   cursor: pointer;

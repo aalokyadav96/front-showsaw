@@ -1,5 +1,4 @@
 import { navigate } from "../../routes/index.js";
-import {opensLightbox, closesLightbox, changesImage} from "./lightbox.js";
 import {setupPostCreation} from "./createPost.js";
 import { fetchFeed } from "./fetchFeed.js";
 
@@ -106,4 +105,4 @@ function generateFeedHTML() {
 
 
 
-export { displayFeed, opensLightbox, closesLightbox, changesImage, generateFeedHTML };
+export { displayFeed, generateFeedHTML };

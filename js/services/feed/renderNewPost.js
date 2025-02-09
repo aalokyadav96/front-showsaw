@@ -1,10 +1,10 @@
 import { SRC_URL, state } from "../../state/state.js";
-import VideoPlayer from '../../components/ui/VideoPlayer.mjs';
-import AudioPlayer from '../../components/ui/AudioPlayer.mjs';
+// import AudioPlayer from '../../components/ui/AudioPlayer.mjs';
 import SnackBar from '../../components/ui/Snackbar.mjs';
-import { opensLightbox, closesLightbox, changesImage } from "./lightbox.js";
 import { apiFetch } from "../../api/api.js";
 import { fetchFeed } from "./fetchFeed.js";
+import {RenderImagePost} from "./renderImagePost.js";
+import {RenderVideoPost} from "./renderVideoPost.js";
 
 
 function renderNewPost(post, i) {
@@ -13,40 +13,21 @@ function renderNewPost(post, i) {
 }
 
 
-// Initialize Lightbox
-function initializeLightbox(postsContainer) {
-    if (!document.getElementById("lightbox")) {
-        postsContainer.insertAdjacentHTML('beforebegin', `
-            <div id="lightbox" class="lightbox" style="display: none;">
-                <span id="lightbox-close" class="close">&times;</span>
-                <div class="lightbox-content">
-                    <img id="lightbox-image" src="" alt="Lightbox Image" />
-                    <div id="lightbox-caption" class="lightbox-caption"></div>
-                </div>
-                <button id="lightbox-prev" class="prev">❮</button>
-                <button id="lightbox-next" class="next">❯</button>
-            </div>
-        `);
-
-        document.getElementById("lightbox-close").addEventListener("click", closesLightbox);
-        document.getElementById("lightbox-prev").addEventListener("click", () => changesImage(-1));
-        document.getElementById("lightbox-next").addEventListener("click", () => changesImage(1));
-    }
-}
-
 // Create Post Header
 function createPostHeader(post) {
     return `
         <div class="post-header hflex">
-            <a class="uzthcon" href="/user/${post.username}">
+            <a class="user-icon" href="/user/${post.username}">
                 <img src="${SRC_URL}/userpic/thumb/${post.userid + ".jpg" || 'default.png'}" alt="Profile Picture" class="profile-thumb" />
             </a>
-            <div class="usertim">
+            <div class="user-time">
                 <div class="username">${post.username}</div>
+                <div class="timestamp">${post.timestamp}</div>
             </div>
         </div>
     `;
 }
+
 
 // Create Media Content
 function createMediaContent(post, media) {
@@ -54,50 +35,14 @@ function createMediaContent(post, media) {
     mediaContainer.className = 'post-media';
 
     if (post.type === "image" && media.length > 0) {
-        const mediaClasses = [
-            'PostPreviewImageView_-one__-6MMx',
-            'PostPreviewImageView_-two__WP8GL',
-            'PostPreviewImageView_-three__HLsVN',
-            'PostPreviewImageView_-four__fYIRN',
-            'PostPreviewImageView_-five__RZvWx',
-            'PostPreviewImageView_-six__EG45r',
-            'PostPreviewImageView_-seven__65gnj',
-            'PostPreviewImageView_-eight__SoycA'
-        ];
-        const classIndex = Math.min(media.length - 1, mediaClasses.length - 1);
-        const assignedClass = mediaClasses[classIndex];
-
-        const imageList = document.createElement('ul');
-        imageList.className = `preview_image_wrap__Q29V8 PostPreviewImageView_-artist__WkyUA PostPreviewImageView_-bottom_radius__Mmn-- ${assignedClass}`;
-        media.forEach((img, index) => {
-            const listItem = document.createElement('li');
-            listItem.className = 'PostPreviewImageView_image_item__dzD2P';
-
-            const image = document.createElement('img');
-            image.src = `${SRC_URL + img}`;
-            image.alt = "Post Image";
-            image.className = 'post-image PostPreviewImageView_post_image__zLzXH';
-            image.addEventListener("click", () => opensLightbox(img, media.length, index, media));
-            listItem.appendChild(image);
-            imageList.appendChild(listItem);
-        });
-
-        mediaContainer.appendChild(imageList);
+        RenderImagePost(mediaContainer,media);
     } else if (post.type === "video" && media.length > 0) {
-        media.forEach(videoSrc => {
-            const videox = VideoPlayer({
-                // src: `${SRC_URL}${videoSrc}`,
-                src: `${videoSrc}`,
-                className: 'post-video',
-                muted: true,
-                poster: '',
-                controls: false,
-            });
-            mediaContainer.appendChild(videox);
-        });
+        RenderVideoPost(mediaContainer,media);
     }
+
     return mediaContainer;
 }
+
 
 // Create Actions
 function createActions(post, isLoggedIn, isCreator) {
@@ -150,8 +95,6 @@ function renderPost(post, postsContainer, i) {
     const isLoggedIn = state.token;
     const isCreator = isLoggedIn && state.user === post.userid;
 
-    initializeLightbox(postsContainer);
-
     const postElement = document.createElement('article');
     postElement.classList.add('timeline-item');
     postElement.setAttribute("href", "./post/" + post.postid);
@@ -159,16 +102,16 @@ function renderPost(post, postsContainer, i) {
 
     postElement.innerHTML = createPostHeader(post);
 
-    if (post.type === "text") {
-        postElement.innerHTML += `<div class="post-text">${post.text}</div>`;
-    } else if (post.type === "audio") {
-        postElement.innerHTML += `<div class="post-text">${post.text}</div>`;
-        const audio = AudioPlayer({ src: '#' });
-        postElement.appendChild(audio);
-    } else {
+    // if (post.type === "text") {
+    //     postElement.innerHTML += `<div class="post-text">${post.text}</div>`;
+    // } else if (post.type === "audio") {
+    //     postElement.innerHTML += `<div class="post-text">${post.text}</div>`;
+    //     const audio = AudioPlayer({ src: '#' });
+    //     postElement.appendChild(audio);
+    // } else {
         const mediaContent = createMediaContent(post, media);
         postElement.appendChild(mediaContent);
-    }
+    // }
 
     const actions = createActions(post, isLoggedIn, isCreator);
     postElement.appendChild(actions);

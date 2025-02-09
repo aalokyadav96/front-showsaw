@@ -2,7 +2,7 @@
 import { login, signup } from "../../services/auth/authService.js"; // Import login/signup functions
 
 
-function Auth(isLoggedIn, contentContainer) {
+async function Auth(isLoggedIn, contentContainer) {
     displayAuthSection(isLoggedIn, contentContainer)
 }
 
@@ -31,12 +31,14 @@ function displayAuthSection(isLoggedIn, contentContainer) {
         loginUsername.type = "text";
         loginUsername.id = "login-username";
         loginUsername.placeholder = "Username";
+        loginUsername.autocomplete="login-username"
         loginForm.appendChild(loginUsername);
 
         const loginPassword = document.createElement("input");
         loginPassword.type = "password";
         loginPassword.id = "login-password";
         loginPassword.placeholder = "Password";
+        loginPassword.autocomplete="current-password"
         loginForm.appendChild(loginPassword);
 
         const loginButton = document.createElement("button");
@@ -71,6 +73,7 @@ function displayAuthSection(isLoggedIn, contentContainer) {
         signupPassword.type = "password";
         signupPassword.id = "signup-password";
         signupPassword.placeholder = "Password";
+        signupPassword.autocomplete="signup-password"
         signupForm.appendChild(signupPassword);
 
         const signupButton = document.createElement("button");

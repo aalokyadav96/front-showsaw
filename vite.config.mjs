@@ -1,6 +1,7 @@
 // vite.config.js
 import { defineConfig } from 'vite';
 
+// let API_URL = 'https://zincate.onrender.com';
 let API_URL = 'http://localhost:4000';
 
 export default defineConfig({
@@ -17,8 +18,12 @@ export default defineConfig({
       '/userpic': API_URL, // Proxy static requests to Go server
       '/merchpic': API_URL, // Proxy static requests to Go server
       '/placepic': API_URL, // Proxy static requests to Go server
-      '/postpic': API_URL, // Proxy static requests to Go server
+      // '/postpic': API_URL, // Proxy static requests to Go server
       '/uploads': API_URL, // Proxy static requests to Go server
+      '/postpic': {
+        target: 'http://localhost:4000',
+        changeOrigin: true,
+      },
     },
   },
 });

@@ -1,6 +1,6 @@
 import { displayPlaces } from '../../services/place/displayPlaces.js';
 
-function Places(isLoggedIn, contentContainer) {
+async function Places(isLoggedIn, contentContainer) {
     
     contentContainer.innerHTML = '';
     const content = document.createElement("div");

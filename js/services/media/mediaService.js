@@ -70,35 +70,6 @@ async function deleteMedia(mediaId, entityType, entityId) {
 }
 
 
-// function renderMediaItem(media, index) {
-//     const mediaItem = document.createElement("div");
-//     mediaItem.className = "media-item";
-
-//     let mediaContent = "";
-//     if (media.type === "image") {
-//         mediaContent = `
-//             <figure>
-//                 <img src="${SRC_URL}/uploads/${media.url}" 
-//                      alt="${media.caption || 'Media Image'}" 
-//                      class="media-img" 
-//                      data-index="${index}" />
-//                 <figcaption>${media.caption || "No caption provided"}</figcaption>
-//             </figure>
-//         `;
-//     } else if (media.type === "video") {
-//         mediaContent = `
-//             <figure>
-//                 <video class="media-video" controls>
-//                     <source src="${SRC_URL}/uploads/${media.url}" type="video/mp4" />
-//                 </video>
-//                 <figcaption>${media.caption || "No caption provided"}</figcaption>
-//             </figure>
-//         `;
-//     }
-
-//     mediaItem.innerHTML = mediaContent;
-//     return mediaItem;
-// }
 
 function addMediaEventListeners(isLoggedIn, entityType) {
 
@@ -150,100 +121,6 @@ function showMediaUploadForm(isLoggedIn, entityType, entityId, mediaList) {
 
 }
 
-// function showMediaUploadForm(isLoggedIn, entityType, entityId, mediaList) {
-//     // Create modal content
-//     const content = document.createElement("div");
-//     content.setAttribute("id", "mediaform");
-
-//     const title = document.createElement("h3");
-//     title.textContent = `Upload ${entityType} Media`;
-
-//     const fileInput = document.createElement("input");
-//     fileInput.type = "file";
-//     fileInput.id = "mediaFile";
-//     fileInput.accept = "image/*,video/*";
-
-//     const previewDiv = document.createElement("div");
-//     previewDiv.id = "mediaPreview";
-
-//     const uploadButton = Button("Upload", "uploadMediaBtn", {
-//         click: () => uploadMedia(isLoggedIn, entityType, entityId, mediaList),
-//     });
-
-//     content.appendChild(title);
-//     content.appendChild(fileInput);
-//     content.appendChild(previewDiv);
-//     content.appendChild(uploadButton);
-
-//     // Create and show modal
-//     const modal = Modal({
-//         title: `Upload Media for ${entityType}`,
-//         content,
-//         onClose: () => modal.remove(),
-//     });
-// }
-
-// // Display media with the ability to add and manage media
-// async function displayMedia(entityType, entityId, isLoggedIn, content) {
-//     content.innerHTML = ""; // Clear existing content
-//     const response = await apiFetch(`/media/${entityType}/${entityId}`);
-//     let mediaData = response;
-
-//     let mediaList = createElement("div", { class: "hvflex" });
-//     content.appendChild(mediaList);
-
-//     if (isLoggedIn) {
-//         const addMediaButton = Button("Add Media", "add-media-btn", {
-//             click: () => showMediaUploadForm(isLoggedIn, entityType, entityId, mediaList),
-//         });
-
-//         content.prepend(addMediaButton);
-//     }
-
-//     if (mediaData.length === 0) {
-//         mediaList.appendChild(
-//             createElement("p", { textContent: "No media available for this entity." })
-//         );
-//     }
-
-//     if (mediaData.length > 0 && mediaData !== null) {
-//         const mediaCards = []; // For Lightbox
-
-//         mediaData.forEach((media, index) => {
-//             const mediaCard = MediaCard({
-//                 mediaType: media.type,
-//                 src: `${SRC_URL}/uploads/${media.url}`,
-//                 title: media.caption || "No caption provided",
-//                 index,
-//             });
-
-//             if (isLoggedIn && state.user === media.creatorid) {
-//                 const deleteButton = document.createElement("button");
-//                 deleteButton.className = "delete-media-btn";
-//                 deleteButton.textContent = "Delete";
-//                 deleteButton.dataset.mediaId = media.id;
-//                 deleteButton.dataset.entityId = entityId;
-
-//                 deleteButton.addEventListener("click", async () => {
-//                     await deleteMedia(media.id, entityType, entityId);
-//                 });
-
-//                 mediaCard.appendChild(deleteButton);
-//             }
-
-//             mediaList.appendChild(mediaCard);
-
-//             if (media.type === "image") {
-//                 mediaCards.push(`/uploads/${media.url}`);
-//             }
-//         });
-
-//         // Add Lightbox functionality
-//         mediaList.querySelectorAll(".media-image").forEach((img, index) => {
-//             img.addEventListener("click", () => Lightbox(mediaCards, index));
-//         });
-//     }
-// }
 
 /******************* */
 

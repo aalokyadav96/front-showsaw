@@ -34,12 +34,12 @@ async function displayEvent(isLoggedIn, eventId, contentContainer) {
 
         // Tab content containers
         const tabcon = [
-            createElement("div", { id: "ticket-list", classes: ["ticket-list"] }),
-            createElement("div", { id: "venue-list", classes: ["venue-list"] }),
-            createElement("div", { id: "merch-list", classes: ["merch-list"] }),
-            createElement("div", { id: "media-list", classes: ["media-list"] }),
-            createElement("div", { id: "reviews-container", classes: ["reviews-container"] }),
-            createElement("div", { id: "faq-container", classes: ["faq-container"] }),
+            createElement("div", { id: "ticket-list", class: ["ticket-list"] }),
+            createElement("div", { id: "venue-list", class: ["venue-list"] }),
+            createElement("div", { id: "merch-list", class: ["merch-list"] }),
+            createElement("div", { id: "media-list", class: ["media-list"] }),
+            createElement("div", { id: "reviews-container", class: ["reviews-container"] }),
+            createElement("div", { id: "faq-container", class: ["faq-container"] }),
         ];
 
         const tabs = [

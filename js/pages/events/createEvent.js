@@ -1,6 +1,6 @@
 import { createEventForm } from "../../services/event/createEventService.js";
 
-function Create(isLoggedIn, contentContainer) {
+async function Create(isLoggedIn, contentContainer) {
     contentContainer.innerHTML = '';
     createEventForm(isLoggedIn, contentContainer);
 }

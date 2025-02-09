@@ -1,31 +1,53 @@
 import Vidpop from "./Vidpop.mjs";
 import { Button } from "../base/Button";
 
-const VideoPlayer = ({ src, poster, controls = true, autoplay = false, muted = true, theme = "light" }) => {
+const VideoPlayer = ({
+  src,
+  poster,
+  controls = true,
+  autoplay = false,
+  muted = true,
+  theme = "light",
+}) => {
   const videocon = document.createElement("div");
   videocon.className = `video-container theme-${theme}`;
 
   const video = document.createElement("video");
   video.src = src;
-  video.poster = poster;
+  video.poster = src.replace(/-\d{3,4}p.mp4/, ".jpg");
   video.controls = controls;
   video.autoplay = autoplay;
   video.className = "video-player";
   video.muted = muted;
   video.loop = true;
   video.preload = "metadata";
+  video.crossOrigin = "anonymous";
 
-  // Utility function to replace the file extension for subtitle-specific URLs
-  const replaceExtensionWithSubtitle = (url, subtitle) => {
-    const dotIndex = url.lastIndexOf(".");
-    if (dotIndex === -1) return url; // No extension found
-    return `${url.substring(0, dotIndex)}-${subtitle}`;
-  };
+  // Extract base URL without quality suffix
+  const baseSrc = src.replace(/-\d{3,4}p.mp4/, "");
+  const qualities = ["720p", "480p", "144p"];
 
-  // Add subtitles as track elements
+  // Quality Selector Dropdown
+  const qualitySelector = document.createElement("select");
+  qualitySelector.className = "quality-selector";
+
+  qualities.forEach((quality) => {
+    const option = document.createElement("option");
+    option.value = `${baseSrc}-${quality}.mp4`;
+    option.textContent = quality;
+    if (src.includes(quality)) option.selected = true;
+    qualitySelector.appendChild(option);
+  });
+
+  // Change video quality dynamically
+  qualitySelector.addEventListener("change", (event) => {
+    video.src = event.target.value;
+    video.play();
+  });
+
+  // Subtitles
   const subtitles = [
-    { label: "English", srclang: "en", src: replaceExtensionWithSubtitle(src, "english.vtt"), default: true },
-    { label: "French", srclang: "fr", src: replaceExtensionWithSubtitle(src, "french.vtt") },
+    { label: "English", srclang: "en", src: `${baseSrc}-english.vtt`, default: true },
   ];
 
   subtitles.forEach(({ label, srclang, src, default: isDefault }) => {
@@ -36,48 +58,40 @@ const VideoPlayer = ({ src, poster, controls = true, autoplay = false, muted = t
     track.src = src;
     if (isDefault) track.default = true;
     video.appendChild(track);
-
-    // Add error listener to track element
-    track.addEventListener("error", () => {
-      console.error(`Error loading subtitle: ${label} (${src})`);
-    });
   });
 
-  // Add click event listener to play/pause video
+  // Toggle play/pause on click
   video.addEventListener("click", function () {
     this.paused ? this.play() : this.pause();
   });
 
-  // Utility function to replace the file extension for quality-specific URLs
-  const replaceExtensionWithQuality = (url, quality) => {
-    const dotIndex = url.lastIndexOf(".");
-    if (dotIndex === -1) return url; // No extension found
-    return `${url.substring(0, dotIndex)}-${quality}${url.substring(dotIndex)}`;
-  };
-
-  // Add Theater Mode Button
+  // Theater Mode Button
   const theaterButton = Button("Theater Mode", "theater", {
     click: () =>
       Vidpop(src, "video", true, {
         poster,
         theme,
-        qualities: [
-          { label: "1080p", src: replaceExtensionWithQuality(src, "1080p") },
-          { label: "720p", src: replaceExtensionWithQuality(src, "720p") },
-          { label: "480p", src: replaceExtensionWithQuality(src, "480p") },
-          { label: "144p", src: replaceExtensionWithQuality(src, "144p") },
-        ],
+        qualities: qualities.map((quality) => ({
+          label: quality,
+          src: `${baseSrc}-${quality}.mp4`,
+        })),
         subtitles: subtitles.map(({ label, srclang, src }) => ({ label, srclang, src })),
       }),
   });
 
+  // Accessibility
+  video.setAttribute("aria-label", "Video Player");
+  theaterButton.setAttribute("title", "Activate Theater Mode");
+
+  // Append elements
   videocon.appendChild(video);
+  videocon.appendChild(qualitySelector);
   videocon.appendChild(theaterButton);
+
   return videocon;
 };
 
 export default VideoPlayer;
-
 
 // import Vidpop from "./Vidpop.mjs";
 // import { Button } from "../base/Button";
@@ -95,25 +109,51 @@ export default VideoPlayer;
 //   video.muted = muted;
 //   video.loop = true;
 //   video.preload = "metadata";
+//   video.crossOrigin = "anonymous";
 
-//   // Add click event listener to play/pause video
-//   video.addEventListener("click", function () {
-//     this.paused ? this.play() : this.pause();
-//   });
-
-//   // Utility function to replace the file extension for quality-specific URLs
-//   const replaceExtensionWithQuality = (url, quality) => {
-//     const dotIndex = url.lastIndexOf(".");
-//     if (dotIndex === -1) return url; // No extension found
-//     return `${url.substring(0, dotIndex)}-${quality}${url.substring(dotIndex)}`;
+//   // Utility function to replace the file extension with a suffix
+//   const replaceExtension = (url, suffix) => {
+//     const dotIndex = url.lastIndexOf("-");
+//     return dotIndex === -1 ? url : `${url.substring(0, dotIndex)}-${suffix}${url.substring(dotIndex)}`;
 //   };
 
-//   // Utility function to replace the file extension for quality-specific URLs
+//   // Utility function to replace the file extension for subtitle-specific URLs
 //   const replaceExtensionWithSubtitle = (url, subtitle) => {
-//     const dotIndex = url.lastIndexOf(".");
+//     const dotIndex = url.lastIndexOf("-");
 //     if (dotIndex === -1) return url; // No extension found
 //     return `${url.substring(0, dotIndex)}-${subtitle}`;
 //   };
+
+//   // Add subtitles as track elements
+//   const subtitles = [
+//     { label: "English", srclang: "en", src: replaceExtensionWithSubtitle(src, "english.vtt"), default: true },
+//     // { label: "French", srclang: "fr", src: replaceExtensionWithSubtitle(src, "french.vtt") },
+//   ];
+
+//   subtitles.forEach(({ label, srclang, src, default: isDefault }) => {
+//     const track = document.createElement("track");
+//     track.kind = "subtitles";
+//     track.label = label;
+//     track.srclang = srclang;
+//     track.src = src;
+//     if (isDefault) track.default = true;
+//     video.appendChild(track);
+
+//     // Add error listener to track element
+//     track.addEventListener("error", () => {
+//       console.error(`Error loading subtitle: ${label} (${src})`);
+//     });
+//   });
+
+//   // Add error handling for the video element
+//   video.addEventListener("error", () => {
+//     console.error(`Error loading video: ${src}`);
+//   });
+
+//   // Add click event listener to toggle play/pause
+//   video.addEventListener("click", function () {
+//     this.paused ? this.play() : this.pause();
+//   });
 
 //   // Add Theater Mode Button
 //   const theaterButton = Button("Theater Mode", "theater", {
@@ -122,234 +162,25 @@ export default VideoPlayer;
 //         poster,
 //         theme,
 //         qualities: [
-//           { label: "720p", src: replaceExtensionWithQuality(src, "720p") },
-//           { label: "480p", src: replaceExtensionWithQuality(src, "480p") },
-//           { label: "144p", src: replaceExtensionWithQuality(src, "144p") },
+//           // { label: "1080p", src: replaceExtension(src, "1080p") },
+//           { label: "720p", src: replaceExtension(src, "720p") },
+//           { label: "480p", src: replaceExtension(src, "480p") },
+//           { label: "144p", src: replaceExtension(src, "144p") },
 //         ],
-//         subtitles: [
-//           { label: "English", srclang: "en", src: replaceExtensionWithSubtitle(src, "english.vtt") },
-//           { label: "French", srclang: "fr", src: replaceExtensionWithSubtitle(src, "french.vtt") },
-//         ],
+//         subtitles: subtitles.map(({ label, srclang, src }) => ({ label, srclang, src })),
 //       }),
 //   });
 
+//   // Accessibility: Add labels
+//   video.setAttribute("aria-label", "Video Player");
+//   theaterButton.setAttribute("title", "Activate Theater Mode");
+
+//   // Append elements to container
 //   videocon.appendChild(video);
 //   videocon.appendChild(theaterButton);
+
 //   return videocon;
 // };
 
 // export default VideoPlayer;
 
-
-// // import Vidpop from "./Vidpop.mjs";
-// // import { Button } from "../base/Button";
-
-// // const VideoPlayer = ({ src, poster, controls = true, autoplay = false, muted = true, theme = "light" }) => {
-// //   const videocon = document.createElement("div");
-// //   videocon.className = `video-container theme-${theme}`;
-
-// //   const video = document.createElement("video");
-// //   video.src = src;
-// //   video.poster = poster;
-// //   video.controls = controls;
-// //   video.autoplay = autoplay;
-// //   video.className = "video-player";
-// //   video.muted = muted;
-// //   video.loop = true;
-// //   video.preload = "metadata";
-
-// //   // Add click event listener to play/pause video
-// //   video.addEventListener("click", function () {
-// //     this.paused ? this.play() : this.pause();
-// //   });
-
-// //   // Add Theater Mode Button
-// //   const theaterButton = Button("Theater Mode", "theater", {
-// //     click: () =>
-// //       Vidpop(src, "video", true, {
-// //         poster,
-// //         theme,
-// //         qualities: [
-//           // { label: "720p", src: src.replace(".mp4", "-720p.mp4") },
-//           // { label: "480p", src: src.replace(".mp4", "-480p.mp4") },
-//           // { label: "144p", src: src.replace(".mp4", "-144p.mp4") },
-// //         ],
-// //         subtitles: [
-// //           { label: "English", srclang: "en", src: src.replace(".mp4", "-english.vtt") },
-// //           { label: "French", srclang: "fr", src: src.replace(".mp4", "-french.vtt") },
-// //         ],
-// //       }),
-// //   });
-
-// //   videocon.appendChild(video);
-// //   videocon.appendChild(theaterButton);
-// //   return videocon;
-// // };
-
-// // export default VideoPlayer;
-
-
-
-// // // import { Button } from "../base/Button";
-// // // import Vidpop from "./Vidpop.mjs";
-
-// // // const VideoPlayer = ({ src, poster, controls = true, autoplay = false, muted = true, theme = 'light' }) => {
-// // //     const videocon = document.createElement('div');
-// // //     videocon.className = `video-container theme-${theme}`;
-
-// // //     const video = document.createElement('video');
-// // //     video.src = src;
-// // //     video.poster = poster;
-// // //     video.controls = controls;
-// // //     video.autoplay = autoplay;
-// // //     video.className = 'video-player';
-// // //     video.muted = muted;
-// // //     video.loop = true;
-// // //     video.preload = 'metadata';
-
-// // //     // Add click event listener to play/pause video
-// // //     video.addEventListener('click', function () {
-// // //         this.paused ? this.play() : this.pause();
-// // //     });
-
-// // //     // Add Theater Mode Button
-// // //     const theaterButton = Button('Theater Mode', 'theater', {
-// // //         click: () => Vidpop(src, 'video', true, {
-// // //             poster,
-// // //             theme,
-// // //             qualityLevels: [
-// // //                 { label: "720p", url: src.replace(".mp4", "-720p.mp4") },
-// // //                 { label: "480p", url: src.replace(".mp4", "-480p.mp4") },
-// // //             ],
-// // //             subtitles: [
-// // //                 { label: "English", url: src.replace(".mp4", "-english.vtt"), lang: "en" },
-// // //                 { label: "French", url: src.replace(".mp4", "-french.vtt"), lang: "fr" },
-// // //             ],
-// // //         }),
-// // //     });
-
-// // //     videocon.appendChild(video);
-// // //     videocon.appendChild(theaterButton);
-// // //     return videocon;
-// // // };
-
-// // // export default VideoPlayer;
-
-// // // // import { Button } from "../base/Button";
-// // // // import VidPop from "./Vidpop.mjs";
-
-// // // // const VideoPlayer = ({ src, poster, controls = true, autoplay = false, muted = true, theme = 'light' }) => {
-// // // //   const videocon = document.createElement('div');
-// // // //   videocon.className = `video-container theme-${theme}`;
-
-// // // //   const video = document.createElement('video');
-// // // //   video.src = src;
-// // // //   video.poster = poster;
-// // // //   video.controls = controls;
-// // // //   video.autoplay = autoplay;
-// // // //   video.className = 'video-player';
-// // // //   video.muted = muted;
-// // // //   video.loop = true;
-// // // //   video.preload = 'metadata';
-
-// // // //   // Add click event listener to play/pause video
-// // // //   video.addEventListener('click', function () {
-// // // //     this.paused ? this.play() : this.pause();
-// // // //   });
-
-// // // //   const theaterButton = Button('Theater Mode', 'theater', {
-// // // //     click: () => handleTheaterMode(src, video, poster, theme),
-// // // //   });
-
-// // // //   videocon.appendChild(video);
-// // // //   videocon.appendChild(theaterButton);
-// // // //   return videocon;
-// // // // };
-
-// // // // function handleTheaterMode(src, video, poster, theme) {
-// // // //   if (!video.paused) {
-// // // //     video.pause(); // Ensure the video pauses
-// // // //   }
-// // // //   VidPop(src, 'video', video, { poster, theme });
-// // // // }
-
-// // // // export default VideoPlayer;
-
-
-// // // // // import { Button } from "../base/Button";
-// // // // // import VidPop from "./Vidpop.mjs";
-
-// // // // // const VideoPlayer = ({ src, poster, controls = true, autoplay = false, muted = true }) => {
-// // // // //   const videocon = document.createElement('div');
-// // // // //   videocon.className = 'video-container';
-
-// // // // //   const video = document.createElement('video');
-// // // // //   video.src = src;
-// // // // //   video.poster = poster;
-// // // // //   video.controls = controls;
-// // // // //   video.autoplay = autoplay;
-// // // // //   video.className = 'video-player';
-// // // // //   video.muted = muted;
-// // // // //   video.loop = true;
-// // // // //   video.preload = 'metadata';
-
-// // // // //   // Add click event listener to play/pause video
-// // // // //   video.addEventListener('click', function () {
-// // // // //     this.paused ? this.play() : this.pause();
-// // // // //   });
-
-// // // // //   const theaterButton = Button('Theater Mode', 'theater', {
-// // // // //     click: () => handleTheaterMode(src, video),
-// // // // //   });
-
-// // // // //   videocon.appendChild(video);
-// // // // //   videocon.appendChild(theaterButton);
-// // // // //   return videocon;
-// // // // // };
-
-// // // // // function handleTheaterMode(src, video) {
-// // // // //   if (!video.paused) {
-// // // // //     video.pause(); // Ensure the video pauses
-// // // // //   }
-// // // // //   VidPop(src, 'video', video);
-// // // // // }
-
-// // // // // export default VideoPlayer;
-
-// // // // // // import { Button } from "../base/Button";
-// // // // // // import VidPop from "./Vidpop.mjs";
-
-// // // // // // const VideoPlayer = ({ src, poster, controls = true, autoplay = false, muted = true }) => {
-// // // // // //   const videocon = document.createElement('div');
-// // // // // //   videocon.className = 'video-container';
-
-// // // // // //   const video = document.createElement('video');
-// // // // // //   video.src = src;
-// // // // // //   video.poster = poster;
-// // // // // //   video.controls = controls;
-// // // // // //   video.autoplay = autoplay;
-// // // // // //   video.className = 'video-player';
-// // // // // //   video.muted = muted;
-// // // // // //   video.loop = true;
-// // // // // //   video.preload = 'metadata';
-
-// // // // // //   // Add click event listener
-// // // // // //   video.addEventListener('click', function () {
-// // // // // //     this.paused ? this.play() : this.pause();
-// // // // // //   });
-
-// // // // // //   const buttn = Button('Theater Mode', 'theater', {
-// // // // // //     click: () => gdryfjrn(src, 'video', video),
-// // // // // //   });
-
-// // // // // //   videocon.appendChild(video);
-// // // // // //   videocon.appendChild(buttn);
-// // // // // //   return videocon;
-// // // // // // };
-
-// // // // // // function gdryfjrn(src, v, video) {
-// // // // // //   video.pause;
-// // // // // //   VidPop(src, v);
-// // // // // // }
-
-// // // // // // export default VideoPlayer;

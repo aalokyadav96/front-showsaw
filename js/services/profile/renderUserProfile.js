@@ -1,4 +1,4 @@
-import { SRC_URL, state } from '../../state/state.js';
+import { SRC_URL, state, setState } from '../../state/state.js';
 import Sightbox from '../../components/ui/Sightbox.mjs';
 import { apiFetch } from "../../api/api.js";
 import Modal from '../../components/ui/Modal.mjs';
@@ -8,6 +8,7 @@ import Snackbar from '../../components/ui/Snackbar.mjs';
 import Button from '../../components/base/Button.js';
 import { attachProfileEventListeners } from "./userProfileService.js";
 import { displayUserProfileData } from "./otherUserProfileService.js";
+import { fetchProfile } from './fetchProfile.js';
 
 
 function appendChildren(parent, ...children) {
@@ -61,6 +62,13 @@ function toggleFollow(userId, followButton, profile) {
             console.error("Error toggling follow status:", error);
             Snackbar(`Failed to update follow status: ${error.message}`, 3000);
         });
+    // Store tokens & user data securely
+    setState(
+        {
+            userProfile: fetchProfile(),
+        },
+        true // Persist in localStorage
+    );
 
     Snackbar(
         `You have ${isFollowAction ? 'followed' : 'unfollowed'} ${profile.username || 'the user'}.`,
@@ -87,7 +95,7 @@ function profilGen(profile, isLoggedIn) {
     bgImg.addEventListener('click', () => Sightbox(`${SRC_URL}/userpic/banner/${bannerPicture}`, 'image'));
 
     if (profile.userid == state.user) {
-        const showEditButton = document.createElement('button');
+        const showEditButton = document.createElement('div');
         showEditButton.textContent = '';
         showEditButton.className = 'edit-banner-pic';
         showEditButton.addEventListener('click', () => {
@@ -174,16 +182,16 @@ function profilGen(profile, isLoggedIn) {
     }
 
 
-    // if (isLoggedIn && profile.userid !== state.user) {
-    //     const followButton = document.createElement("button");
-    //     followButton.className = "btn follow-button";
-    //     followButton.dataset.action = "toggle-follow";
-    //     followButton.dataset.userid = profile.userid;
-    //     followButton.addEventListener('click', () => toggleFollow(profile.userid, followButton, profile));
-    //     followButton.textContent = profile.isFollowing ? "Unfollow" : "Follow";
+    if (isLoggedIn && profile.userid !== state.user) {
+        const followButton = document.createElement("button");
+        followButton.className = "btn follow-button";
+        followButton.dataset.action = "toggle-follow";
+        followButton.dataset.userid = profile.userid;
+        followButton.addEventListener('click', () => toggleFollow(profile.userid, followButton, profile));
+        followButton.textContent = profile.is_following ? "Unfollow" : "Follow";
 
-    //     profileActions.appendChild(followButton);
-    // }
+        profileActions.appendChild(followButton);
+    }
 
     const profileInfo = document.createElement('div');
     profileInfo.className = 'profile-info';
@@ -203,30 +211,30 @@ function profilGen(profile, isLoggedIn) {
 
     appendChildren(profileDetails, username, name, email, bio, profileActions, profileInfo);
 
-    // // Statistics
-    // const statistics = document.createElement('div');
-    // statistics.className = 'statistics';
+    // Statistics
+    const statistics = document.createElement('div');
+    statistics.className = 'statistics';
 
-    // const stats = [
-    //     { label: 'Posts', value: profile.profile_views || 0 },
-    //     { label: 'Followers', value: profile.followers?.length || 0 },
-    //     { label: 'Following', value: profile.follows?.length || 0 },
-    // ];
+    const stats = [
+        { label: 'Posts', value: profile.profile_views || 0 },
+        { label: 'Followers', value: profile.followerscount || 0 },
+        { label: 'Following', value: profile.followscount || 0 },
+    ];
 
-    // stats.forEach(({ label, value }) => {
-    //     const statItem = document.createElement('p');
-    //     statItem.className = 'hflex';
-    //     statItem.innerHTML = `<strong>${value}</strong> ${label}`;
-    //     statistics.appendChild(statItem);
-    // });
+    stats.forEach(({ label, value }) => {
+        const statItem = document.createElement('p');
+        statItem.className = 'hflex';
+        statItem.innerHTML = `<strong>${value}</strong> ${label}`;
+        statistics.appendChild(statItem);
+    });
 
-    // // Follow Suggestions
-    // const followSuggestions = document.createElement('div');
-    // followSuggestions.id = 'follow-suggestions';
-    // followSuggestions.className = 'follow-suggestions';
+    // Follow Suggestions
+    const followSuggestions = document.createElement('div');
+    followSuggestions.id = 'follow-suggestions';
+    followSuggestions.className = 'follow-suggestions';
 
-    appendChildren(section, bgImg, profileArea, profileDetails);
-    // appendChildren(section, bgImg, profileArea, profileDetails, statistics, followSuggestions);
+    // appendChildren(section, bgImg, profileArea, profileDetails);
+    appendChildren(section, bgImg, profileArea, profileDetails, statistics, followSuggestions);
 
     // const addInfoButton = Button("Load UserData", "load-user-data", {
     //     click: displayUserProfileData(isLoggedIn, section, profile.userid),

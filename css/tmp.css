@@ -181,9 +181,6 @@ button.next {
     border-radius: 50%;
 }
 
-/* .profile-thumb {
-    display: none;
-} */
 
 .logout-btn {
     background-color: rgb(218, 0, 65);
@@ -335,7 +332,7 @@ main.feed {
 
 .post-button {
     padding: 10px 20px;
-    background: #007bff;
+    background: #0065d2;
     /* color: white; */
     border: none;
     border-radius: 5px;
@@ -416,33 +413,16 @@ main.feed {
 }
 
 
-.profile-thumb {
-    width: 4rem;
-    height: 4rem;
-    display: block;
-    top: 1rem;
-    position: relative;
-    left: -1rem;
-    border-radius: 50%;
-    content: "";
-    border: 2px solid rgba(0, 0, 0, 0.3);
-    background: white;
-    background-size: cover;
-    background-position: center;
-}
 
 .usertim {
     display: flex;
     flex-direction: column;
 }
 
-.username {
-    font-weight: bold;
-}
-
+/* 
 .post-media {
     margin: 10px 0;
-}
+} */
 
 .post-actions {
     display: flex;
@@ -453,7 +433,7 @@ main.feed {
 .post-actions .like,
 .post-actions .comment {
     cursor: pointer;
-    color: #007bff;
+    color: #0065d2;
 }
 
 .delete-btn {
@@ -517,6 +497,10 @@ a {
     display: flex;
     flex-direction: row;
     gap: 8px;
+}
+
+.griddy {
+    display: grid;
 }
 
 /* Responsive layout - makes a one column layout instead of a two-column layout */
@@ -655,7 +639,6 @@ a {
     flex-direction: column;
 }
 
-input,
 textarea,
 select,
 button {
@@ -663,7 +646,7 @@ button {
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
-    margin-right: 0.4rem;
+    /* margin-right: 0.4rem; */
     /* width: 100%; */
 }
 
@@ -960,27 +943,38 @@ textarea {
         padding: 6px 10px;
     }
 }
+.media-item {
+    max-width: 320px;
+    width: 100%;
+}
 
 .post-media video {
     border-radius: 0 14px 14px;
     max-height: 20rem;
-    /* max-width: 30rem; */
+    width: 100%;
 }
 
 .post-header {
-    padding: 0 0 2rem 0;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-bottom: 1px solid #e0e0e0;
 }
 
-.uzthcon {
-    padding: 0 1rem 0 0;
-    position: absolute;
-    left: -4rem;
-    top: 0;
+.user-icon {
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
 }
 
-.usertim {
-    padding: 0;
+
+
+.timestamp {
+    font-size: 12px;
+    color: #999;
 }
+
 
 .post-compose {
     margin: 2rem auto;
@@ -1007,7 +1001,8 @@ textarea {
     max-width: 40rem;
     position: relative;
     color: rgba(0, 0, 0, 0.7);
-    border-left: 2px solid rgba(0, 0, 0, 0.3);
+    border: 2px solid rgba(0, 0, 0, 0.3);
+    /* display: contents; */
 }
 
 .timeline-item p {
@@ -1025,7 +1020,7 @@ textarea {
     margin-bottom: 0.5em;
     text-decoration: none;
 }
-
+/* 
 .timeline-item::before {
     content: attr(date-is);
     position: absolute;
@@ -1035,7 +1030,7 @@ textarea {
     font-family: "Roboto", sans-serif;
     font-weight: 700;
     font-size: 0.8rem;
-}
+} */
 
 /* 
 .timeline-item::after {
@@ -1067,10 +1062,10 @@ textarea {
     background: white;
   }
    */
-.timeline-item:last-child {
+/* .timeline-item:last-child {
     -o-border-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 60%, rgba(0, 0, 0, 0)) 1 100%;
     border-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 60%, rgba(0, 0, 0, 0)) 1 100%;
-}
+} */
 
 .usertim .username {
     font-size: 1.2rem;
@@ -1192,8 +1187,9 @@ aside {
     width: 100%;
     height: 200px;
     overflow: hidden;
-    background: no-repeat 50% 0;
     background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
     z-index: 10;
 }
 
@@ -1228,6 +1224,7 @@ aside {
     border-radius: 50%;
     height: 8rem;
     width: 8rem;
+    object-fit: cover;
     position: relative;
     z-index: 11;
 }
@@ -1377,7 +1374,7 @@ ul {
     padding: 8px 12px;
     border: none;
     border-radius: 4px;
-    background-color: #007BFF;
+    background-color: #0065D2;
     color: white;
     font-size: 14px;
     transition: background-color 0.3s ease;
@@ -1679,48 +1676,9 @@ button:hover {
     font-family: Arial, sans-serif;
 }
 
-/* Follow suggestions container */
-.follow-suggestions {
-    background-color: #ffffff;
-    padding: 16px;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.follow-suggestions h3 {
-    margin: 0 0 10px;
-    font-size: 1.25rem;
-    color: #333;
-}
-
-#suggestions-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-#suggestions-list li {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 12px;
-    background-color: #f3f3f3;
-    border-radius: 6px;
-    font-size: 1rem;
-    color: #555;
-    transition: background-color 0.2s ease-in-out;
-}
-
-#suggestions-list li:hover {
-    background-color: #e9e9e9;
-}
-
 /* View profile button */
 .view-profile-btn {
-    background-color: #007bff;
+    background-color: #0065d2;
     border: none;
     border-radius: 4px;
     color: #fff;
@@ -1736,7 +1694,7 @@ button:hover {
 
 .view-profile-btn:active {
     background-color: #004494;
-}
+} 
 
 /* Profile actions section */
 .profile-actions {
@@ -1811,7 +1769,7 @@ body {
 
 .event-banner img {
     width: 100%;
-    max-height: 300px;
+    height: 100%;
     object-fit: cover;
     border-radius: 8px;
 }
@@ -1891,14 +1849,14 @@ body {
     gap: 10px;
 }
 
-.media-img {
+/* .media-img {
     width: 100px;
     height: 100px;
     object-fit: cover;
     border: 1px solid #ddd;
     border-radius: 4px;
     cursor: pointer;
-}
+} */
 
 .media-img:hover {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -1989,7 +1947,7 @@ textarea {
 .tab.active {
     background-color: white;
     font-weight: bold;
-    border-top: 2px solid #007bff;
+    border-top: 2px solid #0065d2;
 }
 
 .tabcontent {
@@ -2038,7 +1996,7 @@ textarea {
 
 .tab.active {
     color: #f8f9fa;
-    background-color: #007bff;
+    background-color: #0065d2;
     font-weight: bold;
     border-bottom: 2px solid #0056b3;
 }
@@ -2072,7 +2030,7 @@ body {
 }
 
 header.navbar {
-    background-color: #007bff;
+    background-color: #0065d2;
     padding: 10px 20px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -2114,7 +2072,7 @@ header.navbar {
 }
 
 .breadcrumb-link {
-    color: #007bff;
+    color: #0065d2;
     text-decoration: none;
 }
 
@@ -2163,7 +2121,7 @@ header.navbar {
 }
 
 .event-place-link {
-    color: #007bff;
+    color: #0065d2;
     text-decoration: none;
 }
 
@@ -2199,7 +2157,7 @@ header.navbar {
 }
 
 .tab-button.active {
-    background-color: #007bff;
+    background-color: #0065d2;
     color: #fff;
     font-weight: bold;
 }
@@ -2270,4 +2228,210 @@ footer {
     background-color: #343a40;
     color: #fff;
     font-size: 0.9rem;
+}
+
+
+
+input, .form-group input, .form-group  select, .post-title-input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+/* 
+  .merch-list {
+    display: flex;
+    flex-wrap: wrap;
+  } */
+
+  .timeline-item {
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.timeline-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.post-header {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    background-color: #f3f2f1;
+    border-bottom: 1px solid #e1dfdd;
+}
+
+.user-icon {
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+}
+
+.profile-thumb {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid #0078d4;
+}
+
+.user-time {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.timestamp {
+    font-size: 12px;
+    color: #605e5c;
+}
+
+.post-media {
+    /* padding: 15px; */
+    background-color: #ffffff;
+    /* border-bottom: 1px solid #e1dfdd; */
+}
+
+.post-media h3 {
+    margin: 0;
+    font-size: 20px;
+    color: #323130;
+}
+
+.post-media div {
+    font-size: 14px;
+    color: #605e5c;
+}
+
+.post-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    background-color: #f3f2f1;
+}
+
+.post-actions span,
+.post-actions button {
+    font-size: 14px;
+    color: #0078d4;
+    cursor: pointer;
+}
+
+.post-actions button {
+    background-color: transparent;
+    border: none;
+    outline: none;
+}
+
+.post-actions button:hover {
+    text-decoration: underline;
+}
+
+.profile-container {
+    max-width: 40rem;
+    margin: 0 auto;
+    width: 100%;
+} 
+/* Follow Suggestions Section */
+#follow-suggestions {
+    width: 100%;
+    /* max-width: 400px; */
+    background: #fff;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+}
+
+/* Heading */
+#follow-suggestions h3 {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* Suggestion List */
+#suggestions-list {
+    display: flex;
+    gap: 10px;
+}
+
+/* Individual Suggestion Item */
+.suggestion-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* gap: 10px; */
+    width: 140px;
+    padding: 10px;
+    border-radius: 6px;
+    background: #f8f8f8;
+    transition: background 0.2s;
+}
+
+.suggestion-item:hover {
+    background: #eaeaea;
+}
+
+/* Profile Picture */
+.profile-picture {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ddd;
+}
+
+/* Username */
+.username {
+    flex-grow: 1;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Buttons */
+.view-profile-btn,
+.follow-btn {
+    padding: 6px 12px;
+    font-size: 14px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+/* View Profile Button */
+.view-profile-btn {
+    background: #0065d2;
+    color: white;
+}
+
+.view-profile-btn:hover {
+    background: #0056b3;
+}
+
+/* Follow Button */
+.follow-btn {
+    background: #28a745;
+    color: white;
+}
+
+.follow-btn:hover {
+    background: #218838;
+}
+
+/* If already following */
+.follow-btn.following {
+    background: #6c757d;
+}
+
+.follow-btn.following:hover {
+    background: #5a6268;
 }

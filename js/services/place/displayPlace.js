@@ -25,6 +25,7 @@ async function displayPlace(isLoggedIn, placeId, contentContainer) {
             createElement("img", {
                 src: placeData.banner ? `${SRC_URL}/placepic/${placeData.banner}` : "default-banner.jpg",
                 alt: placeData.name,
+                loading: "lazy",
             }),
         ]);
         contentContainer.appendChild(banner);
@@ -148,54 +149,11 @@ async function displayPlace(isLoggedIn, placeId, contentContainer) {
 
 function displayPlaceHome(container, placeData) {
     container.innerHTML = "";
-    container.appendChild(createElement("h3", {}, [placeData.name]));
+    container.appendChild(createElement("h2", {}, [placeData.name]));
     container.appendChild(
         createElement("p", {}, [placeData.description || "No description available."])
     );
 }
-
-// function displayPlaceNotices(container, isCreator) {
-//     container.innerHTML = "";
-//     const notices = [];
-
-//     const renderNotices = () => {
-//         container.innerHTML = "";
-//         const noticesList = createElement("div", { class: "notices-list" }, [
-//             ...notices.map((notice, index) =>
-//                 createElement("div", { class: "notice-item" }, [
-//                     createElement("p", {}, [notice]),
-//                     Button("Remove", "remove-notice-btn", {
-//                         click: () => {
-//                             notices.splice(index, 1);
-//                             renderNotices();
-//                         },
-//                     }),
-//                 ])
-//             ),
-//         ]);
-
-//         container.appendChild(noticesList);
-//     };
-
-//     if (isCreator) {
-//         const addButton = Button("Add Notice", "add-notice-btn", {
-//             click: () => {
-//                 const notice = prompt("Enter your notice:");
-//                 if (notice) {
-//                     notices.push(notice);
-//                     renderNotices();
-//                 }
-//             },
-//         });
-//         container.appendChild(addButton);
-//     }
-
-//     renderNotices();
-
-//     if (notices.length === 0) {
-//         container.appendChild(createElement("p", {}, ["No notices available."]));
-//     }
-// }
 
 function displayPlaceNotices(container, isCreator) {
     // Clear the container
@@ -282,51 +240,6 @@ function displayPlaceNearby(container, placeData) {
 
     container.appendChild(nearbySection);
 }
-
-// function displayPlaceInfo(container, placeData, isCreator) {
-//     container.innerHTML = "";
-//     if (isCreator) {
-//         container.appendChild(Button("Add Info", "add-info-btn", { click: () => alert("Add Info") }));
-//     }
-
-//     const info = {
-//         capacity: placeData.capacity || "N/A",
-//         accessibility: placeData.accessibility || "Not specified",
-//         services: placeData.services || [],
-//     };
-
-//     const renderInfo = () => {
-//         container.innerHTML = "";
-//         container.appendChild(
-//             createElement("div", { class: "place-info" }, [
-//                 createElement("p", {}, [`Capacity: ${info.capacity}`]),
-//                 createElement("p", {}, [`Accessibility: ${info.accessibility}`]),
-//                 createElement(
-//                     "p",
-//                     {},
-//                     [`Services: ${info.services.length > 0 ? info.services.join(", ") : "None"}`]
-//                 ),
-//             ])
-//         );
-//     };
-
-//     if (isCreator) {
-//         const addInfoButton = Button("Add Info", "add-info-btn", {
-//             click: () => {
-//                 const accessibility = prompt("Enter accessibility info:");
-//                 const service = prompt("Enter a service to add:");
-
-//                 if (accessibility) info.accessibility = accessibility;
-//                 if (service) info.services.push(service);
-
-//                 renderInfo();
-//             },
-//         });
-//         container.appendChild(addInfoButton);
-//     }
-
-//     renderInfo();
-// }
 
 function displayPlaceInfo(container, placeData, isCreator) {
     // Clear the container
