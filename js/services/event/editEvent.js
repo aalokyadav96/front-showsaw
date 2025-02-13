@@ -1,12 +1,7 @@
 import { apiFetch } from "../../api/api.js";
-import { navigate } from "../../routes/index.js";
+import { navigate, renderPage } from "../../routes/index.js";
 import SnackBar from '../../components/ui/Snackbar.mjs';
 import { createFormGroup } from "../../components/createFormGroup.js";
-
-function formatDateTime(date, time) {
-    const dateTime = new Date(`${date}T${time}`);
-    return dateTime.toISOString();
-}
 
 
 async function updateEvent(isLoggedIn, eventId) {
@@ -44,6 +39,7 @@ async function updateEvent(isLoggedIn, eventId) {
         const result = await apiFetch(`/events/event/${eventId}`, 'PUT', formData);
         SnackBar(`Event updated successfully: ${result.title}`, 3000);
         navigate('/event/' + result.eventid);
+        renderPage();
     } catch (error) {
         SnackBar(`Error updating event: ${error.message}`, 3000);
     }

@@ -32,17 +32,16 @@ const ZoomBox = (images, initialIndex = 0, options = {}) => {
   // For pinch-to-zoom
   let initialPinchDistance = null;
   let initialZoom = 1;
-  let angle = 0;
 
   // Preload only nearby images (or the two images for multi-view)
   const preloadImages = (index) => {
     const indexes = multiView
       ? [0, 1]
       : [
-        index,
-        (index + 1) % images.length,
-        (index - 1 + images.length) % images.length,
-      ];
+          index,
+          (index + 1) % images.length,
+          (index - 1 + images.length) % images.length,
+        ];
     indexes.forEach((i) => {
       const img = new Image();
       img.src = images[i];
@@ -111,8 +110,7 @@ const ZoomBox = (images, initialIndex = 0, options = {}) => {
 
   // --- Update transformation ---
   const updateTransform = () => {
-    // const transformStr = `translate(${panX}px, ${panY}px) scale(${zoomLevel})`;
-    const transformStr = `translate(${panX}px, ${panY}px) scale(${zoomLevel}) rotate(${angle}deg)`;
+    const transformStr = `translate(${panX}px, ${panY}px) scale(${zoomLevel})`;
     if (!multiView) {
       img.style.transform = transformStr;
     } else {
@@ -121,64 +119,26 @@ const ZoomBox = (images, initialIndex = 0, options = {}) => {
     }
   };
 
-  // // --- Update transformation ---
-  // const rotateImage = (img, angle) => {
-  //   img.style.transform = `rotate(${angle}deg)`;
-  // };
-
-
-  // Smoothed zoom handling
-  const smoothZoom = (delta, event) => {
-    const naturalW = img.naturalWidth;
-    const naturalH = img.naturalHeight;
-
-    zoomLevel *= delta > 0 ? 0.9 : 1.1; // Exponential zoom for a natural feel
-    // zoomLevel = Math.max(1, Math.min(zoomLevel, Math.max(naturalW / img.width, naturalH / img.height)));
-    zoomLevel = Math.max(1, Math.min(zoomLevel, Math.min(naturalW / img.width, naturalH / img.height)));
-
+  // --- Desktop Wheel Zoom (with exponential scaling) ---
+  const onWheel = (event) => {
+    event.preventDefault();
+    const rect = img.getBoundingClientRect(); // Get current image position
+    const cursorX = event.clientX - rect.left; // Cursor X relative to image
+    const cursorY = event.clientY - rect.top;  // Cursor Y relative to image
+  
     const prevZoom = zoomLevel;
-
-    const rect = img.getBoundingClientRect();
-    const cursorX = event.clientX - rect.left;
-    const cursorY = event.clientY - rect.top;
-
+    const delta = event.deltaY > 0 ? 0.9 : 1.1; // Scroll down = zoom out, up = zoom in
+    zoomLevel *= delta;
+    zoomLevel = Math.max(1, Math.min(3, zoomLevel)); // Limit zoom level (1x - 3x)
+  
     // Adjust pan so that zoom is centered at the cursor
     const zoomFactor = zoomLevel / prevZoom;
     panX -= (cursorX - panX) * (zoomFactor - 1);
     panY -= (cursorY - panY) * (zoomFactor - 1);
-
-    // updateTransform();
-
-    img.style.transformOrigin = `${(cursorX / rect.width) * 100}% ${(cursorY / rect.height) * 100}%`;
-    img.style.transform = `translate(${panX}px, ${panY}px) scale(${zoomLevel}) rotate(${angle}deg)`;
+  
+    updateTransform();
   };
-
-  const onWheel = (event) => {
-    event.preventDefault();
-    requestAnimationFrame(() => smoothZoom(event.deltaY, event));
-  };
-
-
-  // // --- Desktop Wheel Zoom (with exponential scaling) ---
-  // const onWheel = (event) => {
-  //   event.preventDefault();
-  //   const rect = img.getBoundingClientRect(); // Get current image position
-  //   const cursorX = event.clientX - rect.left; // Cursor X relative to image
-  //   const cursorY = event.clientY - rect.top;  // Cursor Y relative to image
-
-  //   const prevZoom = zoomLevel;
-  //   const delta = event.deltaY > 0 ? 0.9 : 1.1; // Scroll down = zoom out, up = zoom in
-  //   zoomLevel *= delta;
-  //   zoomLevel = Math.max(1, Math.min(3, zoomLevel)); // Limit zoom level (1x - 3x)
-
-  //   // Adjust pan so that zoom is centered at the cursor
-  //   const zoomFactor = zoomLevel / prevZoom;
-  //   panX -= (cursorX - panX) * (zoomFactor - 1);
-  //   panY -= (cursorY - panY) * (zoomFactor - 1);
-
-  //   updateTransform();
-  // };
-
+  
 
   // --- Touch Handlers for Pinch-to-Zoom and Double-Tap ---
   const onTouchStart = (event) => {
@@ -222,26 +182,26 @@ const ZoomBox = (images, initialIndex = 0, options = {}) => {
         event.touches[0].clientX - event.touches[1].clientX,
         event.touches[0].clientY - event.touches[1].clientY
       );
-
+      
       const scaleFactor = newDistance / initialPinchDistance;
       const prevZoom = zoomLevel;
       zoomLevel = Math.max(1, Math.min(3, initialZoom * scaleFactor));
-
+  
       // Centering zoom based on middle point of fingers
       const rect = img.getBoundingClientRect();
       const midX =
         (event.touches[0].clientX + event.touches[1].clientX) / 2 - rect.left;
       const midY =
         (event.touches[0].clientY + event.touches[1].clientY) / 2 - rect.top;
-
+  
       const zoomFactor = zoomLevel / prevZoom;
       panX -= (midX - panX) * (zoomFactor - 1);
       panY -= (midY - panY) * (zoomFactor - 1);
-
+  
       updateTransform();
     }
   };
-
+  
 
   const onTouchEnd = (event) => {
     if (event.touches.length < 2) {
@@ -263,25 +223,6 @@ const ZoomBox = (images, initialIndex = 0, options = {}) => {
       momentum();
     }
   };
-
-
-  const onDoubleTap = (event) => {
-    const now = Date.now();
-    if (now - lastTap < 300) { // Double tap detected
-      const rect = img.getBoundingClientRect();
-      const tapX = event.clientX - rect.left;
-      const tapY = event.clientY - rect.top;
-
-      zoomLevel = zoomLevel === 1 ? 2 : 1;
-
-      panX = zoomLevel === 1 ? 0 : -(tapX * (zoomLevel - 1));
-      panY = zoomLevel === 1 ? 0 : -(tapY * (zoomLevel - 1));
-
-      updateTransform();
-    }
-    lastTap = now;
-  };
-  img.addEventListener("click", onDoubleTap);
 
   // --- Mouse Handlers for Desktop Panning ---
   const onMouseDown = (event) => {
@@ -340,55 +281,43 @@ const ZoomBox = (images, initialIndex = 0, options = {}) => {
 
   // --- Keyboard Shortcuts ---
   const onKeyDown = (event) => {
-    const prevZoom = zoomLevel;
-    switch (event.key) {
-      case 'ArrowRight':
-        // Next image (only for single-view)
-        if (!multiView) {
-          currentIndex = (currentIndex + 1) % images.length;
-          img.src = images[currentIndex];
-          preloadImages(currentIndex);
-          panX = 0;
-          panY = 0;
-          zoomLevel = 1;
-          updateTransform();
-        }
-        break;
-      case 'ArrowLeft':
-        if (!multiView) {
-          currentIndex = (currentIndex - 1 + images.length) % images.length;
-          img.src = images[currentIndex];
-          preloadImages(currentIndex);
-          panX = 0;
-          panY = 0;
-          zoomLevel = 1;
-          updateTransform();
-        }
-        break;
-      case '+':
-        // Zoom in
-        // const prevZoom = zoomLevel;
-        zoomLevel = Math.min(3, zoomLevel * 1.1);
-        panX *= zoomLevel / prevZoom;
-        panY *= zoomLevel / prevZoom;
+    if (event.key === 'ArrowRight') {
+      // Next image (only for single-view)
+      if (!multiView) {
+        currentIndex = (currentIndex + 1) % images.length;
+        img.src = images[currentIndex];
+        preloadImages(currentIndex);
+        panX = 0;
+        panY = 0;
+        zoomLevel = 1;
         updateTransform();
-        break;
-      case '-':
-        // Zoom out
-        // const prevZoom = zoomLevel;
-        zoomLevel = Math.max(1, zoomLevel / 1.1);
-        panX *= zoomLevel / prevZoom;
-        panY *= zoomLevel / prevZoom;
+      }
+    } else if (event.key === 'ArrowLeft') {
+      if (!multiView) {
+        currentIndex = (currentIndex - 1 + images.length) % images.length;
+        img.src = images[currentIndex];
+        preloadImages(currentIndex);
+        panX = 0;
+        panY = 0;
+        zoomLevel = 1;
         updateTransform();
-        break;
-      case 'Escape':
-        closeZoomBox();
-        break;
-      case "r":
-        // rotateImage(img, angle);
-        angle = (angle + 90) % 360;
-        updateTransform();
-        break;
+      }
+    } else if (event.key === '+') {
+      // Zoom in
+      const prevZoom = zoomLevel;
+      zoomLevel = Math.min(3, zoomLevel * 1.1);
+      panX *= zoomLevel / prevZoom;
+      panY *= zoomLevel / prevZoom;
+      updateTransform();
+    } else if (event.key === '-') {
+      // Zoom out
+      const prevZoom = zoomLevel;
+      zoomLevel = Math.max(1, zoomLevel / 1.1);
+      panX *= zoomLevel / prevZoom;
+      panY *= zoomLevel / prevZoom;
+      updateTransform();
+    } else if (event.key === 'Escape') {
+      closeZoomBox();
     }
   };
   document.addEventListener('keydown', onKeyDown);
@@ -472,23 +401,6 @@ const ZoomBox = (images, initialIndex = 0, options = {}) => {
     });
     content.appendChild(prevButton);
     content.appendChild(nextButton);
-
-    const lazyLoadImage = (index) => {
-      if (!images[index]) return;
-      const img = new Image();
-      img.src = images[index];
-    };
-    prevButton.addEventListener("click", () => {
-      currentIndex = (currentIndex - 1 + images.length) % images.length;
-      updateImage(currentIndex);
-      lazyLoadImage(currentIndex - 1); // Preload previous image
-    });
-    nextButton.addEventListener("click", () => {
-      currentIndex = (currentIndex + 1) % images.length;
-      updateImage(currentIndex);
-      lazyLoadImage(currentIndex + 1); // Preload next image
-    });
-
   }
 
   // --- Close Button ---

@@ -4,7 +4,7 @@ import { handleError } from "../../utils/utils.js";
 import Snackbar from '../../components/ui/Snackbar.mjs';
 import { renderPage } from "../../routes/index.js";
 import { createForm } from "../../components/createForm.js"; 
-import {formatDate, showLoadingMessage, removeLoadingMessage, capitalize } from "./profileHelpers.js";
+import { showLoadingMessage, removeLoadingMessage, capitalize } from "./profileHelpers.js";
 
 
 function generateBannerForm(content, username) {
@@ -38,48 +38,6 @@ function generateAvatarForm(content, username) {
         updateProfilePics('avatar', formData);
     });
 }
-
-
-// Generate the HTML content for the profile
-function generateProfileHTML(profile) {
-    return `
-        <div class="profile-container hflex">    
-            <section class="channel">
-            <span class="bg_img" style="background-image:url(/userpic/${profile.profile_picture || 'default.png'});"></span>
-                <div class="profile_area">
-                    <span class="thumb">
-                        <img src="${SRC_URL}/userpic/${profile.profile_picture || 'default.png'}" class="imgful" alt="Profile Picture"/>
-                    </span>     
-                </div> 
-                <div class="profile-details">
-                    <h2 class="username">${profile.username || 'Not provided'}</h2>
-                    <p class="name">${profile.name || ''}</p>
-                    <p class="email">${profile.email || ''}</p>
-                    <p class="bio">${profile.bio || ''}</p>
-                    <div class="profile-actions">
-                        <button class="btn edit-btn" data-action="edit-profile">Edit Profile</button>
-                    </div>
-                    <div class="profile-info">
-                        <div class="info-item"><strong>Last Login:</strong> ${formatDate(profile.last_login) || 'Never logged in'}</div>
-                        <div class="info-item"><strong>Account Status:</strong> ${profile.is_active ? 'Active' : 'Inactive'}</div>
-                        <div class="info-item"><strong>Verification Status:</strong> ${profile.is_verified ? 'Verified' : 'Not Verified'}</div>
-                    </div>
-                </div>
-                <!--div class="statistics">
-                    <p class="hflex"><strong>${profile.profile_views || 0}</strong> Posts</p>
-                    <p class="hflex"><strong>${profile.followers?.length || 0}</strong> Followers</p>
-                    <p class="hflex"><strong>${profile.follows?.length || 0}</strong> Following</p>
-                </div>
-                <div id="follow-suggestions" class="follow-suggestions"></div-->
-                <br>
-                <div class="profile-actions">
-                    <button class="btn delete-btn" data-action="delete-profile">Delete Profile</button>
-                </div>
-            </section>
-        </div>
-    `;
-}
-
 
 async function updatePicture(type) {
     if (!state.token) {
@@ -135,4 +93,4 @@ function generateFormField(label, id, type, value) {
 
 
 
-export { generateBannerForm, generateAvatarForm, generateFormField, generateProfileHTML };
+export { generateBannerForm, generateAvatarForm, generateFormField };

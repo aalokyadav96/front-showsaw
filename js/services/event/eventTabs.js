@@ -63,6 +63,7 @@ async function displayEventFAQ(isCreator, faqContainer, eventId, faqs) {
     displayEventFAQs(isCreator, faqContainer, eventId, faqs);
 }
 
+
 function getTabs(eventData) {
     const tabs = [
         { title: 'Tickets', id: 'ticket-list' },

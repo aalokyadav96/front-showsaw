@@ -32,7 +32,7 @@ const ZoomBox = (images, initialIndex = 0, options = {}) => {
   // For pinch-to-zoom
   let initialPinchDistance = null;
   let initialZoom = 1;
-  let angle = 0;
+  let angle = 90;
 
   // Preload only nearby images (or the two images for multi-view)
   const preloadImages = (index) => {
@@ -111,8 +111,7 @@ const ZoomBox = (images, initialIndex = 0, options = {}) => {
 
   // --- Update transformation ---
   const updateTransform = () => {
-    // const transformStr = `translate(${panX}px, ${panY}px) scale(${zoomLevel})`;
-    const transformStr = `translate(${panX}px, ${panY}px) scale(${zoomLevel}) rotate(${angle}deg)`;
+    const transformStr = `translate(${panX}px, ${panY}px) scale(${zoomLevel})`;
     if (!multiView) {
       img.style.transform = transformStr;
     } else {
@@ -121,36 +120,43 @@ const ZoomBox = (images, initialIndex = 0, options = {}) => {
     }
   };
 
-  // // --- Update transformation ---
-  // const rotateImage = (img, angle) => {
-  //   img.style.transform = `rotate(${angle}deg)`;
-  // };
+  // --- Update transformation ---
+  const rotateImage = (img, angle) => {
+    img.style.transform = `rotate(${angle}deg)`;
+  };
 
+  // // Smoothed zoom handling
+  // const smoothZoom = (delta, event) => {
+  //   const naturalWidth = img.naturalWidth;
+  //   const naturalHeight = img.naturalHeight;
+
+  //   zoomLevel *= delta > 0 ? 0.9 : 1.1; // Exponential zoom for a natural feel
+  //   // zoomLevel = Math.max(1, Math.min(zoomLevel, Math.max(naturalWidth / img.width, naturalHeight / img.height)));
+  //   zoomLevel = Math.max(1, Math.min(zoomLevel, Math.max(naturalWidth / img.width, naturalHeight / img.height)));
+
+  //   const rect = img.getBoundingClientRect();
+  //   const cursorX = event.clientX - rect.left;
+  //   const cursorY = event.clientY - rect.top;
+
+  //   img.style.transformOrigin = `${(cursorX / rect.width) * 100}% ${(cursorY / rect.height) * 100}%`;
+  //   img.style.transform = `translate(${panX}px, ${panY}px) scale(${zoomLevel})`;
+  // };
 
   // Smoothed zoom handling
   const smoothZoom = (delta, event) => {
-    const naturalW = img.naturalWidth;
-    const naturalH = img.naturalHeight;
+    const naturalWidth = img.naturalWidth;
+    const naturalHeight = img.naturalHeight;
 
     zoomLevel *= delta > 0 ? 0.9 : 1.1; // Exponential zoom for a natural feel
-    // zoomLevel = Math.max(1, Math.min(zoomLevel, Math.max(naturalW / img.width, naturalH / img.height)));
-    zoomLevel = Math.max(1, Math.min(zoomLevel, Math.min(naturalW / img.width, naturalH / img.height)));
-
-    const prevZoom = zoomLevel;
+    // zoomLevel = Math.max(1, Math.min(zoomLevel, Math.max(naturalWidth / img.width, naturalHeight / img.height)));
+    zoomLevel = Math.max(1, Math.min(zoomLevel, Math.max(naturalWidth / img.width, naturalHeight / img.height)));
 
     const rect = img.getBoundingClientRect();
     const cursorX = event.clientX - rect.left;
     const cursorY = event.clientY - rect.top;
 
-    // Adjust pan so that zoom is centered at the cursor
-    const zoomFactor = zoomLevel / prevZoom;
-    panX -= (cursorX - panX) * (zoomFactor - 1);
-    panY -= (cursorY - panY) * (zoomFactor - 1);
-
-    // updateTransform();
-
     img.style.transformOrigin = `${(cursorX / rect.width) * 100}% ${(cursorY / rect.height) * 100}%`;
-    img.style.transform = `translate(${panX}px, ${panY}px) scale(${zoomLevel}) rotate(${angle}deg)`;
+    img.style.transform = `translate(${panX}px, ${panY}px) scale(${zoomLevel})`;
   };
 
   const onWheel = (event) => {
@@ -158,6 +164,29 @@ const ZoomBox = (images, initialIndex = 0, options = {}) => {
     requestAnimationFrame(() => smoothZoom(event.deltaY, event));
   };
 
+  // Add event listener for the wheel event
+  img.addEventListener('wheel', onWheel);
+
+
+  /*
+    // Smoothed zoom handling
+    const smoothZoom = (delta, event) => {
+      zoomLevel *= delta > 0 ? 0.9 : 1.1; // Exponential zoom for a natural feel
+      zoomLevel = Math.max(1, Math.min(3, zoomLevel));
+  
+      const rect = img.getBoundingClientRect();
+      const cursorX = event.clientX - rect.left;
+      const cursorY = event.clientY - rect.top;
+  
+      img.style.transformOrigin = `${(cursorX / rect.width) * 100}% ${(cursorY / rect.height) * 100}%`;
+      img.style.transform = `translate(${panX}px, ${panY}px) scale(${zoomLevel})`;
+    };
+  
+    const onWheel = (event) => {
+      event.preventDefault();
+      requestAnimationFrame(() => smoothZoom(event.deltaY, event));
+    };
+    */
 
   // // --- Desktop Wheel Zoom (with exponential scaling) ---
   // const onWheel = (event) => {
@@ -385,9 +414,8 @@ const ZoomBox = (images, initialIndex = 0, options = {}) => {
         closeZoomBox();
         break;
       case "r":
-        // rotateImage(img, angle);
+        rotateImage(img, angle);
         angle = (angle + 90) % 360;
-        updateTransform();
         break;
     }
   };

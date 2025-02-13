@@ -70,7 +70,6 @@ async function deleteMedia(mediaId, entityType, entityId) {
 }
 
 
-
 function addMediaEventListeners(isLoggedIn, entityType) {
 
     // Event delegation for upload button
@@ -120,7 +119,6 @@ function showMediaUploadForm(isLoggedIn, entityType, entityId, mediaList) {
     content.appendChild(uploadButton);
 
 }
-
 
 /******************* */
 

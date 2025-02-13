@@ -266,6 +266,309 @@ async function displayTickets(ticketData, eventId, isCreator, isLoggedIn, ticket
     }
 }
 
+// function showBuyTicketModal(ticketId, eventId, maxQuantity) {
+//     const content = document.createElement("div");
+
+//     const quantityInput = document.createElement("input");
+//     quantityInput.type = "number";
+//     quantityInput.min = "1";
+//     quantityInput.max = Math.min(maxQuantity, 5).toString();
+//     quantityInput.value = "1";
+//     quantityInput.setAttribute("aria-label", "Ticket Quantity");
+//     content.appendChild(quantityInput);
+
+//     const confirmButton = Button("Proceed to Payment", "confirm-purchase-btn", {
+//         click: async () => {
+//             const quantity = parseInt(quantityInput.value);
+//             if (isNaN(quantity) || quantity < 1 || quantity > maxQuantity) {
+//                 alert(`Please enter a quantity between 1 and ${Math.min(maxQuantity, 5)}.`);
+//                 return;
+//             }
+
+//             confirmButton.disabled = true; // Prevent duplicate clicks
+//             try {
+//                 const paymentSession = await createPaymentSession(ticketId, eventId, quantity);
+//                 if (paymentSession) {
+//                     showPaymentModal(paymentSession.paymentUrl);
+//                 }
+//             } catch (error) {
+//                 console.error("Error creating payment session:", error);
+//             } finally {
+//                 confirmButton.disabled = false;
+//             }
+//         },
+//     });
+
+//     content.appendChild(confirmButton);
+
+//     const modal = Modal({
+//         title: "Purchase Ticket",
+//         content,
+//         onClose: () => modal.remove(),
+//     });
+// }
+
+// function showPaymentModal(paymentUrl) {
+//     const iframe = document.createElement("iframe");
+//     iframe.src = paymentUrl;
+//     iframe.width = "100%";
+//     iframe.height = "500px";
+//     iframe.style.border = "none";
+
+//     const content = document.createElement("div");
+//     content.appendChild(iframe);
+
+//     const closeButton = Button("Close", "close-payment-btn", {
+//         click: () => paymentModal.remove(),
+//     });
+
+//     content.appendChild(closeButton);
+
+//     const paymentModal = Modal({
+//         title: "Complete Payment",
+//         content,
+//         onClose: () => paymentModal.remove(),
+//     });
+// }
+
+// async function createPaymentSession(ticketId, eventId, quantity) {
+//     try {
+//         const body = JSON.stringify({ quantity });
+//         const response = await apiFetch(`/ticket/event/${eventId}/${ticketId}/payment-session`, "POST", body);
+//         if (response && response.success && response.data) {
+//             return response.data;
+//         } else {
+//             throw new Error(response?.message || "Failed to create payment session.");
+//         }
+//     } catch (error) {
+//         alert(`Error: ${error.message}`);
+//         return null;
+//     }
+// }
+
+// function showBuyTicketModal(ticketId, eventId, maxQuantity) {
+//     const content = document.createElement("div");
+
+//     const quantityInput = document.createElement("input");
+//     quantityInput.type = "number";
+//     quantityInput.min = "1";
+//     quantityInput.max = Math.min(maxQuantity, 5).toString();
+//     quantityInput.value = "1";
+//     quantityInput.setAttribute("aria-label", "Ticket Quantity");
+//     content.appendChild(quantityInput);
+
+//     const confirmButton = Button("Proceed to Payment", "confirm-purchase-btn", {
+//         click: async () => {
+//             const quantity = parseInt(quantityInput.value);
+//             if (isNaN(quantity) || quantity < 1 || quantity > maxQuantity) {
+//                 alert(`Please enter a quantity between 1 and ${Math.min(maxQuantity, 5)}.`);
+//                 return;
+//             }
+
+//             confirmButton.disabled = true; // Prevent duplicate clicks
+//             try {
+//                 const paymentSession = await createPaymentSession(ticketId, eventId, quantity);
+//                 if (paymentSession) {
+//                     showPaymentModal(paymentSession.paymentUrl);
+//                 }
+//             } catch (error) {
+//                 console.error("Error creating payment session:", error);
+//             } finally {
+//                 confirmButton.disabled = false;
+//             }
+//         },
+//     });
+
+//     content.appendChild(confirmButton);
+
+//     const modal = Modal({
+//         title: "Purchase Ticket",
+//         content,
+//         onClose: () => modal.remove(),
+//     });
+// }
+
+// function showPaymentModal(paymentUrl) {
+//     const iframe = document.createElement("iframe");
+//     iframe.src = paymentUrl;
+//     iframe.width = "100%";
+//     iframe.height = "500px";
+//     iframe.style.border = "none";
+
+//     const content = document.createElement("div");
+//     content.appendChild(iframe);
+
+//     const closeButton = Button("Close", "close-payment-btn", {
+//         click: () => paymentModal.remove(),
+//     });
+
+//     content.appendChild(closeButton);
+
+//     const paymentModal = Modal({
+//         title: "Complete Payment",
+//         content,
+//         onClose: () => paymentModal.remove(),
+//     });
+// }
+
+// async function createPaymentSession(ticketId, eventId, quantity) {
+//     try {
+//         const body = JSON.stringify({ quantity });
+//         const response = await apiFetch(`/ticket/event/${eventId}/${ticketId}/payment-session`, "POST", body);
+//         if (response && response.success && response.data) {
+//             return response.data;
+//         } else {
+//             throw new Error(response?.message || "Failed to create payment session.");
+//         }
+//     } catch (error) {
+//         alert(`Error: ${error.message}`);
+//         return null;
+//     }
+// }
+
+// // Function to show the modal to buy a ticket
+// function showBuyTicketModal(ticketId, eventId, maxQuantity) {
+//     const content = document.createElement("div");
+
+//     const quantityInput = document.createElement("input");
+//     quantityInput.type = "number";
+//     quantityInput.min = "1";
+//     quantityInput.max = Math.min(maxQuantity, 5).toString();
+//     quantityInput.value = "1";
+//     quantityInput.setAttribute("aria-label", "Ticket Quantity");
+//     content.appendChild(quantityInput);
+
+//     const confirmButton = Button("Proceed to Payment", "confirm-purchase-btn", {
+//         click: async () => {
+//             const quantity = parseInt(quantityInput.value);
+//             if (isNaN(quantity) || quantity < 1 || quantity > maxQuantity) {
+//                 alert(`Please enter a quantity between 1 and ${Math.min(maxQuantity, 5)}.`);
+//                 return;
+//             }
+
+//             confirmButton.disabled = true; // Prevent duplicate clicks
+//             try {
+//                 const paymentSession = await createPaymentSession(ticketId, eventId, quantity);
+//                 if (paymentSession) {
+//                     showPaymentModal(paymentSession);
+//                 }
+//             } catch (error) {
+//                 console.error("Error creating payment session:", error);
+//             } finally {
+//                 confirmButton.disabled = false;
+//             }
+//         },
+//     });
+
+//     content.appendChild(confirmButton);
+
+//     const modal = Modal({
+//         title: "Purchase Ticket",
+//         content,
+//         onClose: () => modal.remove(),
+//     });
+// }
+
+// // Function to show the payment modal
+// function showPaymentModal(paymentSession) {
+//     const content = document.createElement("div");
+
+//     const cardNumberInput = document.createElement("input");
+//     cardNumberInput.id = "card-number";
+//     cardNumberInput.type = "text";
+//     cardNumberInput.placeholder = "Card Number";
+//     content.appendChild(cardNumberInput);
+
+//     const expiryDateInput = document.createElement("input");
+//     expiryDateInput.id = "expiry-date";
+//     expiryDateInput.type = "text";
+//     expiryDateInput.placeholder = "MM/YY Expiry Date";
+//     content.appendChild(expiryDateInput);
+
+//     const cvvInput = document.createElement("input");
+//     cvvInput.id = "cvv";
+//     cvvInput.type = "text";
+//     cvvInput.placeholder = "CVV";
+//     content.appendChild(cvvInput);
+
+//     const paymentMessage = document.createElement("p");
+//     paymentMessage.id = "payment-message";
+//     paymentMessage.textContent = "Enter your card details to proceed.";
+//     content.appendChild(paymentMessage);
+
+//     const confirmButton = Button("Pay Now", "confirm-payment-btn", {
+//         click: () => submitPayment(paymentSession, paymentMessage),
+//     });
+//     content.appendChild(confirmButton);
+
+//     const modal = Modal({
+//         title: "Payment Information",
+//         content,
+//         onClose: () => modal.remove(),
+//     });
+// }
+
+// // Function to create a payment session for the ticket purchase
+// async function createPaymentSession(ticketId, eventId, quantity) {
+//     try {
+//         const body = JSON.stringify({ quantity });
+//         const response = await apiFetch(`/ticket/event/${eventId}/${ticketId}/payment-session`, "POST", body);
+//         if (response && response.success && response.data) {
+//             return response.data; // Return the payment session data
+//         } else {
+//             throw new Error(response?.message || "Failed to create payment session.");
+//         }
+//     } catch (error) {
+//         alert(`Error: ${error.message}`);
+//         return null;
+//     }
+// }
+
+// // Function to submit the payment
+// function submitPayment(paymentSession, paymentMessage) {
+//     const cardNumber = document.getElementById("card-number").value;
+//     const expiryDate = document.getElementById("expiry-date").value;
+//     const cvv = document.getElementById("cvv").value;
+
+//     if (cardNumber && expiryDate && cvv) {
+//         paymentMessage.textContent = "Payment processing...";
+
+//         setTimeout(() => {
+//             // Simulate payment success
+//             paymentMessage.textContent = "Payment Successful! Redirecting...";
+
+//             // Make API call to notify the backend about the purchase
+//             fetch('/ticket/confirm-purchase', {
+//                 method: 'POST',
+//                 headers: {
+//                     'Content-Type': 'application/json',
+//                 },
+//                 body: JSON.stringify({
+//                     ticketId: paymentSession.ticketId,  // Use actual ticket ID
+//                     eventId: paymentSession.eventId,   // Use actual event ID
+//                     quantity: paymentSession.quantity
+//                 })
+//             })
+//             .then(response => response.json())
+//             .then(data => {
+//                 if (data.message === "Payment successfully processed. Ticket purchased.") {
+//                     // Notify frontend about the successful purchase
+//                     alert('Ticket purchased successfully!');
+//                     window.location.href = `/event/${paymentSession.eventId}`;  // Redirect to event page or confirmation page
+//                 } else {
+//                     alert('Payment failed!');
+//                 }
+//             })
+//             .catch(error => {
+//                 console.error("Error during payment:", error);
+//                 alert("Payment failed. Please try again.");
+//             });
+//         }, 2000);
+//     } else {
+//         paymentMessage.textContent = "Please fill in all fields.";
+//     }
+// }
+
 // Function to show the modal to buy a ticket
 function showBuyTicketModal(ticketId, eventId, maxQuantity) {
     const content = document.createElement("div");
@@ -365,6 +668,87 @@ async function createPaymentSession(ticketId, eventId, quantity) {
     }
 }
 
+// // Function to submit the payment
+// function submitPayment(paymentSession, paymentMessage) {
+//     const cardNumber = document.getElementById("card-number").value;
+//     const expiryDate = document.getElementById("expiry-date").value;
+//     const cvv = document.getElementById("cvv").value;
+
+//     if (cardNumber && expiryDate && cvv) {
+//         paymentMessage.textContent = "Payment processing...";
+
+//         setTimeout(() => {
+//             // Simulate payment success
+//             paymentMessage.textContent = "Payment Successful! Redirecting...";
+
+//             // Make API call to notify the backend about the purchase
+//             apiFetch('/ticket/confirm-purchase', 'POST', JSON.stringify({
+//                 ticketId: paymentSession.ticketId,  // Use actual ticket ID
+//                 eventId: paymentSession.eventId,   // Use actual event ID
+//                 quantity: paymentSession.quantity
+//             }))
+//                 .then(response => response.json())
+//                 .then(data => {
+//                     if (data.message === "Payment successfully processed. Ticket purchased.") {
+//                         // Notify frontend about the successful purchase
+//                         alert('Ticket purchased successfully!');
+//                         window.location.href = `/event/${paymentSession.eventId}`;  // Redirect to event page or confirmation page
+//                     } else {
+//                         alert('Payment failed!');
+//                     }
+//                 })
+//                 .catch(error => {
+//                     console.error("Error during payment:", error);
+//                     alert("Payment failed. Please try again.");
+//                 });
+//         }, 2000);
+//     } else {
+//         paymentMessage.textContent = "Please fill in all fields.";
+//     }
+// }
+
+// // Function to submit the payment
+// function submitPayment(paymentSession, paymentMessage) {
+//     const cardNumber = document.getElementById("card-number").value;
+//     const expiryDate = document.getElementById("expiry-date").value;
+//     const cvv = document.getElementById("cvv").value;
+
+//     if (cardNumber && expiryDate && cvv) {
+//         paymentMessage.textContent = "Payment processing...";
+
+//         setTimeout(() => {
+//             // Simulate payment success
+//             paymentMessage.textContent = "Payment Successful! Redirecting...";
+
+//             // Make API call to notify the backend about the purchase
+//             apiFetch('/ticket/confirm-purchase', 'POST', JSON.stringify({
+//                 ticketId: paymentSession.ticketId,  // Use actual ticket ID
+//                 eventId: paymentSession.eventId,   // Use actual event ID
+//                 quantity: paymentSession.quantity
+//             }))
+//             .then(response => response.json())
+//             .then(data => {
+//                 if (data.message === "Payment successfully processed. Ticket purchased.") {
+//                     // Notify frontend about the successful purchase
+//                     alert('Ticket purchased successfully!');
+                    
+//                     // Redirect user to event details page or purchase confirmation page
+//                     window.location.href = `/event/${paymentSession.eventId}`;  // Update this to where you want the user to be redirected
+//                 } else {
+//                     alert('Payment failed!');
+//                     paymentMessage.textContent = "Payment failed. Please try again.";
+//                 }
+//             })
+//             .catch(error => {
+//                 console.error("Error during payment:", error);
+//                 alert("Payment failed. Please try again.");
+//                 paymentMessage.textContent = "Payment failed. Please try again.";
+//             });
+//         }, 2000);
+//     } else {
+//         paymentMessage.textContent = "Please fill in all fields.";
+//     }
+// }
 
 // Function to submit the payment
 function submitPayment(paymentSession, paymentMessage, eventId) {

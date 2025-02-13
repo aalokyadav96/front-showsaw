@@ -1,4 +1,10 @@
 async function renderPageContent(isLoggedIn, path, contentContainer) {
+    if (!path || typeof path !== "string") {
+        console.error("Invalid path:", path);
+        contentContainer.innerHTML = `<h1>404 Not Found</h1>`;
+        return;
+    }
+    
     // Route Handlers (Static Routes)
     const routeHandlers = {
         "/": async () => {
@@ -10,11 +16,6 @@ async function renderPageContent(isLoggedIn, path, contentContainer) {
             const { Auth } = await import("../pages/auth/auth.js");
             contentContainer.innerHTML = "";
             Auth(isLoggedIn, contentContainer);
-        },
-        "/create-gig": async () => {
-            const { Create } = await import("../pages/gigs/createGig.js");
-            contentContainer.innerHTML = "";
-            Create(isLoggedIn, contentContainer);
         },
         "/create-event": async () => {
             const { Create } = await import("../pages/events/createEvent.js");
@@ -35,11 +36,6 @@ async function renderPageContent(isLoggedIn, path, contentContainer) {
             const { Events } = await import("../pages/events/events.js");
             contentContainer.innerHTML = "";
             Events(isLoggedIn, contentContainer);
-        },
-        "/gigs": async () => {
-            const { Gigs } = await import("../pages/gigs/gigs.js");
-            contentContainer.innerHTML = "";
-            Gigs(isLoggedIn, contentContainer);
         },
         "/places": async () => {
             const { Places } = await import("../pages/places/places.js");
@@ -119,18 +115,6 @@ async function renderPageContent(isLoggedIn, path, contentContainer) {
                     Post(isLoggedIn, matches[1],content);
                 } catch {
                     content.innerHTML = `<h1>Post Not Found</h1>`;
-                }
-            },
-        },
-        {
-            pattern: /^\/gig\/([\w-]+)$/,
-            handler: async (matches) => {
-                const { Gig } = await import("../pages/gigs/gigPage.js");
-                try {
-                    contentContainer.innerHTML = "";
-                    Gig(isLoggedIn, matches[1], contentContainer);
-                } catch {
-                    content.innerHTML = `<h1>Gig Not Found</h1>`;
                 }
             },
         },

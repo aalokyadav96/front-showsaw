@@ -4,14 +4,14 @@ import Snackbar from '../../components/ui/Snackbar.mjs';
 
 // Fetch the profile either from localStorage or via an API request
 async function fetchProfile() {
-    // Try to get the profile from localStorage first
-    const cachedProfile = localStorage.getItem("userProfile");
+    // // Try to get the profile from localStorage first
+    // const cachedProfile = localStorage.getItem("userProfile");
 
-    // If cached profile is found, use it
-    if (cachedProfile) {
-        state.userProfile = JSON.parse(cachedProfile);
-        return state.userProfile; // Return cached profile
-    }
+    // // If cached profile is found, use it
+    // if (cachedProfile) {
+    //     state.userProfile = JSON.parse(cachedProfile);
+    //     return state.userProfile; // Return cached profile
+    // }
 
     // If there is no cached profile, fetch from the API
     if (state.token) {
