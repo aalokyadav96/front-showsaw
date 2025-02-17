@@ -1,5 +1,5 @@
 import { navigate } from "../../routes/index.js";
-import {setupPostCreation} from "./createPost.js";
+import { setupPostCreation } from "./createPost.js";
 import { fetchFeed } from "./fetchFeed.js";
 
 async function displayFeed(isLoggedIn, feedsec) {
@@ -34,6 +34,12 @@ function generateFeedHTML() {
     const postHeader = document.createElement('div');
     postHeader.className = 'post-header';
 
+    // Create the label element
+    const postTypeLabel = document.createElement('label');
+    postTypeLabel.htmlFor = 'postType';
+    postTypeLabel.textContent = 'Post Type:';
+
+    // Create the select element
     const postTypeSelector = document.createElement('select');
     postTypeSelector.id = 'postType';
     postTypeSelector.className = 'post-type-selector';
@@ -46,7 +52,23 @@ function generateFeedHTML() {
     postTypeSelector.add(imageOption);
     postTypeSelector.add(videoOption);
 
+    // Append the label and select elements to the header
+    postHeader.appendChild(postTypeLabel);
     postHeader.appendChild(postTypeSelector);
+
+    // const postTypeSelector = document.createElement('select');
+    // postTypeSelector.id = 'postType';
+    // postTypeSelector.className = 'post-type-selector';
+
+    // const defaultOption = new Option('Select Post Type', 'text');
+    // const imageOption = new Option('Image Post', 'image');
+    // const videoOption = new Option('Video Post', 'video');
+
+    // postTypeSelector.add(defaultOption);
+    // postTypeSelector.add(imageOption);
+    // postTypeSelector.add(videoOption);
+
+    // postHeader.appendChild(postTypeSelector);
 
     // Create the media upload section
     const mediaUpload = document.createElement('div');
@@ -56,14 +78,14 @@ function generateFeedHTML() {
     const imageUpload = document.createElement('input');
     imageUpload.type = 'file';
     imageUpload.id = 'imageUpload';
-    imageUpload.accept = 'image/*';
+    imageUpload.accept = 'image/jpg,image/png,image/tiff,';
     imageUpload.multiple = true;
     imageUpload.style.display = 'none';
 
     const videoUpload = document.createElement('input');
     videoUpload.type = 'file';
     videoUpload.id = 'videoUpload';
-    videoUpload.accept = 'video/*';
+    videoUpload.accept = 'video/*, image/gif';
     videoUpload.style.display = 'none';
 
     mediaUpload.appendChild(imageUpload);

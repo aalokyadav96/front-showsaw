@@ -1,3 +1,4 @@
+import "../../../css/ui/Countdown.css";
 const Countdown = (endDate, onEnd = () => {}) => {
     const container = document.createElement('div');
     container.className = 'countdown';

@@ -1,3 +1,4 @@
+import "../../../css/ui/SearchBar.css";
 const SearchBar = ({ placeholder = 'Search...', onSearch }) => {
     const container = document.createElement('div');
     container.className = 'search-bar';

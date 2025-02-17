@@ -30,9 +30,6 @@ function createEntityLink(item, entityType) {
         case "feedpost":
             entityLink.href = `/post/${item.entity_id}`;
             break;
-        case "blogpost":
-            entityLink.href = `/blog/${item.entity_id}`;
-            break;
         default:
             entityLink.href = "#";
     }

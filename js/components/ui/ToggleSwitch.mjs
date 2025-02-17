@@ -1,3 +1,4 @@
+import "../../../css/ui/ToggleSwitch.css";
 const ToggleSwitch = (onToggle) => {
     const toggle = document.createElement('label');
     toggle.className = 'toggle-switch';

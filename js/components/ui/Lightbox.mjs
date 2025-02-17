@@ -1,3 +1,4 @@
+import "../../../css/ui/Lightbox.css";
 const Lightbox = (images, initialIndex = 0) => {
   const lightbox = document.createElement('div');
   lightbox.className = 'lightbox-overlay';

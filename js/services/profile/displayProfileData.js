@@ -7,7 +7,7 @@ async function displayUserProfileData(isLoggedIn, content, username) {
 
     console.log("Loading profile tabs...");
 
-    const contentTabs = ["userhome", "place", "event", "feedpost", "blogpost"];
+    const contentTabs = ["userhome", "place", "event", "feedpost"];
     const subcontentTabs = ["media", "ticket", "merch", "review"];
 
     // Initialize main tabs

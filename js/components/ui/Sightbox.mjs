@@ -1,3 +1,4 @@
+import "../../../css/ui/Sightbox.css";
 const Sightbox = (mediaSrc, mediaType = 'image') => {
     const sightbox = document.createElement('div');
     sightbox.className = 'sightbox';

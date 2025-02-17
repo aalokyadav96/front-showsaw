@@ -1,3 +1,4 @@
+import "../../../css/ui/Toast.css";
 const Toast = (message, type = 'success') => {
     const toast = document.createElement('div');
     toast.className = `toast ${type}`;

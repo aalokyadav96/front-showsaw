@@ -1,3 +1,4 @@
+import "../../../css/feedimages.css";
 import { displayPost } from '../../services/feed/postDisplay.js';
 
 async function Post(isLoggedIn, postid, contentContainer) {

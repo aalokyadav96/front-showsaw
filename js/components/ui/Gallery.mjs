@@ -1,3 +1,4 @@
+import "../../../css/ui/Gallery.css";
 const Gallery = (images) => {
     const galleryContainer = document.createElement('div');
     galleryContainer.className = 'gallery';

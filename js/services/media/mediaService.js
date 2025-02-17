@@ -205,7 +205,7 @@ function renderMediaItem(media, index, isLoggedIn, entityType, entityId) {
     return mediaItem;
 }
 
-async function displayMedia(entityType, entityId, isLoggedIn, content) {
+async function displayMedia(content, entityType, entityId, isLoggedIn) {
     content.innerHTML = ""; // Clear existing content
     const response = await apiFetch(`/media/${entityType}/${entityId}`);
     const mediaData = response;

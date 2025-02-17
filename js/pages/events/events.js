@@ -1,3 +1,4 @@
+import "../../../css/eventsPage.css";
 import { displayEvents } from "../../services/event/displayEventsService.js";
 
 async function Events(isLoggedIn, contentContainer) {

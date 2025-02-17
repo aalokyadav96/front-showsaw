@@ -1,0 +1,85 @@
+
+/* Search Section */
+#search-section {
+    background-color: #f4f4f4;
+    padding: 20px;
+    border-radius: 8px;
+    margin: 20px auto;
+    width: 90%;
+    max-width: 800px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#srch {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.search-container h1 {
+    font-size: 1.8rem;
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#search-query {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+}
+
+#filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+#filters select,
+#filters input[type="range"],
+#filters button {
+    padding: 10px;
+    font-size: 0.9rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #fff;
+    box-sizing: border-box;
+}
+
+#filters select {
+    flex: 1;
+    min-width: 150px;
+}
+
+#filters input[type="range"] {
+    flex: 2;
+    margin: 0 10px;
+}
+
+#filters #price-value {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+#filters button {
+    background-color: #333;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#filters button:hover {
+    background-color: #555;
+}
+
+#search-results {
+    margin-top: 20px;
+    font-size: 1rem;
+    color: #555;
+}

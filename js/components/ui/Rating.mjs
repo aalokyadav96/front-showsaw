@@ -1,3 +1,4 @@
+import "../../../css/ui/Rating.css";
 const Rating = (initialRating = 0, maxStars = 5, onRate = (rating) => {}) => {
     const container = document.createElement('div');
     container.className = 'rating';

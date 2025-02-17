@@ -1,3 +1,4 @@
+import "../../../css/ui/PlaceCard.css";
 const PlaceCard = ({ title, image, description, onClick }) => {
     const card = document.createElement('div');
     card.className = 'place-card';

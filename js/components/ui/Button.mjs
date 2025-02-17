@@ -1,3 +1,4 @@
+import "../../../css/ui/Button.css";
 const Button = ({ label, onClick, className = '' }) => {
     const button = document.createElement('button');
     button.className = `btn ${className}`;

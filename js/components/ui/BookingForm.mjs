@@ -1,3 +1,4 @@
+import "../../../css/ui/BookingForm.css";
 const BookingForm = (onSubmit) => {
     const form = document.createElement('form');
     form.className = 'booking-form';

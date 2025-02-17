@@ -1,3 +1,4 @@
+import "../../../css/eventsPage.css";
 import { displayPlaces } from '../../services/place/displayPlaces.js';
 
 async function Places(isLoggedIn, contentContainer) {

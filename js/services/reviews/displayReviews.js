@@ -222,7 +222,7 @@ function ReviewItem(isCreator, { reviewerName, rating, comment, onEdit, onDelete
 }
 
 // Display reviews for the given entity
-async function displayReviews(isCreator, isLoggedIn, reviewsContainer, entityType, entityId) {
+async function displayReviews(reviewsContainer, isCreator, isLoggedIn, entityType, entityId) {
     reviewsContainer.innerHTML = ""; // Clear existing reviews
 
     if (!isCreator && isLoggedIn) {

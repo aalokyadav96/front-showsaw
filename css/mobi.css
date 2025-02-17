@@ -15,10 +15,10 @@
   
   
   /* Navigation Menu */
-  .nav-menu {
+  /* .nav-menu {
     display: flex;
     align-items: center;
-  }
+  } */
   
   .nav-list {
     display: flex;
@@ -39,18 +39,11 @@
     background-color: #555;
   }
   
-  /* Mobile Menu */
-  .mobile-menu-icon {
-    display: none; /* Hidden on desktop */
-    font-size: 1.5rem;
-    cursor: pointer;
-    color: white;
-  }
   
   /* Responsive Design */
   @media screen and (max-width: 768px) {
-    .nav-menu {
-      display: none; /* Hidden by default on mobile */
+    /* .nav-menu {
+      display: none;
       flex-direction: column;
       background-color: #222;
       position: absolute;
@@ -60,7 +53,7 @@
       z-index: 1000;
       padding: 20px 0;
     }
-  
+   */
     .nav-list {
       flex-direction: column;
       gap: 10px;
@@ -68,10 +61,6 @@
   
     .nav-list.active {
       display: flex; /* Show the menu when active */
-    }
-  
-    .mobile-menu-icon {
-      display: flex; /* Show menu icon on mobile */
     }
   
   }

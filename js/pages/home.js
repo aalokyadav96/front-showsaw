@@ -1,3 +1,4 @@
+import "../../css/home.css";
 async function Home(isLoggedIn, content) {
   // Hero Section with Search Bar
   const heroSection = createHeroSection();

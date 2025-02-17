@@ -1,0 +1,303 @@
+/* Global Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Main Wrapper */
+.event-wrapper {
+    max-width: 1000px;
+    margin: auto;
+    padding: 20px;
+}
+
+/* Event Card */
+.event-card {
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Banner Section */
+.banner-section {
+    width: 100%;
+    overflow: hidden;
+}
+
+.event-banner-image {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    transition: transform 0.3s ease-in-out;
+}
+
+.event-banner-image:hover {
+    transform: scale(1.05);
+}
+
+/* Event Info */
+.event-info {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.event-title {
+    font-size: 26px;
+    font-weight: bold;
+    color: #333;
+}
+
+.event-status {
+    font-size: 14px;
+    font-weight: bold;
+    color: #ff5733;
+}
+
+.event-description {
+    font-size: 16px;
+    color: #555;
+}
+
+.event-place,
+.event-dates {
+    font-size: 15px;
+    color: #777;
+}
+
+/* Social Links */
+.event-social-links {
+    display: flex;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.social-link {
+    text-decoration: none;
+    color: #007bff;
+    font-size: 14px;
+    transition: color 0.3s ease;
+}
+
+.social-link:hover {
+    color: #0056b3;
+}
+
+/* Event Tags */
+.event-tags {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+}
+
+.event-tag {
+    background: #f1f1f1;
+    color: #333;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    transition: background 0.3s ease;
+}
+
+.event-tag:hover {
+    background: #ddd;
+}
+
+/* Custom Fields */
+.event-custom-fields {
+    margin-top: 15px;
+}
+
+.custom-field {
+    font-size: 14px;
+    color: #666;
+}
+
+/* Event Actions */
+.event-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    justify-content: center;
+}
+
+.action-btn {
+    background: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background 0.3s ease-in-out;
+}
+
+.action-btn:hover {
+    background: #0056b3;
+}
+
+.delete-btn {
+    background: #ff3b3b;
+}
+
+.delete-btn:hover {
+    background: #cc0000;
+}
+
+/* Responsive Design */
+@media (min-width: 768px) {
+    .event-card {
+        flex-direction: row;
+    }
+
+    .banner-section {
+        width: 50%;
+    }
+
+    .event-info {
+        width: 50%;
+    }
+}
+
+/* Dark Mode */
+@media (prefers-color-scheme: dark) {
+    body {
+        background: #121212;
+        color: #f1f1f1;
+    }
+
+    .event-card {
+        background: #1e1e1e;
+        box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+    }
+}
+
+/* Cards */
+.ticket-card,
+.merch-card,
+.media-card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 8px;
+    margin-bottom: 15px;
+    transition: transform 0.3s ease;
+}
+
+.ticket-card:hover,
+.merch-card:hover,
+.media-card:hover {
+    transform: scale(1.03);
+}
+
+.ticket-quantity-input {
+    width: 50px;
+    padding: 5px;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+
+
+.action-btn {
+    background-color: #28a745;
+    font-size: 14px;
+    color: #fff;
+    border: none;
+    padding: 12px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 5px;
+    letter-spacing: 1px;
+    margin-right: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.action-btn:hover {
+    background-color: #f56d3b;
+}
+
+
+
+.ticket-actions button,
+.merch-actions button {
+    background: #00b336;
+    /* background: #3bff76; */
+    /* color: #fff; */
+    border: none;
+    font-weight: 600;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.ticket-actions button:hover,
+.merch-actions button:hover {
+    background-color: #f56d3b;
+}
+
+.merch-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.merch-img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.media-content {
+    margin-bottom: 20px;
+}
+
+.media-img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+}
+
+.media-img:hover {
+    transform: scale(1.05);
+}
+
+.media-actions button {
+    background: #ffeb3b;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.media-actions button:hover {
+    background-color: #f56d3b;
+}
+
+/* Mobile Layout */
+@media (max-width: 768px) {
+    .event-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ticket-actions button,
+    .merch-actions button {
+        font-size: 0.8rem;
+        padding: 6px 10px;
+    }
+}

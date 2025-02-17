@@ -4,12 +4,12 @@ import { displayTickets } from "../tickets/ticketService.js";
 import { displayMedia } from "../media/mediaService.js";
 import { displayMerchandise } from "../merch/merchService.js";
 import { navigate } from "../../routes/index.js";
-import SnackBar from '../../components/ui/Snackbar.mjs';
-import { createButton, createContainer } from "./eventHelper.js";
-import { displayEventVenue, displayEventTimeline, displayEventFAQ, displayEventReviews } from "./eventTabs.js";
+import SnackBar from "../../components/ui/Snackbar.mjs";
 import { createElement } from "../../components/createElement.js";
-import { updateEvent, editEventForm } from "./editEvent.js";
+import { displayEventVenue, displayEventTimeline, displayEventFAQ, displayEventReviews } from "./eventTabs.js";
 import { displayEventDetails } from "./displayEventDetails.js";
+import { createTabs } from "../../components/ui/createTabs.js";
+import { updateEvent, editEventForm } from "./editEvent.js";
 
 async function fetchEventData(eventId) {
     const eventData = await apiFetch(`/events/event/${eventId}`);
@@ -19,7 +19,6 @@ async function fetchEventData(eventId) {
     return eventData;
 }
 
-
 async function displayEvent(isLoggedIn, eventId, contentContainer) {
     try {
         const eventData = await fetchEventData(eventId);
@@ -28,73 +27,21 @@ async function displayEvent(isLoggedIn, eventId, contentContainer) {
         contentContainer.innerHTML = '';
         displayEventDetails(contentContainer, eventData, isCreator, isLoggedIn);
 
-        // Tabs Section
-        const tabContainer = createContainer(['event-tabs']);
-        const tabButtons = createContainer(['tab-buttons']);
-        const tabContents = createContainer(['tab-contents']);
-
-        // Tab content containers
-        const tabcon = [
-            createElement("div", { id: "ticket-list", class: ["ticket-list"] }),
-            createElement("div", { id: "venue-list", class: ["venue-list"] }),
-            createElement("div", { id: "merch-list", class: ["merch-list"] }),
-            createElement("div", { id: "media-list", class: ["media-list"] }),
-            createElement("div", { id: "reviews-container", class: ["reviews-container"] }),
-            createElement("div", { id: "faq-container", class: ["faq-container"] }),
-        ];
+        let container = document.createElement('div');
+        contentContainer.appendChild(container);
 
         const tabs = [
-            { title: 'Tickets', id: 'tickets-tab', render: () => displayTickets(eventData.tickets, eventId, isCreator, isLoggedIn, tabcon[0]) },
-            { title: 'Venue', id: 'venue-tab', render: () => displayEventVenue(eventData.place, eventData.accessibility_info, isLoggedIn, tabcon[1]) },
-            { title: 'Merchandise', id: 'merch-tab', render: () => displayMerchandise(eventData.merch, eventId, isCreator, isLoggedIn, tabcon[2]) },
-            { title: 'Media', id: 'media-tab', render: () => displayMedia('event', eventId, isLoggedIn, tabcon[3]) },
-            { title: 'Reviews', id: 'reviews-tab', render: () => displayEventReviews(eventId, isCreator, isLoggedIn, tabcon[4]) },
-            { title: 'FAQ', id: 'faq-tab', render: () => displayEventFAQ(isCreator, tabcon[5], eventId, eventData.faqs) },
+            { title: 'Tickets', id: 'tickets-tab', render: (container) => displayTickets(container,eventData.tickets, eventId, isCreator, isLoggedIn) },
+            { title: 'Venue', id: 'venue-tab', render: (container) => displayEventVenue(container,eventData.place, eventData.accessibility_info, isLoggedIn) },
+            { title: 'Merchandise', id: 'merch-tab', render: (container) => displayMerchandise(container,eventData.merch, eventId, isCreator, isLoggedIn) },
+            { title: 'Media', id: 'media-tab', render: (container) => displayMedia(container,'event', eventId, isLoggedIn) },
+            { title: 'Reviews', id: 'reviews-tab', render: (container) => displayEventReviews(container,eventId, isCreator, isLoggedIn) },
+            { title: 'FAQ', id: 'faq-tab', render: (container) => displayEventFAQ(container,isCreator, eventId, eventData.faqs) },
         ];
-        
-        tabs.forEach(({ title, id, render }, index) => {
-            const tabButton = createButton({
-                text: title,
-                classes: ['tab-button'],
-                events: { click: () => activateTab(id, render, tabcon[index]) },
-            });
-            tabButtons.appendChild(tabButton);
 
-            const tabContent = createContainer(['tab-content'], id, 'article');
-            tabContents.appendChild(tabContent);
-        });
+        const tabContainer = createTabs(tabs, 'tickets-tab');
 
-        tabContainer.appendChild(tabButtons);
-        tabContainer.appendChild(tabContents);
-
-        const eventDetails = createContainer(['event-details']);
-        eventDetails.appendChild(tabContainer);
-        contentContainer.appendChild(eventDetails);
-
-        // Activate the first tab by default
-        activateTab(tabs[0].id, tabs[0].render, tabcon[0]);
-
-        function activateTab(tabId, renderContent, tabcon) {
-            document.querySelectorAll('.tab-button').forEach((btn, index) => {
-                btn.classList.toggle('active', tabs[index].id === tabId);
-            });
-
-            document.querySelectorAll('.tab-content').forEach((content) => {
-                content.classList.toggle('active', content.id === tabId);
-            });
-
-            const activeTabContent = document.querySelector(`#${tabId}`);
-            if (activeTabContent && !activeTabContent.contains(tabcon)) {
-                activeTabContent.innerHTML = '';
-                activeTabContent.appendChild(tabcon);
-            }
-
-            if (tabcon && !tabcon.innerHTML.trim()) {
-                renderContent(tabcon);
-            }
-
-            // history.pushState({ eventId, tabId }, '', `/event/${eventId}#${tabId}`);
-        }
+        contentContainer.appendChild(tabContainer);
     } catch (error) {
         contentContainer.innerHTML = '';
         contentContainer.appendChild(createElement('h1', { textContent: `Error loading event details: ${error.message}` }));

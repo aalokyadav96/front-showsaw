@@ -1,3 +1,4 @@
+import "../../../css/ui/FAB.css";
 import { createNavItem, createProfileDropdown } from "../navigation.js";
 import { navigate } from "../../routes/index.js";
 
@@ -41,8 +42,8 @@ const FloatingActionButton = (icon, id, isLoggedIn, user) => {
     fabContainer.appendChild(fab);
     document.getElementById("app").appendChild(fabContainer);
 
-    // Make FAB draggable without triggering the menu
-    makeDraggable(fabContainer, id);
+    // // Make FAB draggable without triggering the menu
+    // makeDraggable(fabContainer, id);
 };
 
 export default FloatingActionButton;
@@ -80,62 +81,4 @@ const createFabNav = (actionContainer, isLoggedIn, user) => {
     ul.appendChild(fragment);
     nav.appendChild(ul);
     actionContainer.appendChild(nav);
-};
-
-/** Make FAB Draggable Without Opening Menu */
-const makeDraggable = (element, id) => {
-    let isDragging = false;
-    let startX, startY, initialX, initialY;
-
-    // Load saved position from localStorage
-    const savedPosition = JSON.parse(localStorage.getItem(`fabPosition-${id}`));
-    if (savedPosition) {
-        element.style.left = `${savedPosition.x}px`;
-        element.style.top = `${savedPosition.y}px`;
-    } else {
-        element.style.left = "20px";
-        element.style.bottom = "20px";
-    }
-
-    element.addEventListener("mousedown", (e) => {
-        e.preventDefault();
-        isDragging = false; // Reset dragging flag
-
-        startX = e.clientX;
-        startY = e.clientY;
-
-        const rect = element.getBoundingClientRect();
-        initialX = rect.left;
-        initialY = rect.top;
-
-        document.addEventListener("mousemove", onMouseMove);
-        document.addEventListener("mouseup", onMouseUp);
-    });
-
-    const onMouseMove = (e) => {
-        isDragging = true; // Set dragging to true
-
-        let newX = initialX + (e.clientX - startX);
-        let newY = initialY + (e.clientY - startY);
-
-        const maxX = window.innerWidth - element.offsetWidth;
-        const maxY = window.innerHeight - element.offsetHeight;
-
-        newX = Math.max(0, Math.min(newX, maxX));
-        newY = Math.max(0, Math.min(newY, maxY));
-
-        element.style.left = `${newX}px`;
-        element.style.top = `${newY}px`;
-    };
-
-    const onMouseUp = () => {
-        document.removeEventListener("mousemove", onMouseMove);
-        document.removeEventListener("mouseup", onMouseUp);
-
-        if (isDragging) {
-            isDragging = false; // Reset dragging flag
-            const rect = element.getBoundingClientRect();
-            localStorage.setItem(`fabPosition-${id}`, JSON.stringify({ x: rect.left, y: rect.top }));
-        }
-    };
 };

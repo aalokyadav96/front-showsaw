@@ -1,3 +1,4 @@
+import "../../../css/ui/ReviewItem.css";
 const ReviewItem = ({ reviewerName, rating, comment }) => {
     const container = document.createElement('div');
     container.className = 'review-item';

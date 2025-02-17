@@ -1,3 +1,4 @@
+import "../../../css/ui/FilterPanel.css";
 const FilterPanel = ({ filters, onFilter }) => {
     const panel = document.createElement('div');
     panel.className = 'filter-panel';

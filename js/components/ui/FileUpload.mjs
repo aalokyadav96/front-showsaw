@@ -1,3 +1,4 @@
+import "../../../css/ui/FileUpload.css";
 const FileUpload = (onUpload = (file) => {}) => {
     const container = document.createElement('div');
     container.className = 'file-upload';

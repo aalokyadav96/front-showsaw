@@ -1,3 +1,4 @@
+import "../../../css/ui/SnackBar.css";
 const SnackBar = (message, duration = 3000) => {
     const snackbar = document.createElement('div');
     snackbar.className = 'snackbar';

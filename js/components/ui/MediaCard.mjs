@@ -1,3 +1,4 @@
+import "../../../css/ui/MediaCard.css";
 const MediaCard = ({ mediaType, src, title, index }) => {
   const card = document.createElement('div');
   card.className = 'media-card';

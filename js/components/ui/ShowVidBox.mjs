@@ -1,3 +1,4 @@
+import "../../../css/ui/ShowVidBox.css";
 import Showvid from "../../utils/showbox.js";
 import listenVid from "../../utils/showbox.js";
 import Button from "../base/Button.js";

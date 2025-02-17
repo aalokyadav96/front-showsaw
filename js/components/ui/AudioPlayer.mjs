@@ -1,3 +1,4 @@
+import "../../../css/ui/AudioPlayer.css";
 const AudioPlayer = ({ src, controls = true, autoplay = false }) => {
     const audio = document.createElement('audio');
     audio.src = src;

@@ -1,3 +1,4 @@
+import "../../../css/ui/Card.css";
 const Card = ({ title, content, image, actions = [] }) => {
   const card = document.createElement('div');
   card.className = 'card';
@@ -41,16 +42,3 @@ const Card = ({ title, content, image, actions = [] }) => {
 };
 
 export default Card;
-
-// const Card = ({ title, content }) => {
-//     const card = document.createElement('div');
-//     card.className = 'card';
-//     card.innerHTML = `
-//       <h3>${title}</h3>
-//       <p>${content}</p>
-//     `;
-//     return card;
-//   };
-  
-//   export default Card;
-  

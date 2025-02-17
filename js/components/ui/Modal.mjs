@@ -1,3 +1,4 @@
+import "../../../css/ui/Modal.css";
 const Modal = ({ title, content, onClose }) => {
     const modal = document.createElement('div');
     modal.className = 'modal';

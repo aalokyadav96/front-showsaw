@@ -35,9 +35,9 @@ function createMediaContent(post, media) {
     mediaContainer.className = 'post-media';
 
     if (post.type === "image" && media.length > 0) {
-        RenderImagePost(mediaContainer,media);
+        RenderImagePost(mediaContainer,media, post.media_url);
     } else if (post.type === "video" && media.length > 0) {
-        RenderVideoPost(mediaContainer,media);
+        RenderVideoPost(mediaContainer,media,post.media_url, post.resolution);
     }
 
     return mediaContainer;

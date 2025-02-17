@@ -1,3 +1,4 @@
+import "../../../css/profilePage.css";
 import { displayProfile  } from "../../services/profile/userProfileService";
 import { displayUserProfile  } from "../../services/profile/otherUserProfileService";
 

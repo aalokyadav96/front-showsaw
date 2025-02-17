@@ -1,3 +1,4 @@
+import "../../../css/ui/Tooltip.css";
 const Tooltip = (text) => {
     const tooltip = document.createElement('span');
     tooltip.className = 'tooltip';

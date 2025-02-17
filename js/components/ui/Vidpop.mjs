@@ -1,7 +1,8 @@
+import "../../../css/ui/Vidpop.css";
 import {generateVideoPlayer} from "./vidpopHelpers";
 
-const Vidpop = (mediaSrc, type, video, options = {}) => {
-
+const Vidpop = (mediaSrc, type, videoid, options = {}) => {
+console.log(videoid);
   const { poster = "#", theme = "light", qualities = [], subtitles = [] } = options;
 
   const sightbox = document.createElement("div");
@@ -24,7 +25,7 @@ const Vidpop = (mediaSrc, type, video, options = {}) => {
   sightbox.appendChild(content);
 
   // Directly append the generated video player
-  generateVideoPlayer(mediaSrc, poster, qualities, subtitles).then(videoPlayer => {
+  generateVideoPlayer(mediaSrc, poster, qualities, subtitles, videoid).then(videoPlayer => {
     content.appendChild(videoPlayer);
     content.appendChild(closeButton);
   });

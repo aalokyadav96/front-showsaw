@@ -1,3 +1,4 @@
+import "../../../css/ui/ContextMenu.css";
 const ContextMenu = (options) => {
     const menu = document.createElement('div');
     menu.className = 'context-menu';

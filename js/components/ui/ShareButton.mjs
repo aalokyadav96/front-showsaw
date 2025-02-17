@@ -1,3 +1,4 @@
+import "../../../css/ui/ShareButton.css";
 const ShareButton = (url) => {
     const button = document.createElement('button');
     button.textContent = 'Share';

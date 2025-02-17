@@ -1,3 +1,4 @@
+import "../../../css/ui/Breadcrumb.css";
 import { navigate } from "../../routes/index.js";
 
 const Breadcrumb = (paths) => {

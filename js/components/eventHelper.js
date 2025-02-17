@@ -27,6 +27,13 @@ function createList(id, classes = []) {
     return list;
 }
 
+function createLink(id, classes = []) {
+    const link = document.createElement('a');
+    link.id = id;
+    link.classList.add(...classes);
+    return link;
+}
+
 function createContainer(classes = [], id = '', containerType = 'div') {
     const container = document.createElement(containerType);
     container.classList.add(...classes);
@@ -42,4 +49,4 @@ function createImage({ src, alt, classes = [] }) {
     return image;
 }
 
-export {createButton, createHeading, createList, createContainer, createImage};
+export {createButton, createHeading, createList, createContainer, createImage, createLink};

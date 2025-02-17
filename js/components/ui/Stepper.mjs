@@ -1,3 +1,4 @@
+import "../../../css/ui/Stepper.css";
 const Stepper = (steps = [], currentStep = 0, onStepChange = (step) => {}) => {
     const container = document.createElement('div');
     container.className = 'stepper';

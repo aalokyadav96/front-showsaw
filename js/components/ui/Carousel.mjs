@@ -1,3 +1,4 @@
+import "../../../css/ui/Carousel.css";
 const Carousel = (images = []) => {
     const container = document.createElement('div');
     container.className = 'carousel';
