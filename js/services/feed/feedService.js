@@ -78,7 +78,7 @@ function generateFeedHTML() {
     const imageUpload = document.createElement('input');
     imageUpload.type = 'file';
     imageUpload.id = 'imageUpload';
-    imageUpload.accept = 'image/jpg,image/png,image/tiff,';
+    imageUpload.accept = 'image/png, image/gif, image/jpeg, image/tiff, image/webp';
     imageUpload.multiple = true;
     imageUpload.style.display = 'none';
 

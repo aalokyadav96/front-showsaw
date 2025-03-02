@@ -6,6 +6,8 @@ function renderEntityData(container, data, entityType) {
         return;
     }
 
+console.log(entityType);
+
     const list = document.createElement("ul");
     data.forEach((item) => {
         const listItem = document.createElement("li");

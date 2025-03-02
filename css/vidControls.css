@@ -1,0 +1,58 @@
+.controls {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 10px;
+    background-color: #e0e0e0;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.progress {
+    height: 100%;
+    background-color: #76c7c0;
+    border-radius: 5px;
+    transition: width 0.3s ease-in-out;
+}
+
+.buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.filter-selector,
+.playback-speed,
+.quality-selector {
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.button {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #76c7c0;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.button:hover {
+    background-color: #5ea7a1;
+}
+
+#mute {
+    background-color: #ff6b6b;
+}
+
+#mute:hover {
+    background-color: #e05a5a;
+}

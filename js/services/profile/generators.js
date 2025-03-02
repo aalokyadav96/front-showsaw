@@ -79,6 +79,7 @@ async function updateProfilePics(type) {
 }
 
 function generateFormField(label, id, type, value) {
+    if (value == undefined) {value = ""};
     if (type === "textarea") {
         return `
             <label for="${id}">${label}</label>
@@ -86,8 +87,10 @@ function generateFormField(label, id, type, value) {
         `;
     }
     return `
+    <div class="form-group">
         <label for="${id}">${label}</label>
         <input id="${id}" name="${id}" type="${type}" value="${value}" />
+    </div>
     `;
 }
 

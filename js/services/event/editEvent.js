@@ -2,6 +2,7 @@ import { apiFetch } from "../../api/api.js";
 import { navigate, renderPage } from "../../routes/index.js";
 import SnackBar from '../../components/ui/Snackbar.mjs';
 import { createFormGroup } from "../../components/createFormGroup.js";
+import Button from "../../components/base/Button.js";
 
 
 async function updateEvent(isLoggedIn, eventId) {
@@ -53,7 +54,7 @@ async function editEventForm(isLoggedIn, eventId) {
             // Fetch event data from the server (uncomment when the API is available)
             // const event = await apiFetch(`/event/${eventId}`);
             const eventx = await apiFetch(`/events/event/${eventId}`);
-console.log(eventx);
+            console.log(eventx);
             // Clear the content of createSection
             createSection.innerHTML = '';
 
@@ -90,6 +91,23 @@ console.log(eventx);
             updateButton.classList.add('update-btn');
             updateButton.textContent = 'Update Event';
             form.appendChild(updateButton);
+
+            // Cancel Button
+            // const cancelButton = document.createElement('button');
+            // cancelButton.type = 'button'; // Use 'button' to prevent it from acting as a submit button
+            // cancelButton.classList.add('cancel-btn');
+            // cancelButton.textContent = 'Cancel';
+            // cancelButton.addEventListener('click', () => {
+            //     navigate('/event/' + eventId); // Navigate back to the event page
+            // });
+
+            // form.appendChild(cancelButton);
+
+            const cancelButton = Button("Cancel", "cancel-btn", {
+                click: () => document.getElementById('editevent').innerHTML="",
+            });
+            cancelButton.type = 'button';
+            form.appendChild(cancelButton);
 
             // Append form to formContainer
             formContainer.appendChild(formHeading);

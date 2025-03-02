@@ -1,8 +1,7 @@
-import { createElement } from "../../components/createElement.js";
-import SnackBar from '../../components/ui/Snackbar.mjs';
-import { navigate } from "../../routes/index.js";
-import { apiFetch } from "../../api/api.js";
 import { state } from "../../state/state.js";
+import { apiFetch } from "../../api/api.js";
+import { navigate } from "../../routes/index.js";
+import SnackBar from '../../components/ui/Snackbar.mjs';
 
 async function createEventForm(isLoggedIn, content) {
     const createSection = document.createElement('div');
@@ -11,9 +10,8 @@ async function createEventForm(isLoggedIn, content) {
     if (!isLoggedIn) {
         SnackBar("Please log in to create an event.", 3000);
         navigate('/login');
-        return;
+        return
     }
-
     // Create and append the header
     const header = document.createElement("h2");
     header.textContent = "Create Event";
@@ -50,13 +48,42 @@ async function createEventForm(isLoggedIn, content) {
         { type: "file", id: "event-banner", accept: "image/*" },
     ];
 
-    // Create the form with a proper submission callback
-    const form = createForm(formFields, async (formData) => {
-        return await createEvent(formData); // Send the formData to the event creation function
+    // Create form fields
+    formFields.forEach(field => {
+        const formGroup = document.createElement("div");
+        formGroup.className = "form-group";
+
+        let inputElement;
+
+        if (field.type === "textarea") {
+            inputElement = document.createElement("textarea");
+        } else if (field.type === "select") {
+            inputElement = document.createElement("select");
+            field.options.forEach(option => {
+                const optionElement = document.createElement("option");
+                optionElement.value = option.value;
+                optionElement.textContent = option.label;
+                inputElement.appendChild(optionElement);
+            });
+        } else {
+            inputElement = document.createElement("input");
+            inputElement.type = field.type;
+        }
+
+        inputElement.id = field.id;
+        inputElement.placeholder = field.placeholder || "";
+        if (field.required) inputElement.required = true;
+        if (field.accept) inputElement.accept = field.accept;
+
+        formGroup.appendChild(inputElement);
+        createSection.appendChild(formGroup);
     });
 
-    createSection.appendChild(form);
-    content.appendChild(createSection);
+    // Create and append the create button
+    const createButton = document.createElement("button");
+    createButton.id = "create-event-btn";
+    createButton.textContent = "Create Event";
+    createSection.appendChild(createButton);
 
     // Add place suggestions box
     const eventPlaceInput = createSection.querySelector("#event-place");
@@ -65,8 +92,10 @@ async function createEventForm(isLoggedIn, content) {
     placeSuggestionsBox.className = "suggestions-dropdown";
     createSection.appendChild(placeSuggestionsBox);
 
+    content.appendChild(createSection);
+
     // Add event listeners
-    addEventEventListeners(eventPlaceInput, placeSuggestionsBox);
+    addEventEventListeners(eventPlaceInput, placeSuggestionsBox, createButton);
 }
 
 function debounce(func, delay) {
@@ -77,7 +106,10 @@ function debounce(func, delay) {
     };
 }
 
-function addEventEventListeners(eventPlaceInput, placeSuggestionsBox) {
+function addEventEventListeners(eventPlaceInput, placeSuggestionsBox, createButton) {
+    // Add event listener to the create button
+    createButton.addEventListener("click", createEvent);
+
     async function fetchPlaceSuggestions() {
         const query = eventPlaceInput.value.trim();
         if (!query) {
@@ -111,7 +143,7 @@ function addEventEventListeners(eventPlaceInput, placeSuggestionsBox) {
         }
     }
 
-    const debouncedFetchSuggestions = debounce(fetchPlaceSuggestions, 300);
+    const debouncedFetchSuggestions = debounce(fetchPlaceSuggestions, 300); // Adjust delay as needed
 
     // Event listener for place input with debouncing
     eventPlaceInput.addEventListener("input", debouncedFetchSuggestions);
@@ -124,8 +156,36 @@ function addEventEventListeners(eventPlaceInput, placeSuggestionsBox) {
     });
 }
 
-async function createEvent(formData) {
-    if (state.user) {
+async function createEvent(isLoggedIn) {
+    if (isLoggedIn && state.user) {
+        const title = document.getElementById("event-title").value.trim();
+        const date = document.getElementById("event-date").value;
+        const time = document.getElementById("event-time").value;
+        const place = document.getElementById("event-place").value.trim();
+        const location = document.getElementById("event-location").value.trim();
+        const description = document.getElementById("event-description").value.trim();
+        const category = document.getElementById("category").value; // Get selected category
+        const bannerFile = document.getElementById("event-banner").files[0];
+
+        // Validate input values
+        if (!title || !date || !time || !place || !location || !description || !category) {
+            SnackBar("Please fill in all required fields.", 3000);
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('event', JSON.stringify({
+            title,
+            date: `${date}T${time}`,
+            location,
+            place,
+            description,
+            category
+        }));
+        if (bannerFile) {
+            formData.append('banner', bannerFile);
+        }
+
         try {
             const result = await apiFetch('/events/event', 'POST', formData);
             SnackBar(`Event created successfully: ${result.title}`, 3000);
@@ -139,56 +199,3 @@ async function createEvent(formData) {
 }
 
 export { createEventForm };
-
-// Helper function to create a form dynamically
-function createForm(fields, onSubmit) {
-    const form = createElement('form');
-
-    async function handleFormSubmit(event) {
-        event.preventDefault();
-        const formData = new FormData(form);
-        try {
-            await onSubmit(formData);
-        } catch (error) {
-            console.error("Error creating event:", error);
-            SnackBar("Failed to create event. Please try again.", 3000);
-        }
-    }
-
-    form.addEventListener('submit', handleFormSubmit);
-
-    fields.forEach(field => {
-        const formGroup = createElement('div', { class: 'form-group' });
-
-        // Create label
-        if (field.label) {
-            const label = createElement('label', { for: field.id }, [field.label]);
-            formGroup.appendChild(label);
-        }
-
-        let inputElement;
-        if (field.type === 'select') {
-            inputElement = createElement('select', { id: field.id, name: field.id, required: field.required },
-                field.options.map(option =>
-                    createElement('option', { value: option.value }, [option.label])
-                )
-            );
-        } else {
-            inputElement = createElement(field.type === 'textarea' ? 'textarea' : 'input', {
-                id: field.id,
-                name: field.id,
-                type: field.type || 'text',
-                placeholder: field.placeholder || '',
-                ...(field.required ? { required: true } : {}),
-                ...(field.type === 'file' && field.accept ? { accept: field.accept } : {}),
-                ...(field.min ? { min: field.min } : {}),
-            });
-        }
-
-        formGroup.appendChild(inputElement);
-        form.appendChild(formGroup);
-    });
-
-    form.appendChild(createElement('button', { type: 'submit' }, ["Create Event"]));
-    return form;
-}

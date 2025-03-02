@@ -10,7 +10,9 @@
 .event-wrapper {
     max-width: 1000px;
     margin: auto;
-    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }
 
 /* Event Card */

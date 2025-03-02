@@ -7,12 +7,12 @@ async function displayEventReviews(reviewsContainer, eventId, isCreator, isLogge
     displayReviews(reviewsContainer, isCreator, isLoggedIn, "event", eventId);
 }
 
-async function displayEventVenue(venueList, place, accessibility_info, isLoggedIn) {
+async function displayEventVenue(venueList, place, isLoggedIn) {
     // const venueList = document.getElementById("venue-details");
     venueList.innerHTML = ''; // Clear existing content
 
     const listItem = createElement('div');
-    listItem.innerHTML = `<p>Place: ${place}</p><br><p class='event-accessibility'>Accessibility: ${accessibility_info}</p>`;
+    listItem.innerHTML = `<p>Place: ${place}</p><br>`;
     venueList.appendChild(listItem);
 }
 

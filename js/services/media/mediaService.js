@@ -1,11 +1,11 @@
 import { SRC_URL, state } from "../../state/state.js";
 import { apiFetch } from "../../api/api.js";
 import Lightbox from '../../components/ui/Lightbox.mjs';
-import MediaCard from '../../components/ui/MediaCard.mjs';
 import { Button } from "../../components/base/Button.js";
 import { createElement } from "../../components/createElement.js";
 import Modal from '../../components/ui/Modal.mjs';
 
+import "../../../css/mediaSection.css";
 
 
 let mediaItems = []; // Ensure this is globally scoped
@@ -205,6 +205,8 @@ function renderMediaItem(media, index, isLoggedIn, entityType, entityId) {
     return mediaItem;
 }
 
+
+
 async function displayMedia(content, entityType, entityId, isLoggedIn) {
     content.innerHTML = ""; // Clear existing content
     const response = await apiFetch(`/media/${entityType}/${entityId}`);
@@ -233,7 +235,7 @@ async function displayMedia(content, entityType, entityId, isLoggedIn) {
             mediaList.appendChild(mediaItem);
 
             if (media.type === "image") {
-                mediaCards.push(`/uploads/${media.url}`);
+                mediaCards.push(`${SRC_URL}/uploads/${media.url}`);
             }
         });
 

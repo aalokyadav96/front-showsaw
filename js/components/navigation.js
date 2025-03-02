@@ -2,7 +2,7 @@
 import "../../css/navigation.css";
 import { SRC_URL, state } from "../state/state.js";
 import { navigate } from "../routes/index.js";
-// import { logout } from "../services/auth/authService.js";
+import { logout } from "../services/auth/authService.js";
 
 /** Utility Functions */
 const toggleElement = (selector, className) => document.querySelector(selector)?.classList.toggle(className);
@@ -76,7 +76,10 @@ const createProfileDropdown = (user) => {
     const menu = document.createElement("div");
     menu.className = "profile-dropdown-menu";
 
-    const links = [{ href: "/profile", text: "Profile" }];
+    const links = [
+        { href: "/profile", text: "Profile" },
+        { href: "/settings", text: "Settings" }
+    ];
     links.forEach(({ href, text }) => {
         const anchor = document.createElement("a");
         anchor.href = href;
@@ -86,12 +89,12 @@ const createProfileDropdown = (user) => {
         menu.appendChild(anchor);
     });
 
-    // // Logout Button
-    // const logoutButton = document.createElement("button");
-    // logoutButton.className = "dropdown-item logout-btn";
-    // logoutButton.textContent = "Logout";
-    // logoutButton.addEventListener("click", async () => await logout());
-    // menu.appendChild(logoutButton);
+    // Logout Button
+    const logoutButton = document.createElement("button");
+    logoutButton.className = "dropdown-item logout-btn";
+    logoutButton.textContent = "Logout";
+    logoutButton.addEventListener("click", async () => await logout());
+    menu.appendChild(logoutButton);
 
     dropdown.appendChild(toggle);
     dropdown.appendChild(menu);

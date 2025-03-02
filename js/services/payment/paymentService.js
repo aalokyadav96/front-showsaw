@@ -4,21 +4,47 @@ import { Button } from "../../components/base/Button.js";
 import Modal from "../../components/ui/Modal.mjs";
 
 // Unified function for merchandise or ticket purchase
-async function handlePurchase(type, itemId, eventId, maxQuantity) {
-    const modal = createQuantityModal(type, maxQuantity, async (quantity) => {
+async function handlePurchase(type = "merch", itemId, eventId, maxQuantity) {
+    let entityType = "event";
+    if (type === "merch") {
+        entityType = "event";
+        const modal = createQuantityModal(type, maxQuantity, async (quantity) => {
+            try {
+                const paymentSession = await createPaymentSession(entityType, type, itemId, eventId, quantity);
+                if (paymentSession) {
+                    showPaymentModal(entityType, type, paymentSession, eventId, itemId);
+                }
+            } catch (error) {
+                console.error("Error creating payment session:", error);
+                alert("Failed to initiate payment. Please try again.");
+            }
+            modal.remove(); // Close modal after action
+        });
+
+        document.body.appendChild(modal);
+    } else if (type === "ticket") {
+        entityType = "event";
         try {
-            const paymentSession = await createPaymentSession(type, itemId, eventId, quantity);
+            const paymentSession = await createPaymentSession(entityType, type, itemId, eventId, maxQuantity);
             if (paymentSession) {
-                showPaymentModal(paymentSession, eventId, type === "merch" ? itemId : null);
+                showPaymentModal(entityType, type, paymentSession, eventId);
             }
         } catch (error) {
             console.error("Error creating payment session:", error);
             alert("Failed to initiate payment. Please try again.");
         }
-        modal.remove(); // Close modal after action
-    });
-
-    document.body.appendChild(modal);
+    } else if (type === "menu") {
+        entityType = "place";
+        try {
+            const paymentSession = await createPaymentSession(entityType, type, itemId, eventId, maxQuantity);
+            if (paymentSession) {
+                showPaymentModal(entityType, type, paymentSession, eventId, itemId);
+            }
+        } catch (error) {
+            console.error("Error creating payment session:", error);
+            alert("Failed to initiate payment. Please try again.");
+        }
+    }
 }
 
 // Create a reusable modal for quantity input
@@ -56,26 +82,36 @@ function createQuantityModal(type, maxQuantity, onConfirm) {
 }
 
 // Create and show the payment modal
-function showPaymentModal(paymentSession, eventId, merchId = null) {
+function showPaymentModal(entityType, type, paymentSession, eventId, merchId = null) {
     const content = document.createElement("div");
-
     const cardNumberInput = createInputField("card-number", "text", "Card Number");
     const expiryDateInput = createInputField("expiry-date", "text", "MM/YY Expiry Date");
     const cvvInput = createInputField("cvv", "text", "CVV");
     const paymentMessage = createElement("p", { id: "payment-message", textContent: "Enter your card details to proceed." });
 
     const confirmButton = Button("Pay Now", "confirm-payment-btn", {
-        click: () => submitPayment(paymentSession, paymentMessage, eventId, merchId),
+        click: () => submitPayment(entityType, type, paymentSession, paymentMessage, eventId, merchId),
     });
 
     content.append(cardNumberInput, expiryDateInput, cvvInput, paymentMessage, confirmButton);
 
-    document.body.appendChild(
-        Modal({
-            title: "Payment Information",
-            content,
-        })
-    );
+    const modal = Modal({
+        title: "Payment Information",
+        content,
+        onClose: () => modal.remove(),
+    });
+    
+
+    document.body.appendChild(modal);
+
+
+    // document.body.appendChild(
+    //     Modal({
+    //         title: "Payment Information",
+    //         content,
+    //         onClose: () => this.remove(),
+    //     })
+    // );
 }
 
 // Helper function to create input fields
@@ -90,19 +126,57 @@ function createElement(tag, attributes = {}) {
     return element;
 }
 
-// Create a payment session for merch or ticket
-async function createPaymentSession(type, itemId, eventId, quantity) {
-    try {
-        const apiUrl =
-            type === "ticket"
-                ? `/ticket/event/${eventId}/${itemId}/payment-session`
-                : `/merch/event/${eventId}/${itemId}/payment-session`;
+// // Create a payment session for merch or ticket
+// async function createPaymentSession(entityType, itemId, eventId, quantity) {
+//     try {
+//         const apiUrl =
+//             entityType === "ticket"
+//                 ? `/ticket/event/${eventId}/${itemId}/payment-session`
+//                 : `/merch/event/${eventId}/${itemId}/payment-session`;
 
-        const body = JSON.stringify(
-            type === "ticket"
-                ? { quantity }
-                : { merchId: itemId, eventId, stock: quantity }
-        );
+//         const body = JSON.stringify(
+//             entityType === "ticket"
+//                 ? { quantity }
+//                 : { merchId: itemId, eventId, stock: quantity }
+//         );
+
+//         const response = await apiFetch(apiUrl, "POST", body);
+//         if (response?.success && response?.data) return response.data;
+
+//         throw new Error(response?.message || "Failed to create payment session.");
+//     } catch (error) {
+//         console.error("Error:", error);
+//         alert(`Error: ${error.message}`);
+//         return null;
+//     }
+// }
+
+// Configuration for different entity types
+const ENTITY_CONFIG = {
+    ticket: {
+        apiPath: (eventId, itemId) => `/ticket/event/${eventId}/${itemId}/payment-session`,
+        payload: (itemId, eventId, quantity) => ({ quantity })
+    },
+    merch: {
+        apiPath: (eventId, itemId) => `/merch/event/${eventId}/${itemId}/payment-session`,
+        payload: (itemId, eventId, quantity) => ({ merchId: itemId, eventId, stock: quantity })
+    },
+    menu: {
+        apiPath: (eventId, itemId) => `/places/menu/${eventId}/${itemId}/payment-session`,
+        payload: (itemId, eventId, quantity) => ({ menuId: itemId, eventId, stock: quantity })
+    }
+    // Add more entity types here if needed
+};
+
+// Create a payment session for any entity type
+async function createPaymentSession(entityType, itemType, itemId, eventId, quantity) {
+    try {
+        if (!ENTITY_CONFIG[itemType]) {
+            throw new Error(`Unsupported entity type: ${itemType}`);
+        }
+
+        const apiUrl = ENTITY_CONFIG[itemType].apiPath(eventId, itemId);
+        const body = JSON.stringify(ENTITY_CONFIG[itemType].payload(itemId, eventId, quantity));
 
         const response = await apiFetch(apiUrl, "POST", body);
         if (response?.success && response?.data) return response.data;
@@ -115,8 +189,85 @@ async function createPaymentSession(type, itemId, eventId, quantity) {
     }
 }
 
-// Submit the payment
-async function submitPayment(paymentSession, paymentMessage, eventId, merchId = null) {
+// // Submit the payment
+// async function submitPayment(entityType, paymentSession, paymentMessage, eventId, merchId = null) {
+//     const cardNumber = document.getElementById("card-number").value.trim();
+//     const expiryDate = document.getElementById("expiry-date").value.trim();
+//     const cvv = document.getElementById("cvv").value.trim();
+
+//     if (!cardNumber || !expiryDate || !cvv) {
+//         paymentMessage.textContent = "Please fill in all fields.";
+//         return;
+//     }
+
+//     paymentMessage.textContent = "Processing payment...";
+
+//     setTimeout(async () => {
+//         try {
+//             // const apiUrl = merchId
+//             //     ? `/merch/event/${eventId}/${merchId}/confirm-purchase`
+//             //     : "/ticket/confirm-purchase";
+
+//             const apiUrl = merchId
+//                 ? `/merch/event/${eventId}/${merchId}/confirm-purchase`
+//                 : `/ticket/event/${eventId}/${merchId}/confirm-purchase`;
+
+//             const payload = JSON.stringify(
+//                 merchId
+//                     ? { merchId, eventId, stock: paymentSession.stock }
+//                     : { ticketId: paymentSession.ticketid, eventId: paymentSession.eventid, quantity: paymentSession.quantity }
+//             );
+
+//             const response = await apiFetch(apiUrl, "POST", payload);
+//             if (response?.message.includes("Payment successfully processed")) {
+//                 alert(`${merchId ? "Merch" : "Ticket"} purchased successfully!`);
+//                 window.location.href = `/event/${eventId}`;
+//             } else {
+//                 throw new Error("Unexpected response from backend.");
+//             }
+//         } catch (error) {
+//             console.error("Error during payment:", error);
+//             alert("Payment failed! Please try again.");
+//             paymentMessage.textContent = "Payment failed. Please try again.";
+//         }
+//     }, 2000);
+// }
+
+const CONFIRM_PURCHASE_CONFIG = {
+    ticket: {
+        apiPath: (eventId, itemId) => `/ticket/event/${eventId}/${itemId}/confirm-purchase`,
+        payload: (paymentSession) => ({
+            ticketId: paymentSession.ticketid,
+            eventId: paymentSession.eventid,
+            quantity: paymentSession.quantity
+        })
+    },
+    merch: {
+        apiPath: (eventId, itemId) => `/merch/event/${eventId}/${itemId}/confirm-purchase`,
+        payload: (paymentSession) => ({
+            merchId: paymentSession.merchId,
+            eventId: paymentSession.eventId,
+            stock: paymentSession.stock
+        })
+    },
+    menu: {
+        apiPath: (eventId, itemId) => `/places/menu/${eventId}/${itemId}/confirm-purchase`,
+        payload: (paymentSession) => ({
+            menuId: paymentSession.menuId,
+            eventId: paymentSession.placeId,
+            stock: paymentSession.stock
+        })
+    }
+    // Add more entity types here if needed
+};
+
+// Submit the payment for any entity type
+async function submitPayment(entityType, itemType, paymentSession, paymentMessage, eventId, itemId) {
+    if (!CONFIRM_PURCHASE_CONFIG[itemType]) {
+        alert(`Unsupported entity type: ${itemType}`);
+        return;
+    }
+
     const cardNumber = document.getElementById("card-number").value.trim();
     const expiryDate = document.getElementById("expiry-date").value.trim();
     const cvv = document.getElementById("cvv").value.trim();
@@ -130,24 +281,15 @@ async function submitPayment(paymentSession, paymentMessage, eventId, merchId = 
 
     setTimeout(async () => {
         try {
-            // const apiUrl = merchId
-            //     ? `/merch/event/${eventId}/${merchId}/confirm-purchase`
-            //     : "/ticket/confirm-purchase";
-
-            const apiUrl = merchId
-                ? `/merch/event/${eventId}/${merchId}/confirm-purchase`
-                : `/ticket/event/${eventId}/${merchId}/confirm-purchase`;
-
-            const payload = JSON.stringify(
-                merchId
-                    ? { merchId, eventId, stock: paymentSession.stock }
-                    : { ticketId: paymentSession.ticketid, eventId: paymentSession.eventid, quantity: paymentSession.quantity }
-            );
+            const apiUrl = CONFIRM_PURCHASE_CONFIG[itemType].apiPath(eventId, itemId);
+            const payload = JSON.stringify(CONFIRM_PURCHASE_CONFIG[itemType].payload(paymentSession));
 
             const response = await apiFetch(apiUrl, "POST", payload);
             if (response?.message.includes("Payment successfully processed")) {
-                alert(`${merchId ? "Merch" : "Ticket"} purchased successfully!`);
-                window.location.href = `/event/${eventId}`;
+                alert(`${itemType.charAt(0).toUpperCase() + itemType.slice(1)} purchased successfully!`);
+                // window.location.href = `/event/${eventId}`;
+                window.location.href = `/${entityType}/${eventId}`;
+                // window.location.href = window.location.pathname;
             } else {
                 throw new Error("Unexpected response from backend.");
             }

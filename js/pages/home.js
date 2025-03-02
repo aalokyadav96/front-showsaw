@@ -1,46 +1,72 @@
 import "../../css/home.css";
+
 async function Home(isLoggedIn, content) {
-  // Hero Section with Search Bar
-  const heroSection = createHeroSection();
-  content.appendChild(heroSection);
+    // Clear existing content
+    content.innerHTML = "";
 
-  
-  // Personalized Recommendations
-  const recommendations = createRecommendationsSection();
-  content.appendChild(recommendations);
-}
+    // Create Page Section
+    const PageSection = document.createElement("div");
+    PageSection.classList.add("home-container");
 
-// Create the Hero Section
-function createHeroSection() {
-  
-  const hero = document.createElement('div');
-  hero.className = 'hero-section  tab-container';
-  hero.innerHTML = `
-    <div class="hero-content">
-      <h1>Discover Amazing Events and Places Nearby</h1>
-      <p>Find food, fun, and more, all in one place.</p>
-      <div class="search-bar">
-        <input type="text" placeholder="Search events or places..." />
-        <button>Search</button>
-      </div>
-    </div>
-  `;
-  return hero;
-}
+    // Search Bar
+    const searchContainer = document.createElement("div");
+    searchContainer.classList.add("search-container");
 
-// Create Personalized Recommendations Section
-function createRecommendationsSection() {
-  const recommendations = document.createElement('div');
-  recommendations.className = 'recsec tab-container';
-  recommendations.innerHTML = `
-    <h2>Recommended for You</h2>
-    <div class="grid">
-      <div class="card"><h3>Popular Event</h3><p>Join the biggest events in town.</p></div>
-      <div class="card"><h3>New Cafe</h3><p>Try out the latest coffee spots.</p></div>
-      <div class="card"><h3>Top Park</h3><p>Relax and unwind in nature.</p></div>
-    </div>
-  `;
-  return recommendations;
+    const searchInput = document.createElement("input");
+    searchInput.setAttribute("type", "text");
+    searchInput.setAttribute("placeholder", "Search events...");
+    searchInput.classList.add("search-input");
+
+    const searchButton = document.createElement("button");
+    searchButton.textContent = "Search";
+    searchButton.classList.add("search-button");
+    searchButton.addEventListener("click", () => {
+        alert(`Searching for: ${searchInput.value}`);
+    });
+
+    searchContainer.appendChild(searchInput);
+    searchContainer.appendChild(searchButton);
+    
+    // Event List Section
+    const eventList = document.createElement("div");
+    eventList.classList.add("event-list");
+
+    // Simulated Event Data
+    const events = [
+        { title: "🎉 Music Festival", location: "City Park" },
+        { title: "📅 Tech Conference", location: "Convention Center" },
+        { title: "🎭 Theatre Night", location: "Grand Theatre" }
+    ];
+
+    if (events.length > 0) {
+        events.forEach(event => {
+            const eventCard = document.createElement("div");
+            eventCard.classList.add("event-card");
+            eventCard.innerHTML = `<h3>${event.title}</h3><p>${event.location}</p>`;
+            eventList.appendChild(eventCard);
+        });
+    } else {
+        eventList.innerHTML = "<p>No events available.</p>";
+    }
+
+    // Create Event Button (if logged in)
+    if (isLoggedIn) {
+        const createEventButton = document.createElement("button");
+        createEventButton.textContent = "Create Event";
+        createEventButton.classList.add("create-event-button");
+        createEventButton.addEventListener("click", () => {
+            alert("Redirecting to event creation...");
+        });
+
+        PageSection.appendChild(createEventButton);
+    }
+
+    // Append everything to Page Section
+    PageSection.appendChild(searchContainer);
+    PageSection.appendChild(eventList);
+
+    // Add PageSection to Content
+    content.appendChild(PageSection);
 }
 
 export { Home };

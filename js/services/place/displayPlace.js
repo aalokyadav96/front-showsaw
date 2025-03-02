@@ -8,7 +8,7 @@ import Snackbar from "../../components/ui/Snackbar.mjs";
 import RenderMenu from "../../components/ui/RenderMenu.mjs";
 import { displayReviews } from "../reviews/displayReviews.js";
 import { createTabs } from "../../components/ui/createTabs.js";
-import { displayPlaceHome, displayPlaceNotices, displayPlaceNearby, displayPlaceInfo } from "./placeTabs.js";
+import { displayPlaceHome, displayPlaceNearby, displayPlaceInfo } from "./placeTabs.js";
 
 async function displayPlace(isLoggedIn, placeId, contentContainer) {
     try {
@@ -42,17 +42,18 @@ async function displayPlace(isLoggedIn, placeId, contentContainer) {
 
         // Tabs
         const tabs = [
-            { title: "Home", id: "home-tab", render: (container) => displayPlaceHome(container, placeData) },
-            { title: "Notices", id: "notices-tab", render: (container) => displayPlaceNotices(container, isCreator) },
-            { title: "Menu", id: "menu-tab", render: (container) => RenderMenu(container, isCreator, placeData.menu) },
+            { title: "Home", id: "home-tab", render: (container) => displayPlaceHome(container, placeData, isCreator, isLoggedIn) },
+            { title: "Menu", id: "menu-tab", render: (container) => RenderMenu(container, isCreator, placeId, isLoggedIn) },
             { title: "Gallery", id: "gallery-tab", render: (container) => displayMedia(container, "place", placeId, isLoggedIn) },
             { title: "Reviews", id: "reviews-tab", render: (container) => displayReviews(container, isCreator, isLoggedIn, "place", placeId) },
             { title: "Nearby", id: "nearby-tab", render: (container) => displayPlaceNearby(container, placeData) },
             { title: "Info", id: "info-tab", render: (container) => displayPlaceInfo(container, placeData, isCreator) },
         ];
-
-        const tabContainer = createTabs(tabs, "home-tab");
+        const tabContainer = createTabs(tabs);
         contentContainer.appendChild(tabContainer);
+
+        // const tabContainer = createTabs(tabs, "home-tab");
+        // contentContainer.appendChild(tabContainer);
     } catch (error) {
         contentContainer.innerHTML = "";
         console.error(error);

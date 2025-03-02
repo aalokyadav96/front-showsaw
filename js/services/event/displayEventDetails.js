@@ -3,6 +3,7 @@ import { createButton, createHeading, createContainer, createImage, createLink }
 import { createElement } from "../../components/createElement.js";
 import { editEventForm } from "./editEvent.js";
 import { deleteEvent } from "./eventService.js";
+import { displayEventVenue } from "./eventTabs.js";
 
 async function displayEventDetails(content, eventData, isCreator, isLoggedIn) {
     content.innerHTML = '';
@@ -25,8 +26,8 @@ async function displayEventDetails(content, eventData, isCreator, isLoggedIn) {
     // Event Details Section
     const eventInfo = createContainer(['event-info']);
     if (eventData.title) { eventInfo.appendChild(createHeading('h1', eventData.title, ['event-title'])); }
-    if (eventData.description) { eventInfo.appendChild(createHeading('p', eventData.description, ['event-description'])); }
-    if (eventData.place) { eventInfo.appendChild(createHeading('p', `📍 ${eventData.place}`, ['event-place'])); }
+    if (eventData.description) { eventInfo.appendChild(createHeading('p', `Description: ${eventData.description}`, ['event-description'])); }
+    if (eventData.place) { eventInfo.appendChild(createHeading('p', `Place:  ${eventData.place}`, ['event-place'])); }
     if (eventData.status) { eventInfo.appendChild(createHeading('p', eventData.status, ['event-status'])); }
     eventInfo.appendChild(createHeading('p', `📅 ${new Date(eventData.start_date_time).toLocaleString()} - ${new Date(eventData.end_date_time).toLocaleString()}`, ['event-dates']));
 
@@ -79,8 +80,12 @@ async function displayEventDetails(content, eventData, isCreator, isLoggedIn) {
         eventWrapper.appendChild(eventActions);
     }
 
+    const eventVenue = createContainer(['event-venue','event-card']);
+    displayEventVenue(eventVenue, eventData.place, isLoggedIn);
+
     eventWrapper.appendChild(eventCard);
-    eventWrapper.appendChild(createContainer(['eventedit'], 'editevent'));
+    eventWrapper.appendChild(eventVenue);
+    eventWrapper.appendChild(createContainer(['eventedit'   ], 'editevent'));
     content.appendChild(eventWrapper);
 }
 

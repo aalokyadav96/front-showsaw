@@ -1,0 +1,77 @@
+/* Place Info Section */
+.place-info {
+    background: #fff;
+    padding: 16px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.place-info h2 {
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.place-info p {
+    color: #666;
+    font-size: 14px;
+}
+
+/* Nearby Places Section */
+.nearby-section {
+    background: #f9f9f9;
+    padding: 16px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.nearby-section h3 {
+    color: #333;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+/* Nearby Items */
+.nearby-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out;
+}
+
+.nearby-item:hover {
+    transform: translateY(-3px);
+}
+
+.nearby-details h4 {
+    margin: 0;
+    font-size: 16px;
+    color: #222;
+}
+
+.nearby-details p {
+    margin: 4px 0;
+    color: #555;
+    font-size: 14px;
+}
+
+/* Button */
+.nearby-btn {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.nearby-btn:hover {
+    background: #0056b3;
+}

@@ -110,7 +110,7 @@ function generateEventHTML(event) {
                 <h1>${event.title}</h1>
                 <img src="${SRC_URL}/eventpic/${event.banner_image}" alt="${event.title} Banner" style="width: 100%; max-height: 300px; object-fit: cover;" />
                 <p><strong>Place:</strong> ${event.place}</p>
-                <p><strong>Address:</strong> ${event.location}</p>
+                <p><strong>Date:</strong> ${event.date}</p>
                 <p><strong>Description:</strong> ${event.description}</p>
             </a>
         </div>

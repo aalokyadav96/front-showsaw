@@ -9,7 +9,7 @@ import { renderTabContent } from "./tabRenderer.js";
  */
 function createTabStructure(title, tabs, username) {
     const sectionId = `${title.toLowerCase()}-section`;
-    
+
     const tabSection = createElement("div", { id: sectionId, style: "display: none;" });
     const tabContainer = createElement("div", { class: `${title.toLowerCase()}-tab-container` });
     const tabButtons = createElement("div", { class: `${title.toLowerCase()}-tab-buttons` });
@@ -22,10 +22,10 @@ function createTabStructure(title, tabs, username) {
     tabs.forEach((entityType) => {
         console.log(`Creating tab for: ${entityType} | Username: ${username}`);
 
-        const tabContent = createElement("div", { 
-            id: `${entityType}-container`, 
-            class: "tabs-content", 
-            style: "display: none;" 
+        const tabContent = createElement("div", {
+            id: `${entityType}-container`,
+            class: "tabs-content",
+            style: "display: none;"
         });
 
         tabContents.appendChild(tabContent);

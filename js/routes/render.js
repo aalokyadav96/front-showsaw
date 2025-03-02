@@ -57,11 +57,11 @@ async function renderPageContent(isLoggedIn, path, contentContainer) {
             contentContainer.innerHTML = "";
             Feed(isLoggedIn, contentContainer);
         },
-        "/blogs": async () => {
-            const { Blog } = await import("../pages/blog/blog.js");
-            contentContainer.innerHTML = "";
-            Blog(isLoggedIn, contentContainer);
-        },
+        //~ "/blogs": async () => {
+            //~ const { Blog } = await import("../pages/blog/blog.js");
+            //~ contentContainer.innerHTML = "";
+            //~ Blog(isLoggedIn, contentContainer);
+        //~ },
     };
 
     // Dynamic Routes (Pattern Matching)
@@ -107,17 +107,17 @@ async function renderPageContent(isLoggedIn, path, contentContainer) {
                 }
             },
         },        
-        {
-            pattern: /^\/blog\/([\w-]+)$/,
-            handler: async (matches) => {
-                const { Post } = await import("../pages/blog/blogpostDisplay.js");
-                try {
-                    Post(isLoggedIn, matches[1],content);
-                } catch {
-                    content.innerHTML = `<h1>Post Not Found</h1>`;
-                }
-            },
-        },
+        //~ {
+            //~ pattern: /^\/blog\/([\w-]+)$/,
+            //~ handler: async (matches) => {
+                //~ const { Post } = await import("../pages/blog/blogpostDisplay.js");
+                //~ try {
+                    //~ Post(isLoggedIn, matches[1],content);
+                //~ } catch {
+                    //~ content.innerHTML = `<h1>Post Not Found</h1>`;
+                //~ }
+            //~ },
+        //~ },
     ];
 
     // Match static routes

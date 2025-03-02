@@ -19,9 +19,6 @@ function setupPostCreation() {
     // Handle media file previews
     imageUpload.addEventListener('change', (event) => handleMediaFileChange(event, imageUpload, mediaPreview, uploadedImages, 'image'));
     videoUpload.addEventListener('change', (event) => handleMediaFileChange(event, videoUpload, mediaPreview, uploadedImages, 'video'));
-
-    // Allow image paste into the media preview area
-    mediaPreview.addEventListener('paste', (event) => handleImagePaste(event, imageUpload, uploadedImages));
 }
 
 // Function to handle post type change
@@ -109,57 +106,6 @@ function handleRemoveMedia(wrapper, mediaElement, mediaType) {
     // Handle file removal from input
     removeFileFromInput(mediaType === 'image' ? imageUpload : videoUpload, mediaElement);
 }
-
-function handleImagePaste(event, imageUpload, uploadedImages) {
-    const clipboardData = event.clipboardData;
-    const items = clipboardData.items;
-
-    for (let i = 0; i < items.length; i++) {
-        const item = items[i];
-
-        if (item.type.indexOf('image') === 0) {
-            const blob = item.getAsFile();
-            const reader = new FileReader();
-
-            reader.onload = (e) => {
-                const imgSrc = e.target.result;
-
-                // Prevent duplicate pastes
-                if (uploadedImages.includes(imgSrc)) {
-                    alert("This image has already been uploaded.");
-                    return;
-                }
-
-                // Create an image element
-                const img = new Image();
-                img.src = imgSrc;
-
-                // Show image in the preview area
-                const imgWrapper = createMediaWrapper(img, 'image');
-                document.getElementById("mediaPreview").appendChild(imgWrapper);
-
-                uploadedImages.push(imgSrc); // Track pasted image
-
-                // Convert base64 image to File object
-                const byteCharacters = atob(imgSrc.split(',')[1]);
-                const byteArray = new Uint8Array(byteCharacters.length);
-                for (let i = 0; i < byteCharacters.length; i++) {
-                    byteArray[i] = byteCharacters.charCodeAt(i);
-                }
-                const file = new File([byteArray], "pasted-image.png", { type: 'image/png' });
-
-                // Append the file to the image input
-                const dataTransfer = new DataTransfer();
-                dataTransfer.items.add(file);
-                imageUpload.files = dataTransfer.files;
-            };
-
-            reader.readAsDataURL(blob);
-            event.preventDefault(); // Prevent default paste behavior
-        }
-    }
-}
-
 
 // Helper function to remove the file from the file input list
 function removeFileFromInput(inputElement, fileToRemove) {

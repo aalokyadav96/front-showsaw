@@ -1,0 +1,61 @@
+function createpost() {
+let createform = `<!-- Button to open the modal -->
+<button id="openPostModal">Create New Post</button>
+
+<!-- The Post Creation Modal -->
+<div id="postModal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <span id="modalCloseBtn" class="close">&times;</span>
+    
+    <!-- Step 1: Choose Post Type & Upload Media -->
+    <div id="postStep1" class="post-step">
+      <h2>Step 1: Choose Media</h2>
+      <select id="postType">
+        <option value="">Select Post Type</option>
+        <option value="image">Image</option>
+        <option value="video">Video</option>
+      </select>
+      <input id="imageUpload" type="file" accept="image/*" multiple style="display:none;">
+      <input id="videoUpload" type="file" accept="video/*" multiple style="display:none;">
+      <div id="mediaPreview" class="media-preview"></div>
+    </div>
+    
+    <!-- Step 2: Add Caption, Hashtags, Mentions -->
+    <div id="postStep2" class="post-step" style="display:none;">
+      <h2>Step 2: Add Details</h2>
+      <textarea id="captionInput" placeholder="Write a caption..."></textarea>
+      <input id="hashtagsInput" type="text" placeholder="Add hashtags (e.g., #fun #sun)">
+      <input id="mentionsInput" type="text" placeholder="Mention people (e.g., @john)">
+    </div>
+    
+    <!-- Step 3: Location and Event Details -->
+    <div id="postStep3" class="post-step" style="display:none;">
+      <h2>Step 3: Location & Event</h2>
+      <input id="locationInput" type="text" placeholder="Add location">
+      <input id="eventNameInput" type="text" placeholder="Event name">
+      <input id="eventDateInput" type="date">
+      <input id="eventTimeInput" type="time">
+    </div>
+    
+    <!-- Step 4: Review & Publish / Save Draft -->
+    <div id="postStep4" class="post-step" style="display:none;">
+      <h2>Review Your Post</h2>
+      <!-- You can populate a preview here as needed -->
+      <div id="reviewPreview"></div>
+    </div>
+    
+    <!-- Navigation buttons -->
+    <div class="modal-navigation">
+      <button id="prevStepBtn">Back</button>
+      <button id="nextStepBtn">Next</button>
+      <button id="saveDraftBtn">Save Draft</button>
+      <button id="postNowBtn">Post</button>
+    </div>
+  </div>
+</div>
+`;
+
+return createform;
+}
+
+export {createpost};

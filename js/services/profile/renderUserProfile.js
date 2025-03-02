@@ -1,4 +1,4 @@
-import { state } from "../../state/state.js";
+// import { state } from "../../state/state.js";
 import Button from "../../components/base/Button.js";
 import { displayUserProfileData } from "./otherUserProfileService.js";
 import { displayFollowSuggestions } from "./displayFollowSugg.js";
@@ -49,13 +49,13 @@ function profilGen(profile, isLoggedIn) {
 
     appendChildren(section, loadUserDataButton, udata);
 
-    if (profile.userid === state.user) {
-        const deleteProfileButton = document.createElement("button");
-        deleteProfileButton.className = "btn delete-btn";
-        deleteProfileButton.dataset.action = "delete-profile";
-        deleteProfileButton.textContent = "Delete Profile";
-        section.appendChild(deleteProfileButton);
-    }
+    // if (profile.userid === state.user) {
+    //     const deleteProfileButton = document.createElement("button");
+    //     deleteProfileButton.className = "btn delete-btn";
+    //     deleteProfileButton.dataset.action = "delete-profile";
+    //     deleteProfileButton.textContent = "Delete Profile";
+    //     section.appendChild(deleteProfileButton);
+    // }
 
     profileContainer.appendChild(section);
     return profileContainer;

@@ -5,6 +5,7 @@ import Snackbar from '../../components/ui/Snackbar.mjs';
 import { renderPage, navigate } from "../../routes/index.js";
 import { showLoadingMessage, removeLoadingMessage } from "./profileHelpers.js";
 import { generateFormField } from "./generators.js";
+import {deleteProfile} from "./userProfileService.js";
 
 
 async function editProfile(content) {
@@ -40,7 +41,60 @@ async function editProfile(content) {
         navigate("/profile"); // Assuming a function to navigate back to the profile view
         renderPage();
     });
+
+    const deleteProfileButton = document.createElement("button");
+    deleteProfileButton.className = "btn delete-btn";
+    deleteProfileButton.dataset.action = "delete-profile";
+    deleteProfileButton.textContent = "Delete Profile";
+    content.appendChild(deleteProfileButton);
+    deleteProfileButton.addEventListener("click", () => {
+        deleteProfile();
+    });
 }
+
+// async function editProfile(content) {
+//     content.textContent = ""; // Clear existing content
+
+//     if (!state.userProfile) {
+//         Snackbar("Please log in to edit your profile.", 3000);
+//         return;
+//     }
+
+//     const { username, name, email, bio, phone_number } = state.userProfile;
+
+//     content.innerHTML = `
+//         <h2>Edit Profile</h2>
+//         <form id="edit-profile-form" class="edit-profile-form">
+//             ${generateFormField("Username", "edit-username", "text", username)}
+//             ${generateFormField("Name", "edit-name", "text", name)}
+//             ${generateFormField("Email", "edit-email", "email", email)}
+//             ${generateFormField("Bio", "edit-bio", "textarea", bio || "")}
+//             ${generateFormField("Phone Number", "edit-phone", "text", phone_number || "")}
+//             <button type="button" id="update-profile-btn">Update Profile</button>
+//             <button type="button" id="cancel-profile-btn">Cancel</button>
+//         </form>
+//     `;
+
+//     document.getElementById("update-profile-btn").addEventListener("click", () => {
+//         const form = document.getElementById("edit-profile-form");
+//         updateProfile(new FormData(form));
+//     });
+
+//     document.getElementById("cancel-profile-btn").addEventListener("click", () => {
+//         Snackbar("Profile editing canceled.", 2000);
+//         navigate("/profile"); // Assuming a function to navigate back to the profile view
+//         renderPage();
+//     });
+
+//     const deleteProfileButton = document.createElement("button");
+//     deleteProfileButton.className = "btn delete-btn";
+//     deleteProfileButton.dataset.action = "delete-profile";
+//     deleteProfileButton.textContent = "Delete Profile";
+//     content.appendChild(deleteProfileButton);
+//     deleteProfileButton.addEventListener("click", () => {
+//         deleteProfile();
+//     });
+// }
 
 async function updateProfile(formData) {
     if (!state.token) {

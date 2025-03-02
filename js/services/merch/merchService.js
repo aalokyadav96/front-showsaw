@@ -7,7 +7,7 @@ import { SRC_URL } from "../../state/state.js";
 import {handlePurchase} from '../payment/paymentService.js';
 
 // Add merchandise to the event
-async function addMerchandise(eventId) {
+async function addMerchandise(eventId, merchList) {
     const merchName = document.getElementById('merch-name').value.trim();
     const merchPrice = parseFloat(document.getElementById('merch-price').value);
     const merchStock = parseInt(document.getElementById('merch-stock').value);
@@ -43,7 +43,7 @@ async function addMerchandise(eventId) {
 
         if (response && response.data.merchid) {
             alert("Merchandise added successfully!");
-            displayNewMerchandise(response.data);  // Display the newly added merchandise
+            displayNewMerchandise(response.data, merchList);  // Display the newly added merchandise
             clearMerchForm();  // Optionally clear the form after success
         } else {
             alert(`Failed to add merchandise: ${response?.message || 'Unknown error'}`);
@@ -178,7 +178,7 @@ async function editMerchForm(merchId, eventId) {
     }
 }
 
-function addMerchForm(eventId) {
+function addMerchForm(eventId, merchList) {
     const editEventDiv = document.getElementById('editevent');
     editEventDiv.textContent = ""; // Clear existing content
 
@@ -211,7 +211,7 @@ function addMerchForm(eventId) {
     const addButton = document.createElement("button");
     addButton.id = "add-merch-btn";
     addButton.textContent = "Add Merchandise";
-    addButton.addEventListener("click", () => addMerchandise(eventId));
+    addButton.addEventListener("click", () => addMerchandise(eventId, merchList));
 
     const cancelButton = document.createElement("button");
     cancelButton.id = "cancel-merch-btn";
@@ -221,8 +221,8 @@ function addMerchForm(eventId) {
     editEventDiv.append(heading, merchNameInput, merchPriceInput, merchStockInput, merchImageInput, addButton, cancelButton);
 }
 
-function displayNewMerchandise(merchData) {
-    const merchList = document.getElementById("merch-list");
+function displayNewMerchandise(merchData, merchList) {
+    // const merchList = document.getElementById("merch-list");
 
     const merchItem = document.createElement("div");
     merchItem.className = "merch-item";
@@ -255,7 +255,7 @@ async function displayMerchandise(merchList, merchData, eventId, isCreator, isLo
 
     if (isCreator) {
         const button = Button("Add Merchandise", "add-merch-btn", {
-            click: () => addMerchForm(eventId),
+            click: () => addMerchForm(eventId, merchList),
             mouseenter: () => console.log("Button hovered"),
         });
 
@@ -276,7 +276,7 @@ async function displayMerchandise(merchList, merchData, eventId, isCreator, isLo
         const card = MerchCard({
             name: merch.name,
             price: merch.price,
-            image: `/merchpic/${merch.merch_pic}`,
+            image: `${SRC_URL}/merchpic/${merch.merch_pic}`,
             stock: merch.stock,
             isCreator,
             isLoggedIn,
