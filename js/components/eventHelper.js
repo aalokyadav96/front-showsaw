@@ -1,7 +1,7 @@
 
 // Components
 function createButton({ text, classes = [], id = '', events = {} }) {
-    const button = document.createElement('button');
+    const button = document.createElement('div');
     button.textContent = text;
     button.classList.add(...classes);
     if (id) button.id = id;
@@ -12,6 +12,19 @@ function createButton({ text, classes = [], id = '', events = {} }) {
 
     return button;
 }
+
+// function createButton({ text, classes = [], id = '', events = {} }) {
+//     const button = document.createElement('button');
+//     button.textContent = text;
+//     button.classList.add(...classes);
+//     if (id) button.id = id;
+
+//     for (const event in events) {
+//         button.addEventListener(event, events[event]);
+//     }
+
+//     return button;
+// }
 
 function createHeading(tag, text, classes = []) {
     const heading = document.createElement(tag);

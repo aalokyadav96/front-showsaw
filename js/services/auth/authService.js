@@ -1,5 +1,5 @@
-import { state, API_URL } from "../../state/state.js";
-import { renderPage, navigate } from "../../routes/index.js";
+import { state } from "../../state/state.js";
+import { renderPage } from "../../routes/index.js";
 import { signup } from "./signup.js";
 import { login } from "./login.js";
 

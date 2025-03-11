@@ -137,7 +137,7 @@ async function createPlace(isLoggedIn) {
     const description = document.getElementById("place-description").value.trim();
     const capacity = document.getElementById("capacity").value.trim();
     const category = document.getElementById("category").value.trim();
-    const bannerFile = document.getElementById("place-banner").files[0];
+    const bannerFile = document.getElementById("place-banner-add").files[0];
 
     // Validate input fields
     if (!name || !address || !description || !category || !capacity) {

@@ -6,10 +6,12 @@ import { displayMerchandise } from "../merch/merchService.js";
 import { navigate } from "../../routes/index.js";
 import SnackBar from "../../components/ui/Snackbar.mjs";
 import { createElement } from "../../components/createElement.js";
-import { displayEventTimeline, displayEventFAQ, displayEventReviews } from "./eventTabs.js";
+import { displayEventFAQ, displayEventReviews } from "./eventTabs.js";
 import { displayEventDetails } from "./displayEventDetails.js";
 import { createTabs } from "../../components/ui/createTabs.js";
 import { updateEvent, editEventForm } from "./editEvent.js";
+import { displayLostAndFound, displayContactDetails } from "./eventTabs.js";
+import { displayEventSchedule, displayLivestream } from "./eventTabs.js";
 
 async function fetchEventData(eventId) {
     const eventData = await apiFetch(`/events/event/${eventId}`);
@@ -31,16 +33,39 @@ async function displayEvent(isLoggedIn, eventId, contentContainer) {
         contentContainer.appendChild(container);
 
         const tabs = [
-            { title: 'Tickets', id: 'tickets-tab', render: (container) => displayTickets(container,eventData.tickets, eventId, isCreator, isLoggedIn) },
-            { title: 'Reviews', id: 'reviews-tab', render: (container) => displayEventReviews(container,eventId, isCreator, isLoggedIn) },
-            { title: 'Merchandise', id: 'merch-tab', render: (container) => displayMerchandise(container,eventData.merch, eventId, isCreator, isLoggedIn) },
-            { title: 'Media', id: 'media-tab', render: (container) => displayMedia(container,'event', eventId, isLoggedIn) },
-            { title: 'FAQ', id: 'faq-tab', render: (container) => displayEventFAQ(container,isCreator, eventId, eventData.faqs) },
+            // { title: 'Reviews', id: 'reviews-tab', render: (container) => displayEventReviews(container, eventId, isCreator, isLoggedIn) },
+            // { title: 'Media', id: 'media-tab', render: (container) => displayMedia(container, 'event', eventId, isLoggedIn) },
         ];
+
+        // let estatus = eventData.status;
+        // let estatus = "ongoing";
+
+        const then = new Date(eventData.date)
+        const now = new Date();
+        let timediff = then - now;
+        let estatus = timediff <= 0 ? "ongoing" : "active";
+
+        // Dynamically add tabs based on event status
+        if (estatus === "active") {
+            tabs.push(
+                { title: 'FAQ', id: 'faq-tab', render: (container) => displayEventFAQ(container, isCreator, eventId, eventData.faqs) },
+                { title: 'Tickets', id: 'tickets-tab', render: (container) => displayTickets(container, eventData.tickets, eventId, isCreator, isLoggedIn) },
+                { title: 'Merchandise', id: 'merch-tab', render: (container) => displayMerchandise(container, eventData.merch, eventId, isCreator, isLoggedIn) },
+                { title: 'Schedule', id: 'schedule-tab', render: (container) => displayEventSchedule(container, isCreator, eventData.schedule) },
+            );
+        } else if (estatus === "ongoing") {
+            tabs.push(
+                { title: 'Livestream', id: 'livestream-tab', render: (container) => displayLivestream(container, eventId, isLoggedIn) },
+                { title: 'Reviews', id: 'reviews-tab', render: (container) => displayEventReviews(container, eventId, isCreator, isLoggedIn) },
+                { title: 'Media', id: 'media-tab', render: (container) => displayMedia(container, 'event', eventId, isLoggedIn) },
+                { title: 'Lost & Found', id: 'lnf-tab', render: (container) => displayLostAndFound(container, eventData.lostandfound) },
+                { title: 'Contact', id: 'contact-tab', render: (container) => displayContactDetails(container, eventData.contactInfo) }
+            );
+        }
 
         const tabContainer = createTabs(tabs);
         contentContainer.appendChild(tabContainer);
-        
+
         // const tabContainer = createTabs(tabs, 'tickets-tab');
 
         // contentContainer.appendChild(tabContainer);
@@ -69,4 +94,4 @@ async function deleteEvent(isLoggedIn, eventId) {
     }
 };
 
-export { updateEvent, fetchEventData, editEventForm, deleteEvent, displayEvent, displayEventTimeline, displayEventFAQ, displayEventReviews };
+export { updateEvent, fetchEventData, editEventForm, deleteEvent, displayEvent, displayEventFAQ, displayEventReviews };

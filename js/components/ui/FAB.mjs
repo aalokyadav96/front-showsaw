@@ -46,9 +46,6 @@ const FloatingActionButton = (icon, id, isLoggedIn, user) => {
     // makeDraggable(fabContainer, id);
 };
 
-export default FloatingActionButton;
-export { FloatingActionButton };
-
 /** FAB Navigation Menu */
 const createFabNav = (actionContainer, isLoggedIn, user) => {
     const nav = document.createElement("nav");
@@ -82,3 +79,7 @@ const createFabNav = (actionContainer, isLoggedIn, user) => {
     nav.appendChild(ul);
     actionContainer.appendChild(nav);
 };
+
+
+export default FloatingActionButton;
+export { FloatingActionButton };

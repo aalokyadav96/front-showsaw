@@ -28,6 +28,7 @@ const MerchCard = ({ name, price, image, stock, onBuy, onEdit, onDelete, isCreat
 
         const deleteButton = document.createElement('button');
         deleteButton.textContent = 'Delete';
+        deleteButton.className = 'delete-btn';
         deleteButton.addEventListener('click', onDelete);
 
         actions.appendChild(editButton);

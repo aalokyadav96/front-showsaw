@@ -18,7 +18,7 @@ async function RenderImagePost(mediaContainer, media) {
 
     const imageList = document.createElement('ul');
     imageList.className = `preview_image_wrap__Q29V8 PostPreviewImageView_-artist__WkyUA PostPreviewImageView_-bottom_radius__Mmn-- ${assignedClass}`;
-console.log("fdnb kgbfdh gdf ",media);
+
     media.forEach((img, index) => {
         const listItem = document.createElement('li');
         listItem.className = 'PostPreviewImageView_image_item__dzD2P';
@@ -27,10 +27,10 @@ console.log("fdnb kgbfdh gdf ",media);
 
         // 🔥 Remove "thumb/" from image path
         // image.src = `${SRC_URL}/${img.replace("thumb/", "")}`;
-        image.src = `${SRC_URL}/${img.replace("postpic/", "postpic/thumb/")}`;
+        let imgurl = `${SRC_URL}/${img.replace("static/postpic/", "postpic/thumb/")}`;
+        image.src = imgurl;
         image.alt = "Post Image";
         image.className = 'post-image PostPreviewImageView_post_image__zLzXH';
-
         // Open image in ZoomBox on click
         image.addEventListener("click", () => startZoombox(media, index));
 
@@ -42,11 +42,13 @@ console.log("fdnb kgbfdh gdf ",media);
 }
 
 async function startZoombox(img, index) {
-    if (img.length == 2) {
+    if (img.length === 2) {
         MultiView(img);
     } else {
+        // new ZoomBox(img, index);
         ZoomBox(img, index);
     }
 }
+
 
 export { RenderImagePost };

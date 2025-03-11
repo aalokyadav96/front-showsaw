@@ -1,5 +1,5 @@
 import "../../../css/eventPage.css";
-import "../../../css/tabs.css";
+// import "../../../css/tabs.css";
 import "../../../css/ticketPage.css";
 import { displayEvent } from "../../services/event/eventService.js";
 

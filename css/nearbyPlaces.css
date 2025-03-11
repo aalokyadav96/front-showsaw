@@ -1,6 +1,5 @@
 /* Place Info Section */
 .place-info {
-    background: #fff;
     padding: 16px;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -9,25 +8,25 @@
 }
 
 .place-info h2 {
-    color: #333;
+    /* color: #333; */
     margin-bottom: 8px;
 }
 
 .place-info p {
-    color: #666;
+    /* color: #666; */
     font-size: 14px;
 }
 
 /* Nearby Places Section */
 .nearby-section {
-    background: #f9f9f9;
-    padding: 16px;
+    /* background: #f9f9f9; */
+    /* padding: 16px; */
     border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    /* box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); */
 }
 
 .nearby-section h3 {
-    color: #333;
+    /* color: #333; */
     margin-bottom: 10px;
     text-align: center;
 }
@@ -37,7 +36,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #fff;
+    /* background: #fff; */
+    max-width: 360px;
     padding: 12px;
     border-radius: 6px;
     margin-bottom: 12px;
@@ -52,19 +52,19 @@
 .nearby-details h4 {
     margin: 0;
     font-size: 16px;
-    color: #222;
+    /* color: #222; */
 }
 
 .nearby-details p {
     margin: 4px 0;
-    color: #555;
+    /* color: #555; */
     font-size: 14px;
 }
 
 /* Button */
 .nearby-btn {
-    background: #007bff;
-    color: white;
+    /* background: #007bff; */
+    /* color: white; */
     border: none;
     padding: 8px 14px;
     border-radius: 4px;

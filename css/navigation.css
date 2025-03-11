@@ -6,14 +6,10 @@
 }
 
 .dropdown {
-  position: relative
+  position: relative;
+  padding: 0;
 }
 
-.dropdown-toggle {
-  background-color: rgba(0, 0, 0, 0);
-  border: none;
-  cursor: pointer
-}
 
 .dropdown-menu {
   display: none;
@@ -24,31 +20,19 @@
   box-shadow: 0 4px 8px rgb(0 0 0 / .1)
 }
 
-.dropdown-toggle:focus+.dropdown-menu,
-.dropdown-menu:hover {
-  display: block
-}
 
 .dropdown-item {
   padding: 8px 16px;
   text-decoration: none;
   display: block;
-  color: #000
+  color: #000;
+  width: fit-content;
 }
 
 .dropdown-item:hover {
   background-color: #f0f0f0
 }
 
-.nav-link {
-  padding: 16px;
-  text-decoration: none;
-  color: #000
-}
-
-.nav-link:hover {
-  background-color: #f0f0f0
-}
 
 .profile-dropdown-toggle {
   display: flex;
@@ -66,22 +50,20 @@
   display: none;
   position: absolute;
   top: 100%;
+  z-index: 300;
   right: 0;
+  padding-bottom: 10px;
   background-color: #000000;
   box-shadow: 0 4px 8px rgb(0 0 0 / .1)
 }
 
-.profile-dropdown-toggle:focus+.profile-dropdown-menu,
-.profile-dropdown-menu:hover {
-  display: block
-}
 
 .logout-btn {
   background-color: #fedada;
   border: none;
   cursor: pointer;
   max-width: 6rem;
-  margin: 0 2rem;
+  margin: 0 1rem 0 0;
   text-align: left;
   padding: 8px 16px;
   color: #000;
@@ -115,7 +97,7 @@ header.navbar {
   font-size: 1.5rem;
   font-weight: 700
 }
-
+/* 
 .auth-btn {
   background-color: #ffc107;
   color: #343a40;
@@ -128,9 +110,13 @@ header.navbar {
 
 .auth-btn:hover {
   background-color: #e0a800
-}
+} */
 
-@media (max-width:768px) {
+@media (max-width:640px) {
+  .mobile-menu-icon {
+    display: block;
+  }
+
   .nav-list {
     display: none;
     flex-direction: column;
@@ -146,8 +132,9 @@ header.navbar {
   }
 
   .profile-dropdown-menu {
-    right: auto;
-    left: 10px
+    left: auto;
+    right: 0;
+    top: 3rem;
   }
 }
 
@@ -188,37 +175,28 @@ header.navbar {
   background-color: #555
 }
 
-.profile-image {
-  width: 32px;
-  height: 32px
-}
-
 .dropdown-toggle {
-  background: #02b409;
+  /* background: #02b409; */
+  background: #000000;
   border: 0;
+  cursor: pointer;
   border-radius: 8px;
   color: #fff;
-  font-size: 18px
+  padding: 3px 6px;
+  font-size: 14px
 }
 
 .dropdown-item {
   font-size: 16px
 }
 
-.dropdown-menu {
-  color: #333;
-  border: 1px solid #ddd;
-  z-index: 1000;
-  flex-direction: column
-}
 
 .profile-dropdown-menu,
 .dropdown-menu {
   box-shadow: 0 4px 6px rgb(0 0 0 / .1)
 }
-
+/* 
 nav ul li button {
-  background-color: #ff7043;
   border: 0;
   padding: 8px 16px;
   font-size: 16px;
@@ -228,10 +206,13 @@ nav ul li button {
 
 nav ul li button:hover {
   background-color: #e64a19
-}
+} */
 
 .profile-dropdown-menu.show,
 .dropdown-menu.show {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 0.6rem 0.6rem 0.6rem;
   animation: fadeIn .3s ease-in-out
 }

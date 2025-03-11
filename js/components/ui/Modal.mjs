@@ -32,7 +32,7 @@ const Modal = ({ title, content, onClose }) => {
     modal.appendChild(overlay);
     modal.appendChild(dialog);
   
-    document.body.appendChild(modal);
+    document.getElementById('app').appendChild(modal);
   
     return modal;
   };

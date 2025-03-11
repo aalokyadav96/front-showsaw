@@ -3,6 +3,7 @@
     flex-direction: column;
     gap: 10px;
     flex: 2;
+    max-width: 20rem;
   }
   
   .booking-form input,

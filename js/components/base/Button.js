@@ -1,3 +1,5 @@
+import "../../../css/ui/Button.css";
+
 // Button with custom event handler
 const Button = (title, id, events = {}) =>  {
     const button = document.createElement('button');

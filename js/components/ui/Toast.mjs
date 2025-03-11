@@ -4,7 +4,7 @@ const Toast = (message, type = 'success') => {
     toast.className = `toast ${type}`;
     toast.textContent = message;
   
-    document.body.appendChild(toast);
+    document.getElementById('app').appendChild(toast);
   
     setTimeout(() => toast.remove(), 3000);
   };

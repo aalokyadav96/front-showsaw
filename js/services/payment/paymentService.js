@@ -2,6 +2,7 @@
 import { apiFetch } from "../../api/api.js";
 import { Button } from "../../components/base/Button.js";
 import Modal from "../../components/ui/Modal.mjs";
+import { showSeatSelection } from "../tickets/seats.js";
 
 // Unified function for merchandise or ticket purchase
 async function handlePurchase(type = "merch", itemId, eventId, maxQuantity) {
@@ -24,15 +25,18 @@ async function handlePurchase(type = "merch", itemId, eventId, maxQuantity) {
         document.body.appendChild(modal);
     } else if (type === "ticket") {
         entityType = "event";
-        try {
-            const paymentSession = await createPaymentSession(entityType, type, itemId, eventId, maxQuantity);
-            if (paymentSession) {
-                showPaymentModal(entityType, type, paymentSession, eventId);
+        const modal = createQuantityModal(type, maxQuantity, async (quantity) => {
+            try {
+                const paymentSession = await createPaymentSession(entityType, type, itemId, eventId, quantity);
+                if (paymentSession) {
+                    showPaymentModal(entityType, type, paymentSession, eventId, itemId);
+                }
+            } catch (error) {
+                console.error("Error creating payment session:", error);
+                alert("Failed to initiate payment. Please try again.");
             }
-        } catch (error) {
-            console.error("Error creating payment session:", error);
-            alert("Failed to initiate payment. Please try again.");
-        }
+            modal.remove(); // Close modal after action
+        });
     } else if (type === "menu") {
         entityType = "place";
         try {
@@ -47,8 +51,9 @@ async function handlePurchase(type = "merch", itemId, eventId, maxQuantity) {
     }
 }
 
+
 // Create a reusable modal for quantity input
-function createQuantityModal(type, maxQuantity, onConfirm) {
+function createQuantityModal(entityType, maxQuantity, onConfirm) {
     const content = document.createElement("div");
 
     const quantityLabel = createElement("label", { for: "quantity-input", textContent: "Enter Quantity:" });
@@ -58,7 +63,7 @@ function createQuantityModal(type, maxQuantity, onConfirm) {
         min: "1",
         max: maxQuantity.toString(),
         value: "1",
-        "aria-label": `${type} Quantity`,
+        "aria-label": `${entityType} Quantity`,
     });
 
     const confirmButton = Button("Proceed to Payment", "confirm-purchase-btn", {
@@ -76,7 +81,7 @@ function createQuantityModal(type, maxQuantity, onConfirm) {
     content.append(quantityLabel, quantityInput, confirmButton);
 
     return Modal({
-        title: `Purchase ${type === "merch" ? "Merchandise" : "Ticket"}`,
+        title: `Purchase ${entityType === "merch" ? "Merchandise" : "Ticket"}`,
         content,
     });
 }
@@ -100,7 +105,7 @@ function showPaymentModal(entityType, type, paymentSession, eventId, merchId = n
         content,
         onClose: () => modal.remove(),
     });
-    
+
 
     document.body.appendChild(modal);
 
@@ -126,30 +131,6 @@ function createElement(tag, attributes = {}) {
     return element;
 }
 
-// // Create a payment session for merch or ticket
-// async function createPaymentSession(entityType, itemId, eventId, quantity) {
-//     try {
-//         const apiUrl =
-//             entityType === "ticket"
-//                 ? `/ticket/event/${eventId}/${itemId}/payment-session`
-//                 : `/merch/event/${eventId}/${itemId}/payment-session`;
-
-//         const body = JSON.stringify(
-//             entityType === "ticket"
-//                 ? { quantity }
-//                 : { merchId: itemId, eventId, stock: quantity }
-//         );
-
-//         const response = await apiFetch(apiUrl, "POST", body);
-//         if (response?.success && response?.data) return response.data;
-
-//         throw new Error(response?.message || "Failed to create payment session.");
-//     } catch (error) {
-//         console.error("Error:", error);
-//         alert(`Error: ${error.message}`);
-//         return null;
-//     }
-// }
 
 // Configuration for different entity types
 const ENTITY_CONFIG = {
@@ -189,49 +170,6 @@ async function createPaymentSession(entityType, itemType, itemId, eventId, quant
     }
 }
 
-// // Submit the payment
-// async function submitPayment(entityType, paymentSession, paymentMessage, eventId, merchId = null) {
-//     const cardNumber = document.getElementById("card-number").value.trim();
-//     const expiryDate = document.getElementById("expiry-date").value.trim();
-//     const cvv = document.getElementById("cvv").value.trim();
-
-//     if (!cardNumber || !expiryDate || !cvv) {
-//         paymentMessage.textContent = "Please fill in all fields.";
-//         return;
-//     }
-
-//     paymentMessage.textContent = "Processing payment...";
-
-//     setTimeout(async () => {
-//         try {
-//             // const apiUrl = merchId
-//             //     ? `/merch/event/${eventId}/${merchId}/confirm-purchase`
-//             //     : "/ticket/confirm-purchase";
-
-//             const apiUrl = merchId
-//                 ? `/merch/event/${eventId}/${merchId}/confirm-purchase`
-//                 : `/ticket/event/${eventId}/${merchId}/confirm-purchase`;
-
-//             const payload = JSON.stringify(
-//                 merchId
-//                     ? { merchId, eventId, stock: paymentSession.stock }
-//                     : { ticketId: paymentSession.ticketid, eventId: paymentSession.eventid, quantity: paymentSession.quantity }
-//             );
-
-//             const response = await apiFetch(apiUrl, "POST", payload);
-//             if (response?.message.includes("Payment successfully processed")) {
-//                 alert(`${merchId ? "Merch" : "Ticket"} purchased successfully!`);
-//                 window.location.href = `/event/${eventId}`;
-//             } else {
-//                 throw new Error("Unexpected response from backend.");
-//             }
-//         } catch (error) {
-//             console.error("Error during payment:", error);
-//             alert("Payment failed! Please try again.");
-//             paymentMessage.textContent = "Payment failed. Please try again.";
-//         }
-//     }, 2000);
-// }
 
 const CONFIRM_PURCHASE_CONFIG = {
     ticket: {
@@ -263,6 +201,8 @@ const CONFIRM_PURCHASE_CONFIG = {
 
 // Submit the payment for any entity type
 async function submitPayment(entityType, itemType, paymentSession, paymentMessage, eventId, itemId) {
+    document.getElementById("confirm-payment-btn").disabled = true;
+
     if (!CONFIRM_PURCHASE_CONFIG[itemType]) {
         alert(`Unsupported entity type: ${itemType}`);
         return;
@@ -300,5 +240,6 @@ async function submitPayment(entityType, itemType, paymentSession, paymentMessag
         }
     }, 2000);
 }
+
 
 export { handlePurchase };

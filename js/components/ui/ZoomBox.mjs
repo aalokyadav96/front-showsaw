@@ -1,7 +1,6 @@
 import "../../../css/ui/ZoomBox.css";
 import { SRC_URL } from "../../api/api.js";
 const ZoomBox = (images, initialIndex = 0) => {
-
   // Create overlay container and content container
   const zoombox = document.createElement('div');
   zoombox.className = 'zoombox-overlay';
@@ -82,7 +81,9 @@ const ZoomBox = (images, initialIndex = 0) => {
 
     zoomLevel *= delta > 0 ? 0.9 : 1.1; // Exponential zoom for a natural feel
     // zoomLevel = Math.max(1, Math.min(zoomLevel, Math.max(naturalW / img.width, naturalH / img.height)));
-    zoomLevel = Math.max(1, Math.min(zoomLevel, Math.min(naturalW / img.width, naturalH / img.height)));
+    zoomLevel = Math.max(1, Math.min(zoomLevel, Math.max(naturalW / img.width, naturalH / img.height)));
+    
+    if (zoomLevel > 6) {zoomLevel = 6}
 
     const prevZoom = zoomLevel;
 
@@ -194,7 +195,6 @@ const ZoomBox = (images, initialIndex = 0) => {
     }
   };
 
-
   const onTouchEnd = (event) => {
     if (event.touches.length < 2) {
       initialPinchDistance = null;
@@ -215,7 +215,6 @@ const ZoomBox = (images, initialIndex = 0) => {
       momentum();
     }
   };
-
 
   // const onDoubleTap = (event) => {
   //   const now = Date.now();
@@ -383,12 +382,35 @@ const ZoomBox = (images, initialIndex = 0) => {
   content.appendChild(closeButton);
 
   zoombox.appendChild(content);
-  document.body.appendChild(zoombox);
+  // document.body.appendChild(zoombox);
 
   // Fade in overlay
   requestAnimationFrame(() => {
     zoombox.style.opacity = '1';
   });
+  
+  document.getElementById('app').appendChild(zoombox);
+
+  // Push a new state into history when Zoombox opens
+  history.pushState({ zoomboxOpen: true }, "");
+
+  function closeZoombox() {
+    if (document.getElementById('app').contains(zoombox)) {
+      zoombox.remove();
+      // Go back in history when the Zoombox is closed
+      history.back();
+    }
+  }
+
+  // Handle back button press
+  function onPopState(event) {
+    if (event.state && event.state.sightboxOpen) {
+      closeZoombox();
+    }
+  }
+
+  window.addEventListener("popstate", onPopState);
+
 };
 
 export default ZoomBox;

@@ -1,4 +1,4 @@
-.merch-card {
+.menu-card {
     border: 1px solid #ccc;
     border-radius: 4px;
     padding: 10px;
@@ -8,16 +8,16 @@
     width: 100%;
   }
   
-  .merch-card img {
+  .menu-card img {
     max-width: 100%;
     border-radius: 4px;
   }
   
-  .merch-card h3 {
+  .menu-card h3 {
     margin: 10px 0;
   }
   
-  .merch-card button {
+  .menu-card button {
     padding: 5px 10px;
     background-color: #4caf50;
     color: white;
@@ -26,7 +26,7 @@
     cursor: pointer;
   }
   
-  .merch-card button:hover {
+  .menu-card button:hover {
     background-color: #45a049;
   }
   

@@ -4,7 +4,8 @@ import MerchCard from '../../components/ui/MerchCard.mjs';
 import { Button } from "../../components/base/Button.js";
 import { createElement } from "../../components/createElement.js";
 import { SRC_URL } from "../../state/state.js";
-import {handlePurchase} from '../payment/paymentService.js';
+import { handlePurchase } from '../payment/paymentService.js';
+import SnackBar from "../../components/ui/Snackbar.mjs";
 
 // Add merchandise to the event
 async function addMerchandise(eventId, merchList) {
@@ -42,7 +43,7 @@ async function addMerchandise(eventId, merchList) {
         const response = await apiFetch(`/merch/event/${eventId}`, 'POST', formData);
 
         if (response && response.data.merchid) {
-            alert("Merchandise added successfully!");
+            SnackBar("Merchandise added successfully!");
             displayNewMerchandise(response.data, merchList);  // Display the newly added merchandise
             clearMerchForm();  // Optionally clear the form after success
         } else {
@@ -133,6 +134,7 @@ async function editMerchForm(merchId, eventId) {
 
         const submitButton = document.createElement("button");
         submitButton.type = "submit";
+        submitButton.className = "button";
         submitButton.textContent = "Update Merchandise";
 
         // Append all elements to the form
@@ -250,17 +252,21 @@ function displayNewMerchandise(merchData, merchList) {
 }
 
 // Update the usage of MerchCard in displayMerchandise
-async function displayMerchandise(merchList, merchData, eventId, isCreator, isLoggedIn) {
-    merchList.innerHTML = ""; // Clear existing content
+async function displayMerchandise(merchcon, merchData, eventId, isCreator, isLoggedIn) {
+    var merchList = document.createElement('div');
+    merchList.className = "merchcon hvflex";
 
     if (isCreator) {
-        const button = Button("Add Merchandise", "add-merch-btn", {
+        const button = Button("Add Merchandise", "add-merch", {
             click: () => addMerchForm(eventId, merchList),
             mouseenter: () => console.log("Button hovered"),
         });
 
-        merchList.appendChild(button);
+        merchcon.appendChild(button);
     }
+
+    merchcon.appendChild(merchList);
+    merchList.innerHTML = ""; // Clear existing content
 
     if (!Array.isArray(merchData)) {
         merchList.appendChild(createElement("p", { textContent: "Invalid merchandise data received." }));

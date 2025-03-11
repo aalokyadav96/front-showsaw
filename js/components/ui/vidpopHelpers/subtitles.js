@@ -1,4 +1,4 @@
-import { parseVTT } from "./utils.js";
+import { parseVTT } from "./vutils.js";
 
 async function setupSubtitles(video, subtitles, subtitleContainer) {
   const subtitleTracks = await Promise.all(

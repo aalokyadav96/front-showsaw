@@ -3,7 +3,8 @@ import { createButton, createHeading, createContainer, createImage, createLink }
 import { createElement } from "../../components/createElement.js";
 import { editEventForm } from "./editEvent.js";
 import { deleteEvent } from "./eventService.js";
-import { displayEventVenue } from "./eventTabs.js";
+// import { displayEventVenue } from "./eventTabs.js";
+// import CountDown from "../../components/ui/Countdown.mjs";
 
 async function displayEventDetails(content, eventData, isCreator, isLoggedIn) {
     content.innerHTML = '';
@@ -27,9 +28,16 @@ async function displayEventDetails(content, eventData, isCreator, isLoggedIn) {
     const eventInfo = createContainer(['event-info']);
     if (eventData.title) { eventInfo.appendChild(createHeading('h1', eventData.title, ['event-title'])); }
     if (eventData.description) { eventInfo.appendChild(createHeading('p', `Description: ${eventData.description}`, ['event-description'])); }
-    if (eventData.place) { eventInfo.appendChild(createHeading('p', `Place:  ${eventData.place}`, ['event-place'])); }
+    if (eventData.place) { eventInfo.appendChild(createHeading('strong', `Place:  ${eventData.place}`, ['event-place'])); }
     if (eventData.status) { eventInfo.appendChild(createHeading('p', eventData.status, ['event-status'])); }
-    eventInfo.appendChild(createHeading('p', `📅 ${new Date(eventData.start_date_time).toLocaleString()} - ${new Date(eventData.end_date_time).toLocaleString()}`, ['event-dates']));
+    if (eventData.date) { eventInfo.appendChild(createHeading('p', `${new Date(eventData.date).toLocaleString()}`, ['event-date'])); }
+
+    // const then = new Date(eventData.date); // This will be in local time (e.g., 17:10 IST)
+    // console.log("then:", then); // Should log: Sat Mar 08 2025 17:10:00 GMT+0530 (India Standard Time)
+    // if (eventData.date) {
+    //     eventInfo.appendChild(CountDown(then));
+    // }
+
 
     // Social Links
     if (eventData.social_links) {
@@ -80,12 +88,12 @@ async function displayEventDetails(content, eventData, isCreator, isLoggedIn) {
         eventWrapper.appendChild(eventActions);
     }
 
-    const eventVenue = createContainer(['event-venue','event-card']);
-    displayEventVenue(eventVenue, eventData.place, isLoggedIn);
+    // const eventVenue = createContainer(['event-venue']);
+    // displayEventVenue(eventVenue, eventData.place, eventData.eventid, isLoggedIn);
 
     eventWrapper.appendChild(eventCard);
-    eventWrapper.appendChild(eventVenue);
-    eventWrapper.appendChild(createContainer(['eventedit'   ], 'editevent'));
+    // eventWrapper.appendChild(eventVenue);
+    eventWrapper.appendChild(createContainer(['eventedit'], 'editevent'));
     content.appendChild(eventWrapper);
 }
 

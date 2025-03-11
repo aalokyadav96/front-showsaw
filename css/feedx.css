@@ -1,0 +1,199 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+
+/* Main Feed */
+.feed {
+    width: 100%;
+    max-width: 600px;
+    border-radius: 10px;
+    /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
+}
+
+/* Post Composer */
+.post-compose {
+    padding: 15px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.post-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.post-type-selector {
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+/* Media Upload */
+.media-upload {
+    margin: 10px 0;
+}
+
+.media-preview {
+    max-height: 200px;
+    height: 100%;
+    border: 1px solid #ddd;
+    /* padding: 10px; */
+    border-radius: 5px;
+    background: #fff;
+}
+
+/* Post Button */
+.post-button {
+    width: 100%;
+    padding: 10px;
+    background: #007bff;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.post-button:hover {
+    background: #0056b3;
+}
+
+/* Timeline */
+#postsContainer {
+    margin-top: 20px;
+}
+
+.timeline-item {
+    border-radius: 8px;
+    margin-bottom: 15px;
+    padding: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+/* Post Header */
+.post-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.user-icon img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.user-time {
+    margin-left: 10px;
+}
+
+.username {
+    font-weight: bold;
+    font-size: 16px;
+    color: #000;
+}
+
+.timestamp {
+    font-size: 12px;
+    color: #777;
+}
+
+/* Post Media */
+.post-media {
+    margin-top: 10px;
+}
+
+.post-image {
+    width: 100%;
+    border-radius: 5px;
+}
+
+/* Multiple Images in Post */
+/* .preview_image_wrap__Q29V8 {
+    display: flex;
+    gap: 5px;
+} */
+
+.PostPreviewImageView_image_item__dzD2P img {
+    width: 32%;
+    border-radius: 5px;
+}
+
+/* Video Player */
+.video-container {
+    position: relative;
+    background: black;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.video-player {
+    width: 100%;
+    border-radius: 5px;
+}
+
+
+
+/* Post Actions */
+.post-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.like,
+.comment {
+    cursor: pointer;
+    color: #007bff;
+}
+
+.like:hover,
+.comment:hover {
+    text-decoration: underline;
+}
+
+/* Delete Button */
+.delete-btn {
+    background: #dc3545;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.delete-btn:hover {
+    background: #b71c1c;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .feed {
+        width: 100%;
+    }
+
+    .post-compose {
+        padding: 10px;
+    }
+
+    .timeline-item {
+        padding: 10px;
+    }
+}

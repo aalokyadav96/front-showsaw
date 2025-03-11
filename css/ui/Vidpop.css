@@ -6,6 +6,7 @@
     margin: auto;
     background-color: #000;
     border-radius: 10px;
+    justify-content: center;
     overflow: hidden;
     position: relative;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
@@ -79,6 +80,7 @@
     border-radius: 3px;
     transition: width 0.2s ease;
   }
+  
   
   /* Buttons Section */
   .buttons {

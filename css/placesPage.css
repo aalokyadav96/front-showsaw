@@ -1,0 +1,72 @@
+/* Container for places */
+#places {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 10px;
+  }
+  
+  /* Individual place item */
+  .place {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    width: 300px; /* Adjust as needed */
+  }
+  
+  /* Hover effect for place */
+  .place:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  }
+  
+  /* Styling for the anchor tag */
+  .place a {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    padding: 15px;
+  }
+  
+  /* Place title */
+  .place h1 {
+    font-size: 1.5rem;
+    margin: 0 0 10px;
+    text-align: center;
+  }
+  
+  /* Place image */
+  .place img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+  }
+  
+  /* Address and Description styling */
+  .place p {
+    margin: 10px 0;
+    font-size: 0.95rem;
+    color: #444;
+  }
+  
+  /* Strong text inside paragraphs */
+  .place p strong {
+    color: #000;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    #places {
+      justify-content: center;
+    }
+    
+    .place {
+      width: 100%;
+      max-width: 400px; /* Adjust as needed */
+    }
+  }
+  

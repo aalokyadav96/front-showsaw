@@ -6,10 +6,11 @@
     margin-bottom: 3rem;
 }
 
-/* input, textarea, select, button {
+input, textarea, select {
     font-size: 1em;
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
+    background-color: blanchedalmond;
     width: 100%;
-} */
+}

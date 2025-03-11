@@ -7,7 +7,9 @@ async function Auth(isLoggedIn, contentContainer) {
 }
 
 function displayAuthSection(isLoggedIn, contentContainer) {
-    const authSection = contentContainer;
+    const authSection = document.createElement('div');
+    authSection.className = "onepadd";
+    contentContainer.appendChild(authSection);
 
     // Clear previous content
     authSection.innerHTML = '';

@@ -80,32 +80,6 @@ const VideoPlayer = (
     }
   });
 
-  // // Quality Selector Dropdown
-  // const qualitySelector = document.createElement("select");
-  // qualitySelector.className = "quality-selector";
-
-  // availableQualities.forEach((quality) => {
-  //   const qualityLabel = quality === "original" ? "Original" : `${quality}p`;
-  //   const qualityValue = quality === "original" ? `${baseSrc}.mp4` : `${baseSrc}-${quality}p.mp4`;
-
-  //   const option = document.createElement("option");
-  //   option.value = qualityValue;
-  //   option.textContent = qualityLabel;
-  //   option.selected = storedQuality === qualityLabel;
-  //   qualitySelector.appendChild(option);
-  // });
-
-  // // Change video quality dynamically and store preference
-  // qualitySelector.addEventListener("change", (event) => {
-  //   const selectedSrc = event.target.value;
-  //   const selectedQuality = selectedSrc.includes("-") ? selectedSrc.split("-").pop().replace(".mp4", "") : "original";
-
-  //   if (selectedQuality !== storedQuality) {
-  //     localStorage.setItem("videoQuality", selectedQuality);
-  //     video.src = selectedSrc;
-  //     video.play();
-  //   }
-  // });
 
   // Toggle play/pause on click
   video.addEventListener("click", function () {
@@ -129,11 +103,14 @@ const VideoPlayer = (
   video.setAttribute("aria-label", "Video Player");
   theaterButton.setAttribute("title", "Activate Theater Mode");
 
+  const buttcon = document.createElement("div");
+  buttcon.className = `hflex buttcon`;
 
   // Append elements
   videocon.appendChild(video);
-  videocon.appendChild(qualitySelector);
-  videocon.appendChild(theaterButton);
+  videocon.appendChild(buttcon);
+  buttcon.appendChild(qualitySelector);
+  buttcon.appendChild(theaterButton);
 
   return videocon;
 };

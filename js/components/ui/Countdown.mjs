@@ -1,31 +1,37 @@
 import "../../../css/ui/Countdown.css";
-const Countdown = (endDate, onEnd = () => {}) => {
-    const container = document.createElement('div');
-    container.className = 'countdown';
-  
-    const updateCountdown = () => {
-      const now = new Date();
-      const distance = endDate - now;
-  
-      if (distance <= 0) {
-        clearInterval(interval);
-        onEnd();
-        container.textContent = 'Time is up!';
-        return;
-      }
-  
-      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-  
-      container.textContent = `${hours}h ${minutes}m ${seconds}s`;
-    };
-  
-    const interval = setInterval(updateCountdown, 1000);
-    updateCountdown();
-  
-    return container;
-  };
-  
-  export default Countdown;
-  
+
+const Countdown = (targetDate, onEnd = () => {}) => {
+  // `targetDate` should already be a Date object in local time.
+  const container = document.createElement('div');
+  container.className = 'countdown';
+
+  let interval; // Declare interval before use
+
+  function updateCountdown() {
+    const now = new Date();
+    const timeDiff = targetDate.getTime() - now.getTime();
+
+    if (timeDiff <= 0) {
+      container.textContent = "Event Started!";
+      clearInterval(interval);
+      onEnd();
+      return;
+    }
+
+    const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+
+    container.textContent =
+      (days > 0 ? `${days}d ` : "") +
+      `${hours}h ${minutes}m ${seconds}s`;
+  }
+
+  updateCountdown();
+  interval = setInterval(updateCountdown, 1000);
+
+  return container;
+};
+
+export default Countdown;

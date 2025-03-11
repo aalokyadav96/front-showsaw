@@ -5,6 +5,7 @@ import { Button } from "../../components/base/Button.js";
 import { createElement } from "../../components/createElement.js";
 import { SRC_URL } from "../../state/state.js";
 import {handlePurchase} from '../payment/paymentService.js';
+import SnackBar from "../../components/ui/Snackbar.mjs";
 
 // Add Menu to the event
 async function addMenu(placeId, menuList) {
@@ -42,9 +43,9 @@ async function addMenu(placeId, menuList) {
         const response = await apiFetch(`/places/menu/${placeId}`, 'POST', formData);
 
         if (response && response.data.menuid) {
-            alert("Menu added successfully!");
+            SnackBar("Menu added successfully!");
+            clearMenuForm(menuList);  // Optionally clear the form after success
             displayNewMenu(response.data, menuList);  // Display the newly added Menu
-            clearMenuForm();  // Optionally clear the form after success
         } else {
             alert(`Failed to add Menu: ${response?.message || 'Unknown error'}`);
         }
@@ -54,8 +55,8 @@ async function addMenu(placeId, menuList) {
 }
 
 // Clear the Menu form
-function clearMenuForm() {
-    document.getElementById('editplace').innerHTML = '';
+function clearMenuForm(menuList) {
+    menuList.innerHTML = '';
 }
 
 async function deleteMenu(menuId, placeId) {

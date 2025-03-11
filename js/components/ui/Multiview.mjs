@@ -137,7 +137,7 @@ const MultiView = (images) => {
     content.appendChild(closeButton);
   
     multiview.appendChild(content);
-    document.body.appendChild(multiview);
+    document.getElementById('app').appendChild(multiview);
   
     // Fade in overlay
     requestAnimationFrame(() => {

@@ -1,51 +1,54 @@
-/** Initialize main tabs for "Content" and "Subcontent". */
-function initializeMainTabs(content) {
-    const mainTabContainer = document.createElement("div");
-    mainTabContainer.classList.add("main-tab-container");
-
-    const mainTabButtons = document.createElement("div");
-    mainTabButtons.classList.add("main-tab-buttons");
-
-    const mainTabContents = document.createElement("div");
-    mainTabContents.classList.add("main-tab-contents");
-
+/**
+ * Utility function to create an HTML element with given attributes and optional text.
+ * (This function can be shared with subTabs.js if you choose to extract it to a common module.)
+ * @param {string} tag - HTML tag name.
+ * @param {Object} attributes - Attributes to set on the element.
+ * @param {string} [textContent] - Optional text content.
+ * @returns {HTMLElement} - The created element.
+ */
+function createElement(tag, attributes = {}, textContent = "") {
+    const element = document.createElement(tag);
+    Object.entries(attributes).forEach(([key, value]) => element.setAttribute(key, value));
+    if (textContent) element.textContent = textContent;
+    return element;
+  }
+  
+  /**
+   * Initializes the main tab container.
+   * @param {HTMLElement} content - The container where main tabs are added.
+   * @returns {Object} - An object containing:
+   *    - mainTabContainer: The overall container.
+   *    - mainTabButtons: The container for main tab buttons.
+   *    - mainTabContents: The container for main tab sections.
+   */
+  function initializeMainTabs(content) {
+    const mainTabContainer = createElement("div", { class: "main-tab-container" });
+    const mainTabButtons = createElement("div", { class: "main-tab-buttons" });
+    const mainTabContents = createElement("div", { class: "main-tab-contents" });
+  
+    mainTabContainer.append(mainTabButtons, mainTabContents);
     content.appendChild(mainTabContainer);
-    mainTabContainer.appendChild(mainTabButtons);
-    mainTabContainer.appendChild(mainTabContents);
-
+  
     return { mainTabContainer, mainTabButtons, mainTabContents };
-}
-
-/** Activate a main tab and hide others. */
-function activateMainTab(activeSection) {
-    const allSections = document.querySelectorAll(".main-tab-contents > div");
-
-    allSections.forEach((section) => {
-        if (section === activeSection) {
-            section.style.display = "block";
-        } else {
-            section.style.display = "none"; // Hide all other sections
-        }
+  }
+  
+  /**
+   * Activates a main tab given its index.
+   * @param {number} index - The index of the main tab to activate.
+   * @param {HTMLElement} mainTabButtons - The container for main tab buttons.
+   * @param {HTMLElement} mainTabContents - The container for main tab sections.
+   */
+  function activateMainTab(index, mainTabButtons, mainTabContents) {
+    const sections = Array.from(mainTabContents.children);
+    const buttons = Array.from(mainTabButtons.children);
+  
+    sections.forEach((section, i) => {
+      section.style.display = i === index ? "block" : "none";
     });
-
-    // Ensure only the clicked main tab button is active
-    document.querySelectorAll(".main-tab-button").forEach((btn) => {
-        btn.classList.remove("active");
+    buttons.forEach((btn, i) => {
+      btn.classList.toggle("active", i === index);
     });
-
-    const activeButton = document.querySelector(
-        `.main-tab-buttons button:nth-child(${Array.from(activeSection.parentElement.children).indexOf(activeSection) + 1})`
-    );
-    if (activeButton) activeButton.classList.add("active");
-}
-
-document.querySelectorAll(".main-tab-button").forEach((button, index) => {
-    button.addEventListener("click", () => {
-        const sections = document.querySelectorAll(".main-tab-contents > div");
-        activateMainTab(sections[index]); // Switch to the correct section
-    });
-});
-
-
-
-export { initializeMainTabs, activateMainTab };
+  }
+  
+  export { initializeMainTabs, activateMainTab };
+  

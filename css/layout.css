@@ -29,6 +29,25 @@ body::-webkit-scrollbar-thumb {
 }
 
 
+/**********************************/
+#app {
+    display: flex;
+    flex-direction: column;
+    max-height: 100vh;
+    overflow-y: scroll;
+    padding-bottom: 6rem;
+}
+
+/* Content */
+#content {
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/************/
+
 #ad-container {
     border: 1px solid #ccc;
     padding: 10px;
@@ -40,12 +59,12 @@ ul {
     list-style-type: none;
 }
 
-
+/* 
 .profile-image {
     width: 50px;
     height: 50px;
     border-radius: 50%;
-}
+} */
 
 
 .logout-btn {
@@ -73,7 +92,6 @@ ul {
     list-style: none;
 }
 
-button,
 a {
     text-decoration: none;
     color: inherit;
@@ -94,7 +112,7 @@ a {
 .hvflex {
     display: flex;
     flex-direction: row;
-    gap: 8px;
+    gap: 16px;
 }
 
 .griddy {
@@ -102,7 +120,7 @@ a {
 }
 
 /* Responsive layout - makes a one column layout instead of a two-column layout */
-@media (max-width: 800px) {
+@media (max-width: 640px) {
     .hvflex {
         flex-direction: column;
     }
@@ -119,13 +137,6 @@ a {
     width: max-content;
 }
 
-/* Content */
-#content {
-    padding: 6px;
-    gap: 10px;
-    display: flex;
-    flex-direction: column;
-}
 
 .form-group {
     margin-bottom: 16px;
@@ -133,21 +144,21 @@ a {
     flex-direction: column;
 }
 
-textarea,
+/* textarea,
 select,
 button {
-    font-size: 1em;
+    font-size: 1rem;
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
-    /* margin-right: 0.4rem; */
-    /* width: 100%; */
-}
+    margin-right: 0.4rem;
+    width: 100%;
+} */
 
-
+/* 
 button:hover {
     background-color: #555;
-}
+} */
 
 textarea {
     resize: vertical;
@@ -172,14 +183,14 @@ textarea {
 
 @media (max-width: 480px) {
     .logo-link {
-        font-size: 1.2em;
+        padding-top: 10px;
+        font-size: 1.2rem;
     }
 
     .form-group {
         margin-bottom: 12px;
     }
 
-    button,
     input,
     textarea,
     select {
@@ -187,16 +198,6 @@ textarea {
     }
 }
 
-/**********************************/
-#app {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    overflow-y: scroll;
-}
-
-
-/************/
 
 h1,
 h2,
@@ -208,11 +209,11 @@ ul {
     list-style: none;
     padding: 0;
 }
-
+/* 
 button:hover {
     background-color: #0056b3;
     color: #fff;
-}
+} */
 
 .ticket-actions,
 .merch-actions {
@@ -319,7 +320,7 @@ textarea {
     }
 }
 
-
+/* 
 footer {
     text-align: center;
     padding: 10px 20px;
@@ -327,11 +328,14 @@ footer {
     color: #fff;
     font-size: 0.9rem;
     position: absolute;
+} */
+
+.onepadd {
+    padding: 1rem;
 }
 
-
-
 input,
+select,
 .form-group input,
 .form-group select,
 .post-title-input {
@@ -339,4 +343,17 @@ input,
     border: 1px solid #ddd;
     border-radius: 4px;
     font-size: 14px;
+}
+
+
+/* Dark Mode */
+@media (prefers-color-scheme: dark) {
+    body {
+        background: #121212;
+        color: #f1f1f1;
+    }
+}
+
+label {
+    color: #000;
 }

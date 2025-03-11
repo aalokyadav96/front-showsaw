@@ -1,24 +1,40 @@
 import { loadContent } from "./routes/index.js";
 
-// Initialize the page load based on the current URL
-function init() {
-    // Load the content based on the current URL when the page is first loaded
-    loadContent(window.location.pathname);
+async function init() {
+  // const lang = detectLanguage();
+  // await applyTranslations(lang); // Apply translations on startup
+  loadContent(window.location.pathname);
 
-    // Listen for browser back/forward navigation
-    window.addEventListener("popstate", () => {
-        if (!document.hidden) {
-            loadContent(window.location.pathname);
-        }
-    });
+  // Handle browser navigation (back/forward buttons)
+  window.addEventListener("popstate", () => {
+    if (!document.hidden) {
+      loadContent(window.location.pathname);
+    }
+  });
 
-    // Detect if page is restored from bfcache and prevent unnecessary reload
-    window.addEventListener("pageshow", (event) => {
-        if (event.persisted) {
-            console.log("Page restored from bfcache, skipping reload");
-        }
-    });
+  // // Handle bfcache restores efficiently
+  // document.addEventListener("visibilitychange", () => {
+  //     if (document.visibilityState === "visible") {
+  //         console.log("Page restored from bfcache, refreshing state");
+  //         state.token = sessionStorage.getItem("token") || localStorage.getItem("token") || null;
+  //     }
+  // });
+
+  window.addEventListener('pageshow', (event) => {
+    if (event.persisted) {
+      console.log('This page was restored from the bfcache.');
+    } else {
+      console.log('This page was loaded normally.');
+    }
+  });
+
+  window.addEventListener('pagehide', (event) => {
+    if (event.persisted) {
+      console.log('This page *might* be entering the bfcache.');
+    } else {
+      console.log('This page will unload normally and be discarded.');
+    }
+  });
 }
 
-// Start the app
 init();

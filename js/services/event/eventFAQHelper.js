@@ -1,6 +1,7 @@
 import { Button } from "../../components/base/Button.js";
 import { createElement } from "../../components/createElement.js";
 import { apiFetch } from "../../api/api.js"; // Assuming you have these utility functions
+import { Accordion } from "../../components/ui/Accordion.mjs";
 
 async function displayEventFAQs(isCreator, faqContainer, eventId, faques) {
     faqContainer.innerHTML = ''; // Clear existing content
@@ -12,30 +13,9 @@ async function displayEventFAQs(isCreator, faqContainer, eventId, faques) {
         });
         faqContainer.appendChild(addFaqButton);
     }
-    
-    // Fetch FAQs dynamically from the backend
-    try {
-        // const faqs = await apiFetch(`/events/event/${eventId}/faqs`); // Adjust the endpoint as needed
-        const faqs = faques
-        if (faqs && faqs.length > 0) {
-            faqs.forEach(({ title, content }) => {
-                renderFaqItem(title, content, faqContainer);
-            });
-        } else {
-            faqContainer.appendChild(
-                createElement('p', {}, ["No FAQs Given"]),
-            );
-        }
-    } catch (error) {
-        console.error("Failed to fetch FAQs:", error);
-        faqContainer.appendChild(
-            createElement("p", {
-                textContent: "Failed to load FAQs. Please try again later.",
-                classes: ["error-message"],
-            })
-        );
-    }
+    faqContainer.appendChild(Accordion(faques));
 }
+
 
 // Function to render a single FAQ item
 function renderFaqItem(title, content, container) {
@@ -70,7 +50,7 @@ function showFaqForm(faqContainer, eventId) {
 
     const submitButton = createElement('input', {
         type: 'submit',
-        value: 'Add FAQ',
+        value: 'Add New FAQ',
         classes: ['submit-faq-btn'],
     });
 
@@ -78,12 +58,12 @@ function showFaqForm(faqContainer, eventId) {
     form.appendChild(answerInput);
     form.appendChild(submitButton);
 
-    faqContainer.appendChild(form);
+    faqContainer.prepend(form);
 
     // Handle form submission
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
-
+        submitButton.disabled = true;
         const title = questionInput.value.trim();
         const content = answerInput.value.trim();
 

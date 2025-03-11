@@ -1,6 +1,7 @@
 import { SRC_URL, apiFetch } from "../../api/api.js";
 import Snackbar from "../../components/ui/Snackbar.mjs";
 import { navigate } from "../../routes/index.js";
+// import { toggleFollow } from "./toggleFollow.js";
 
 async function displayFollowSuggestions(userid, suggestionsSection) {
     suggestionsSection.innerHTML = ""; // Clear previous content
@@ -23,10 +24,11 @@ async function displayFollowSuggestions(userid, suggestionsSection) {
                 // Profile Picture
                 const profilePic = document.createElement("img");
                 profilePic.className = "profile-picture";
-                profilePic.src = user.userid ? `${SRC_URL}/userpic/thumb/${user.userid}.jpg` : "/default-avatar.jpg";
+                profilePic.src = user.userid ? `${SRC_URL}/userpic/thumb/${user.userid}.jpg` : "${SRC_URL}/userpic/thumb/default-avatar.jpg";
                 profilePic.alt = `${user.username}'s profile`;
                 profilePic.setAttribute("loading", "lazy");
-                profilePic.addEventListener("click", () => navigate(`/user/${user.username}`));
+                
+                // listItem.addEventListener("click", () => navigate(`/user/${user.username}`));
 
                 // Username
                 const username = document.createElement("span");
@@ -38,13 +40,21 @@ async function displayFollowSuggestions(userid, suggestionsSection) {
                 bio.className = "bio";
                 bio.textContent = user.bio;
 
+                // // Follow Button
+                // const followButton = document.createElement("button");
+                // followButton.className = "follow-btn";
+                // followButton.textContent = user.is_following ? "Following" : "Follow";
+                // followButton.dataset.userid = user.userid;
+                // // followButton.onclick = () => toggleFollow(user.userid, followButton, profile);
+                
                 // Follow Button
                 const followButton = document.createElement("button");
                 followButton.className = "follow-btn";
-                followButton.textContent = user.is_following ? "Following" : "Follow";
+                followButton.textContent = "View Profile";
                 followButton.dataset.userid = user.userid;
-                followButton.onclick = () => toggleFollow(user.userid, followButton);
+                followButton.addEventListener("click", () => navigate(`/user/${user.username}`));
 
+                
                 // Append elements
                 listItem.appendChild(profilePic);
                 listItem.appendChild(username);

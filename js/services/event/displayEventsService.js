@@ -59,6 +59,10 @@ async function displayEvents(isLoggedIn, content, contentcon, page = 1) {
     const eventsPerPage = 4; // Number of events per page
     content.innerHTML = ''; // Clear the main content area
 
+    const efventhead = document.createElement("h1");
+    efventhead.textContent = "Events";
+    content.appendChild(efventhead);
+    
     // Create a container for events
     const eventDiv = document.createElement("div");
     eventDiv.id = "events";
@@ -76,7 +80,8 @@ async function displayEvents(isLoggedIn, content, contentcon, page = 1) {
         }
 
         // Handle pagination
-        const totalEvents = await fetchTotalEventCount(); // Get the total event count from the backend
+        // const totalEvents = await fetchTotalEventCount(); // Get the total event count from the backend
+        const totalEvents = 7;
         const totalPages = Math.ceil(totalEvents / eventsPerPage);
 
         const paginationContainer = document.getElementById("pagination") || document.createElement('div');
@@ -93,7 +98,7 @@ async function displayEvents(isLoggedIn, content, contentcon, page = 1) {
 
         // Append the pagination to the content container
         if (!document.getElementById("pagination")) {
-            contentcon.appendChild(paginationContainer);
+            content.appendChild(paginationContainer);
         }
     } catch (error) {
         content.innerHTML = "<h2>Error loading events. Please try again later.</h2>";
@@ -103,15 +108,15 @@ async function displayEvents(isLoggedIn, content, contentcon, page = 1) {
 
 
 // Generate HTML for each event
-function generateEventHTML(event) {
+function generateEventHTML(eevent) {
     return `
-        <div class="event" id="event-${event.eventid}">
-            <a href="/event/${event.eventid}" title="View event details" id="a-${event.eventid}">
-                <h1>${event.title}</h1>
-                <img src="${SRC_URL}/eventpic/${event.banner_image}" alt="${event.title} Banner" style="width: 100%; max-height: 300px; object-fit: cover;" />
-                <p><strong>Place:</strong> ${event.place}</p>
-                <p><strong>Date:</strong> ${event.date}</p>
-                <p><strong>Description:</strong> ${event.description}</p>
+        <div class="event" id="event-${eevent.eventid}">
+            <a href="/event/${eevent.eventid}" title="View event details" id="a-${eevent.eventid}">
+                <img src="${SRC_URL}/eventpic/${eevent.banner_image}" alt="${eevent.title} Banner" style="width: 100%; max-height: 150px; object-fit: cover;" />
+                <h1>${eevent.title}</h1>
+                <p><strong>Place:</strong> ${eevent.place}</p>
+                <p><strong>Date:</strong> ${new Date(eevent.date).toLocaleString()}</p>
+                <!--p><strong>Description:</strong> ${eevent.description}</p-->
             </a>
         </div>
     `;

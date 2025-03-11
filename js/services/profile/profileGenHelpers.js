@@ -1,5 +1,5 @@
 import { SRC_URL, state } from "../../state/state.js";
-import Sightbox from "../../components/ui/Sightbox.mjs";
+import Sightbox from "../../components/ui/SightBox.mjs";
 import { toggleFollow } from "./toggleFollow.js";
 import Modal from "../../components/ui/Modal.mjs";
 import { formatDate } from "./profileHelpers.js";
@@ -26,9 +26,15 @@ function appendChildren(parent, ...children) {
 function createBanner(profile) {
     const bgImg = document.createElement("span");
     bgImg.className = "bg_img";
-    const bannerPicture = profile.banner_picture || `${profile.username}.jpg`;
-    bgImg.style.backgroundImage = `url(${SRC_URL}/userpic/banner/${bannerPicture})`;
-    bgImg.addEventListener("click", () => Sightbox(`${SRC_URL}/userpic/banner/${bannerPicture}`, "image"));
+
+    // Use user's banner picture if available; otherwise, use default banner
+    const bannerPicture = profile.banner_picture 
+        ? `${SRC_URL}/userpic/banner/${profile.banner_picture}` 
+        : `${SRC_URL}/userpic/banner/default.webp`;
+
+    bgImg.style.backgroundImage = `url(${bannerPicture})`;
+    bgImg.addEventListener("click", () => Sightbox(bannerPicture, "image"));
+
     return bgImg;
 }
 
@@ -41,7 +47,7 @@ function createBannerEditButton(profile) {
     editButton.addEventListener("click", () => {
         const content = document.createElement("div");
         const contentx = document.createElement("div");
-        content.appendChild(generateBannerForm(contentx, profile.username));
+        content.appendChild(generateBannerForm(contentx, profile.banner_picture));
 
         const modal = Modal({
             title: "Edit Banner",
@@ -54,18 +60,27 @@ function createBannerEditButton(profile) {
 }
 
 /* Creates the profile picture area */
+/* Creates the profile picture area */
 function createProfilePicture(profile) {
     const profileArea = document.createElement("div");
     profileArea.className = "profile_area";
 
     const thumb = document.createElement("span");
     thumb.className = "thumb";
+
+    // Use default profile picture if none is available
+    const profilePic = profile.profile_picture ? `${SRC_URL}/userpic/${profile.profile_picture}` : `${SRC_URL}/userpic/default-profile.png`;
+
     const img = document.createElement("img");
-    img.src = `${SRC_URL}/userpic/${profile.username}.jpg`;
+    img.src = profilePic;
     img.alt = "Profile Picture";
     img.className = "imgful";
     thumb.appendChild(img);
-    thumb.addEventListener("click", () => Sightbox(`${SRC_URL}/userpic/${profile.username}.jpg`, "image"));
+
+    // Add click event to open full image if available
+    if (profile.profile_picture) {
+        thumb.addEventListener("click", () => Sightbox(profilePic, "image"));
+    }
 
     profileArea.appendChild(thumb);
 
@@ -78,7 +93,7 @@ function createProfilePicture(profile) {
             const contentx = document.createElement("div");
             content.id = "hfgfy";
             contentx.id = "g54365";
-            content.appendChild(generateAvatarForm(contentx, profile.username));
+            content.appendChild(generateAvatarForm(contentx, profile.profile_picture || "default-profile.png"));
 
             const modal = Modal({
                 title: "Edit Profile Picture",

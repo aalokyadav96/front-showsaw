@@ -1,7 +1,6 @@
-
+@import url("./feedx.css");
 .timeline-item {
-    background-color: #ffffff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
     border-radius: 8px;
     overflow: hidden;
     margin-bottom: 20px;
@@ -10,15 +9,14 @@
 
 .timeline-item:hover {
     transform: translateY(-5px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); */
 }
 
 .post-header {
     display: flex;
     align-items: center;
-    padding: 15px;
-    background-color: #f3f2f1;
-    border-bottom: 1px solid #e1dfdd;
+    padding: 10px;
+    /* border-bottom: 1px solid #e0e0e0; */
 }
 
 .user-icon {
@@ -43,14 +41,13 @@
 
 .timestamp {
     font-size: 12px;
-    color: #605e5c;
 }
 
-.post-media {
-    /* padding: 15px; */
+/* .post-media {
+    padding: 15px;
     background-color: #ffffff;
-    /* border-bottom: 1px solid #e1dfdd; */
-}
+    border-bottom: 1px solid #e1dfdd;
+} */
 
 .post-media h3 {
     margin: 0;
@@ -68,7 +65,6 @@
     justify-content: space-between;
     align-items: center;
     padding: 10px 15px;
-    background-color: #f3f2f1;
 }
 
 .post-actions span,
@@ -95,7 +91,6 @@ main.feed {
 
 /* Post Compose Section */
 .post-compose {
-    background: #fff;
     border: 1px solid #ddd;
     border-radius: 10px;
     padding: 15px;
@@ -121,13 +116,12 @@ main.feed {
     font-size: 14px;
     border: 1px solid #ddd;
     border-radius: 5px;
-    background: #f9f9f9;
+    color: black;
 }
 
 .media-preview {
     gap: 10px;
     flex-wrap: wrap;
-    padding: 10px 0;
 }
 
 .media-preview-item {
@@ -174,7 +168,6 @@ main.feed {
 #postsContainer {
     display: flex;
     flex-direction: column;
-    /* gap: 15px; */
 }
 
 
@@ -230,20 +223,6 @@ main.feed {
     width: 100%;
 }
 
-.post-header {
-    display: flex;
-    align-items: center;
-    padding: 10px;
-    background-color: #f9f9f9;
-    border-bottom: 1px solid #e0e0e0;
-}
-
-.user-icon {
-    display: flex;
-    align-items: center;
-    margin-right: 10px;
-}
-
 
 
 /* Username */
@@ -251,7 +230,6 @@ main.feed {
     flex-grow: 1;
     font-size: 16px;
     font-weight: bold;
-    color: #333;
 }
 
 /* Buttons */
@@ -296,9 +274,12 @@ main.feed {
 
 .container {
     max-width: 1024px;
-    background-color: #fff;
+    /* background-color: #fff; */
     width: 100%;
     margin: 0 auto;
+    padding: 0.2rem;
+    margin-bottom: 3rem;
+    display: flex;
 }
 
 .feed {
@@ -308,7 +289,6 @@ main.feed {
 .timeline-item {
     padding: 1rem;
     position: relative;
-    color: rgba(0, 0, 0, 0.7);
     border: 2px solid rgba(0, 0, 0, 0.3);
     max-width: 40rem;
     /* display: contents; */
@@ -324,7 +304,6 @@ main.feed {
 }
 
 .timeline-item h1 a {
-    color: #4c4c4c;
     font-size: 2rem;
     margin-bottom: 0.5em;
     text-decoration: none;

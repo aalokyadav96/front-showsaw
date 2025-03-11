@@ -41,7 +41,7 @@ const Lightbox = (images, initialIndex = 0) => {
       currentIndex = (currentIndex === images.length - 1) ? 0 : currentIndex + 1;
       updateImage(currentIndex);
     });
-    
+
     content.appendChild(prevButton);
     content.appendChild(nextButton);
   }
@@ -49,7 +49,7 @@ const Lightbox = (images, initialIndex = 0) => {
   // Add close button
   const closeButton = document.createElement('button');
   closeButton.className = 'lightbox-close-btn';
-  closeButton.textContent = 'Close';
+  closeButton.textContent = 'X';
   closeButton.addEventListener('click', () => {
     lightbox.remove();
   });
@@ -61,7 +61,7 @@ const Lightbox = (images, initialIndex = 0) => {
   lightbox.appendChild(content);
 
   // Append the lightbox to the body or any container
-  document.body.appendChild(lightbox);
+  document.getElementById('app').appendChild(lightbox);
 };
 
 export default Lightbox;

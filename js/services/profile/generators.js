@@ -7,8 +7,8 @@ import { createForm } from "../../components/createForm.js";
 import { showLoadingMessage, removeLoadingMessage, capitalize } from "./profileHelpers.js";
 
 
-function generateBannerForm(content, username) {
-    const bannerPictureSrc = `${SRC_URL}/userpic/banner/${username + '.jpg'}`;
+function generateBannerForm(content, pic) {
+    const bannerPictureSrc = `${SRC_URL}/userpic/banner/${pic}`;
     const fields = [
         {
             label: "Banner Picture",
@@ -23,8 +23,8 @@ function generateBannerForm(content, username) {
     });
 }
 
-function generateAvatarForm(content, username) {
-    const profilePictureSrc = `${SRC_URL}/userpic/${username + '.jpg'}`;
+function generateAvatarForm(content, pic) {
+    const profilePictureSrc = `${SRC_URL}/userpic/${pic}`;
     const fields = [
         {
             label: "Profile Picture",

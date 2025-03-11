@@ -6,7 +6,7 @@ const SnackBar = (message, duration = 3000) => {
     
     const time = Math.max(duration, message.length * 50); 
 
-    document.body.appendChild(snackbar);
+    document.getElementById('app').appendChild(snackbar);
   
     setTimeout(() => {
       snackbar.classList.add('hide');

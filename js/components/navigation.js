@@ -20,11 +20,11 @@ const createDropdown = (id, label, links) => {
     const dropdown = document.createElement("li");
     dropdown.className = "dropdown";
 
-    const button = document.createElement("button");
+    const button = document.createElement("div");
     button.className = "dropdown-toggle";
     button.id = id;
-    button.setAttribute("aria-haspopup", "true");
-    button.setAttribute("aria-expanded", "false");
+    // button.setAttribute("aria-haspopup", "true");
+    // button.setAttribute("aria-expanded", "false");
     button.textContent = label;
 
     const menu = document.createElement("div");
@@ -66,8 +66,13 @@ const createProfileDropdown = (user) => {
     toggle.className = "profile-dropdown-toggle";
     toggle.tabIndex = 0;
 
+    // Use user's profile picture if available; otherwise, use default "thumb.jpg"
+    const profilePic = user 
+        ? `${SRC_URL}/userpic/thumb/${user}.jpg`
+        : `${SRC_URL}/userpic/thumb/thumb.jpg`;
+
     const image = document.createElement("img");
-    image.src = `${SRC_URL}/userpic/thumb/${user || "default"}.jpg`;
+    image.src = profilePic;
     image.alt = "Profile Picture";
     image.className = "profile-image";
 
@@ -143,31 +148,31 @@ const createNav = () => {
         { href: "/create-place", text: "Loca" },
     ]));
 
-    // Add Profile Dropdown or Login Button
-    if (isLoggedIn) {
-        fragment.appendChild(createProfileDropdown(state.user));
-    } else {
-        const loginLi = document.createElement("li");
-        const loginButton = document.createElement("button");
-        loginButton.className = "btn auth-btn nav-link";
-        loginButton.textContent = "Login";
-        loginButton.addEventListener("click", () => navigate("/login"));
-        loginLi.appendChild(loginButton);
-        fragment.appendChild(loginLi);
+    profileOrLogin(fragment);
+
+    function profileOrLogin(node) {
+        // Add Profile Dropdown or Login Button
+        if (isLoggedIn) {
+            node.appendChild(createProfileDropdown(state.user));
+        } else {
+            const loginLi = document.createElement("li");
+            const loginButton = document.createElement("button");
+            loginButton.className = "btn auth-btn nav-link";
+            loginButton.textContent = "Login";
+            loginButton.addEventListener("click", () => navigate("/login"));
+            loginLi.appendChild(loginButton);
+            node.appendChild(loginLi);
+        }
     }
 
     ul.appendChild(fragment);
     nav.appendChild(ul);
 
+
     // Mobile Menu
-    const mobileMenu = document.createElement("div");
+    const mobileMenu = document.createElement("ul");
     mobileMenu.className = "mobile-menu-icon";
-    mobileMenu.innerHTML = "M";
-    mobileMenu.addEventListener("click", () => {
-        const isExpanded = mobileMenu.getAttribute("aria-expanded") === "true";
-        mobileMenu.setAttribute("aria-expanded", !isExpanded);
-        toggleElement(".nav-list", "active");
-    });
+    profileOrLogin(mobileMenu);
 
     nav.appendChild(mobileMenu);
     navbarContainer.appendChild(logoDiv);
@@ -213,3 +218,4 @@ const attachNavEventListeners = () => {
 };
 
 export { createNav, attachNavEventListeners, createDropdown, createNavItem, createProfileDropdown };
+

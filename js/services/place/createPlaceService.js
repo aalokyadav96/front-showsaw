@@ -13,7 +13,7 @@ function createForm(fields, onSubmit) {
         try {
             await onSubmit(formData);
             Snackbar("Place created successfully!", 3000);
-            navigate('/places'); // Redirect to places after success
+            // navigate('/places'); // Redirect to places after success
         } catch (error) {
             console.error("Error creating place:", error);
             Snackbar("Failed to create place. Please try again.", 3000);
@@ -82,6 +82,7 @@ async function createPlaceForm(isLoggedIn, createSection) {
                     { value: "museum", label: "Museum" },
                     { value: "gym", label: "Gym" },
                     { value: "theater", label: "Theater" },
+                    { value: "arena", label: "Arena" },
                     { value: "other", label: "Other" }
                 ] 
             },
@@ -93,7 +94,7 @@ async function createPlaceForm(isLoggedIn, createSection) {
             { id: "place-description", label: "Description", type: "textarea", placeholder: "Provide a description", required: true },
             { id: "capacity", label: "Capacity", type: "number", placeholder: "Enter the capacity", required: true, min: 1 },
             { id: "phone", label: "Phone Number", placeholder: "Enter the phone number" },
-            { id: "place-banner", label: "Place Banner", type: "file", accept: "image/*" }
+            { id: "place-banner-add", label: "Place Banner", type: "file", accept: "image/*" }
         ];
 
         // Create the form with a proper submission callback

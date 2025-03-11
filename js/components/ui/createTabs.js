@@ -64,11 +64,10 @@ export function createTabs(tabs) {
     return tabContainer;
 }
 
-
 // import { createButton, createContainer } from "../eventHelper.js";
 // import { createElement } from "../../components/createElement.js";
 
-// export function createTabs(tabs, defaultTabId) {
+// export function createTabs(tabs, alwaysOpenFirstTab = false) {
 //     const tabContainer = createContainer(["tabs-container"]);
 //     const tabButtons = createContainer(["tab-buttons"]);
 //     const tabContents = createContainer(["tab-contents"]);
@@ -82,17 +81,38 @@ export function createTabs(tabs) {
 //         const tabButton = createButton({
 //             text: title,
 //             classes: ["tab-button"],
-//             events: { click: () => activateTab(id, render, tabContentContainers[index]) },
+//             events: {
+//                 click: () => {
+//                     switchTab(id, render, tabContentContainers[index], true);
+//                 }
+//             },
 //         });
 
+//         // if (!alwaysOpenFirstTab || index === 0) {
+//         //     switchTab(id, render, tabContentContainers[index], true);
+//         // }
+
+//         // For the first tab, mark it active immediately.
+//         if (index === 0) {
+//             tabButton.classList.add("active");
+//             // Immediately switch to the first tab so its content is rendered and gets "active" class.
+//             switchTab(id, render, tabContentContainers[index], true);
+//         }
 //         tabButtons.appendChild(tabButton);
 //         tabContents.appendChild(tabContentContainers[index]);
 //     });
 
+
 //     tabContainer.appendChild(tabButtons);
 //     tabContainer.appendChild(tabContents);
 
-//     function activateTab(tabId, renderContent, contentContainer) {
+//     function switchTab(tabId, renderContent, contentContainer, pushState = false) {
+
+//         // // If alwaysOpenFirstTab is true and the requested tab is not the first, do nothing.
+//         // if (alwaysOpenFirstTab && tabId !== tabs[0].id) {
+//         //     return;
+//         // }
+
 //         // Update active button styles
 //         document.querySelectorAll(".tab-button").forEach((btn, index) => {
 //             btn.classList.toggle("active", tabs[index].id === tabId);
@@ -114,12 +134,29 @@ export function createTabs(tabs) {
 //         if (contentContainer && !contentContainer.innerHTML.trim()) {
 //             renderContent(contentContainer);
 //         }
+
+//         // Push to history only if triggered by a user click and not forced to always show first tab
+//         if (pushState && !alwaysOpenFirstTab) {
+//             history.pushState({ activeTab: tabId }, "", `#${tabId}`);
+//         }
 //     }
 
-//     // Activate the default tab (fixed logic)
-//     const defaultTab = tabs.find(tab => tab.id === defaultTabId) || tabs[0];
-//     if (defaultTab) {
-//         activateTab(defaultTab.id, defaultTab.render, tabContentContainers[tabs.indexOf(defaultTab)]);
+//     // Handle back/forward navigation (only if not locked to first tab)
+//     function onPopState(event) {
+//         if (alwaysOpenFirstTab) return;
+//         const activeTabId = event.state ? event.state.activeTab : tabs[0].id;
+//         const tabIndex = tabs.findIndex(tab => tab.id === activeTabId);
+//         if (tabIndex !== -1) {
+//             switchTab(activeTabId, tabs[tabIndex].render, tabContentContainers[tabIndex], false);
+//         }
+//     }
+//     window.addEventListener("popstate", onPopState);
+
+//     // Load tab from URL hash or default to the first tab (or force first tab if required)
+//     const initialTabId = alwaysOpenFirstTab ? tabs[0].id : (window.location.hash.substring(1) || tabs[0].id);
+//     const initialTabIndex = tabs.findIndex(tab => tab.id === initialTabId);
+//     if (initialTabIndex !== -1) {
+//         switchTab(initialTabId, tabs[initialTabIndex].render, tabContentContainers[initialTabIndex]);
 //     }
 
 //     return tabContainer;

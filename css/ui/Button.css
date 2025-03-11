@@ -1,0 +1,14 @@
+button {
+    color: black;
+    /* background: white; */
+    border: 1px solid #eee;
+    padding: 6px;
+    border: none;
+    margin-right: 0.5rem;
+    border-radius: 5px;
+    /* background-color: #03b309; */
+    background-color: #028907;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}

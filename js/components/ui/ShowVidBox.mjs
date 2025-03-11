@@ -39,7 +39,7 @@ const ShowVidBox = (mediaSrc, mediaType = 'image') => {
   // sightbox.appendChild(content);
   // content.appendChild(closeButton);
 
-  document.body.appendChild(sightbox);
+  document.getElementById('app').appendChild(sightbox);
   return sightbox;
 };
 

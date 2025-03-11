@@ -3,6 +3,8 @@ import { defineConfig } from 'vite';
 
 // let API_URL = 'https://zincate.onrender.com';
 let API_URL = 'http://localhost:4000';
+let SRC_URL = 'http://localhost:4000';
+let SEARCH_URL = 'http://localhost:7000';
 
 export default defineConfig({
   root: '.',  // the root directory of your project
@@ -14,16 +16,8 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': API_URL, // Proxy API requests to Go server
-      '/eventpic': API_URL, // Proxy static requests to Go server
-      '/userpic': API_URL, // Proxy static requests to Go server
-      '/merchpic': API_URL, // Proxy static requests to Go server
-      '/placepic': API_URL, // Proxy static requests to Go server
-      // '/postpic': API_URL, // Proxy static requests to Go server
-      '/uploads': API_URL, // Proxy static requests to Go server
-      '/postpic': {
-        target: 'http://localhost:4000',
-        changeOrigin: true,
-      },
+      '/static': SRC_URL, // Proxy API requests to Go server
+      '/api/search': SEARCH_URL, // Proxy API requests to Go server
     },
   },
 });

@@ -1,44 +1,151 @@
+// import { createNav, attachNavEventListeners } from "../components/navigation.js";
+// import { renderPageContent } from "./render.js";
+// import { state } from "../state/state.js";
+// import RadarMenu from "../components/ui/RadarMenu.js";
+
+// state.pageCache = {}; // 🔹 Cache for previously loaded pages
+
+// async function loadContent(url, fromHistory = false) {
+//     const app = document.getElementById("app");
+
+//     // **Check if content exists in cache**
+//     if (fromHistory && state.pageCache[url]) {
+//         console.log(`✅ Restoring ${url} from cache`);
+//         app.innerHTML = state.pageCache[url];
+//         attachNavEventListeners();
+//         return;
+//     }
+
+//     app.innerHTML = ""; // Clear previous content (only if not cached)
+
+//     state.token = sessionStorage.getItem("token") || localStorage.getItem("token") || null;
+//     const isLoggedIn = !!state.token;
+//     console.log("User logged in:", isLoggedIn);
+
+//     const main = document.createElement("main");
+//     main.id = "content";
+
+//     app.appendChild(createNav());
+//     app.appendChild(main);
+
+//     const menuItems = [
+//         { text: "Events", action: () => navigate("/events") },
+//         { text: "Places", action: () => navigate("/places") },
+//         { text: "Feed", action: () => navigate("/feed") },
+//         { text: "Search", action: () => navigate("/search") },
+//         { text: "Eva", action: () => navigate("/create-event") },
+//         { text: "Loca", action: () => navigate("/create-place") },
+//     ];
+
+//     if (isLoggedIn) {
+//         menuItems.push(
+//             { text: "Profile", action: () => navigate("/profile") },
+//             { text: "Settings", action: () => navigate("/settings") }
+//         );
+//     } else {
+//         menuItems.push({ text: "Login", action: () => navigate("/login") });
+//     }
+
+//     const radarMenuElement = RadarMenu(menuItems, {
+//         buttonText: "+",
+//         menuSize: 300,
+//         radius: 100,
+//         baseAngle: 0,
+//         startAngle: 0
+//     });
+
+//     app.appendChild(radarMenuElement);
+
+//     attachNavEventListeners();
+//     await renderPageContent(isLoggedIn, url, main);
+
+//     // **Store in cache after rendering**
+//     state.pageCache[url] = app.innerHTML;
+// }
+
+// // SPA Navigation Function (🚀 Optimized)
+// function navigate(path) {
+//     if (!path) {
+//         console.error("🚨 navigate called with null or undefined!", new Error().stack);
+//         return;
+//     }
+//     console.log("Navigating to:", path);
+
+//     if (window.location.pathname !== path) {
+//         history.pushState({ path }, "", path);
+//         loadContent(path);
+//     }
+// }
+
+// // **Back/Forward Navigation Handling**
+// window.addEventListener("popstate", (event) => {
+//     const path = event.state?.path || "/";
+//     console.log(`🔙 Restoring from history: ${path}`);
+//     loadContent(path, true); // ✅ Load from cache if possible
+// });
+
+// // Initial Render
+// async function renderPage() {
+//     await loadContent(window.location.pathname);
+// }
+
+// export { navigate, renderPage, loadContent };
+
 import { createNav, attachNavEventListeners } from "../components/navigation.js";
 import { renderPageContent } from "./render.js";
 import { state } from "../state/state.js";
-import {FloatingActionButton} from "../components/ui/FAB.mjs";
+import RadarMenu from "../components/ui/RadarMenu.js";
+// import { createProfileDropdown } from "../components/navigation.js";
 
 async function loadContent(url) {
     const app = document.getElementById("app");
-    
-    // Clear previous content
-    app.innerHTML = ""; 
+    app.innerHTML = ""; // Clear previous content
 
-    // Persist login state using sessionStorage
-    state.token = sessionStorage.getItem("token") || localStorage.getItem("token") || null;  
+    state.token = sessionStorage.getItem("token") || localStorage.getItem("token") || null;
     const isLoggedIn = !!state.token;
     console.log("User logged in:", isLoggedIn);
 
-    // Create Main Content Section
     const main = document.createElement("main");
-    main.id = "content"; // Page content will load here
+    main.id = "content";
 
-    // Create Footer
-    const footer = document.createElement("footer");
-    const footerText = document.createElement("p");
-    footerText.textContent = "© 2025 Zincate";
-    footer.appendChild(footerText);
-
-    FloatingActionButton("icon","g46hf",isLoggedIn,state.user);
-
-    // Append all sections to the app container
     app.appendChild(createNav());
     app.appendChild(main);
-    app.appendChild(footer);
 
-    // Attach navigation event listeners
+    const menuItems = [
+        { text: "Events", action: () => navigate("/events") },
+        { text: "Places", action: () => navigate("/places") },
+        { text: "Feed", action: () => navigate("/feed") },
+        { text: "Search", action: () => navigate("/search") },
+        { text: "Eva", action: () => navigate("/create-event") },
+        { text: "Loca", action: () => navigate("/create-place") },
+    ];
+
+    if (isLoggedIn) {
+        menuItems.push(
+            { text: "Profile", action: () => navigate("/profile") },
+            { text: "Settings", action: () => navigate("/settings") },
+        );
+    } else {
+        menuItems.push(
+            { text: "Login", action: () => navigate("/login") }
+        );
+    }
+
+    const radarMenuElement = RadarMenu(menuItems, {
+        buttonText: "+",
+        menuSize: 300,
+        radius: 100,
+        baseAngle: 0,
+        startAngle: 0
+    });
+
+    app.appendChild(radarMenuElement);
+
     attachNavEventListeners();
-
-    // Load page content based on the route
     await renderPageContent(isLoggedIn, url, main);
 }
 
-// SPA Navigation Function (PushState)
+// SPA Navigation Function
 function navigate(path) {
     if (!path) {
         console.error("🚨 navigate called with null or undefined!", new Error().stack);
@@ -50,21 +157,6 @@ function navigate(path) {
         loadContent(path);
     }
 }
-
-
-
-// Cleanup event listeners on `pagehide` to support bfcache
-window.addEventListener("pagehide", () => {
-    document.removeEventListener("click", someHandler);  // Example of proper cleanup
-});
-
-// Restore session state if returning from bfcache
-window.addEventListener("pageshow", (event) => {
-    if (event.persisted) {
-        console.log("Restored from bfcache, refreshing session state");
-        state.token = sessionStorage.getItem("token") || localStorage.getItem("token") || null;
-    }
-});
 
 // Initial Render
 async function renderPage() {

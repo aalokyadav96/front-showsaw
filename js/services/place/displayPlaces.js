@@ -12,7 +12,7 @@ async function displayPlaces(isLoggedIn, content) {
         const places = await fetchPlaces();
 
         if (!places || places.length === 0) {
-            content.appendChild(createElement('h2', {}, ["No places available."]));
+            content.appendChild(createElement('p', {}, ["No places available."]));
             return;
         }
 
@@ -35,7 +35,7 @@ function createPlaceCard(place) {
             createElement('img', {
                 src: `${SRC_URL}/placepic/${place.banner}`,
                 alt: `${place.name} Banner`,
-                style: "width: 100%; max-height: 300px; object-fit: cover;"
+                // style: "aspect-ratio: 640 / 360; height:auto;width:100%;"
             }),
             createElement('p', {}, [createElement('strong', {}, ["Address: "]), place.address]),
             createElement('p', {}, [createElement('strong', {}, ["Description: "]), place.description])]),

@@ -1,11 +1,11 @@
 /* Floating Action Button Container */
 .fab-container {
-    position: absolute;
+    position: fixed;
     bottom: 20px;
     right: 20px;
-    /* display: flex; */
-    /* flex-direction: column; */
-    /* align-items: flex-end; */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
     z-index: 12;
 }
 
@@ -69,28 +69,3 @@
 .hidden {
     display: none;
 }
-
-/* .fab {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 56px;
-    height: 56px;
-    background-color: #00a8ff;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 24px;
-    cursor: grab;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    transition: transform 0.2s, box-shadow 0.2s;
-    user-select: none;
-}
-
-.fab:active {
-    cursor: grabbing;
-    transform: scale(0.9);
-} */

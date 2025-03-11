@@ -1,26 +1,7 @@
+import "../../../css/settingspage.css";
 import { apiFetch } from "../../api/api.js";
 import ToggleSwitch from "../../components/ui/ToggleSwitch.mjs";
 import { navigate } from "../../routes/index.js";
-
-// function Dropdown(options, onChange, defaultValue) {
-//     const select = document.createElement("select");
-
-//     options.forEach((option) => {
-//         const opt = document.createElement("option");
-//         opt.value = option.toLowerCase();
-//         opt.textContent = option;
-//         if (opt.value === defaultValue) {
-//             opt.selected = true; // Set previously selected value
-//         }
-//         select.appendChild(opt);
-//     });
-
-//     select.addEventListener("change", () => {
-//         onChange(select.value);
-//     });
-
-//     return select;
-// }
 
 function Dropdown(options, onChange, selectedValue) {
     const select = document.createElement("select");
@@ -123,70 +104,6 @@ function createErrorContainer() {
     errorContainer.id = "error";
     return errorContainer;
 }
-
-// function createSettingForm(setting) {
-//     const form = document.createElement("div");
-//     form.className = "setting-form";
-//     form.dataset.type = setting.type;
-
-//     const heading = document.createElement("h3");
-//     heading.textContent = setting.description;
-
-//     let inputElement;
-
-//     switch (setting.type) {
-//         case "theme":
-//             inputElement = Dropdown(["Light", "Dark"], (selectedOption) => {
-//                 handleSettingUpdate(setting.type, selectedOption.toLowerCase());
-//             });
-//             break;
-
-//         case "notifications":
-//         case "privacy_mode":
-//         case "auto_logout":
-//             inputElement = ToggleSwitch((state) => {
-//                 handleSettingUpdate(setting.type, state);
-//             });
-//             inputElement.querySelector("input").checked = setting.value; // Set initial value
-//             break;
-
-//         case "language":
-//             inputElement = Dropdown(["English", "Spanish", "French"], (selectedOption) => {
-//                 handleSettingUpdate(setting.type, selectedOption.toLowerCase());
-//             });
-//             break;
-
-//         case "time_zone":
-//             inputElement = Dropdown(["UTC", "PST", "EST"], (selectedOption) => {
-//                 handleSettingUpdate(setting.type, selectedOption.toLowerCase());
-//             });
-//             break;
-
-//         case "daily_reminder":
-//             inputElement = document.createElement("input");
-//             inputElement.type = "time";
-//             inputElement.value = setting.value || "";
-//             inputElement.addEventListener("change", () => {
-//                 handleSettingUpdate(setting.type, inputElement.value);
-//             });
-//             break;
-
-//         default:
-//             inputElement = document.createElement("input");
-//             inputElement.type = "text";
-//             inputElement.value = setting.value || "";
-//             inputElement.addEventListener("blur", () => {
-//                 handleSettingUpdate(setting.type, inputElement.value);
-//             });
-//             console.warn(`Unsupported setting type: ${setting.type}`);
-//             break;
-//     }
-
-//     form.appendChild(heading);
-//     form.appendChild(inputElement);
-
-//     return form;
-// }
 
 function createSettingForm(setting) {
     const form = document.createElement("div");

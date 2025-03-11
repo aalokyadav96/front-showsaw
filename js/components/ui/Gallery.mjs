@@ -1,31 +1,24 @@
 import "../../../css/ui/Gallery.css";
-const Gallery = (images) => {
+import SightBox from "./SightBox.mjs";
+
+const Gallery = (imagesArray) => {
     const galleryContainer = document.createElement('div');
     galleryContainer.className = 'gallery';
-  
-    images.forEach((image) => {
-      const img = document.createElement('img');
-      img.src = image.src;
-      img.alt = image.alt || 'Gallery Image';
-      img.className = 'gallery-image';
-      img.addEventListener('click', () => {
-        const lightbox = document.createElement('div');
-        lightbox.className = 'lightbox';
-  
-        const lightboxImg = document.createElement('img');
-        lightboxImg.src = image.src;
-        lightboxImg.alt = image.alt || 'Gallery Image';
-  
-        lightbox.appendChild(lightboxImg);
-        lightbox.addEventListener('click', () => lightbox.remove());
-        document.body.appendChild(lightbox);
-      });
-  
-      galleryContainer.appendChild(img);
+
+    imagesArray.forEach((image, index) => {
+        const img = document.createElement('img');
+        img.src = image.src;
+        img.alt = image.alt || 'Gallery Image';
+        img.className = 'gallery-image';
+        img.addEventListener('click', () => {
+            SightBox(image.src); // Pass the full array and clicked index
+        });
+
+        galleryContainer.appendChild(img);
     });
-  
+
     return galleryContainer;
-  };
-  
-  export default Gallery;
-  
+};
+
+
+export default Gallery;

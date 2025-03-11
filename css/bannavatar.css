@@ -1,0 +1,59 @@
+/* Common styles for both forms */
+.image-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.image-group p {
+    font-weight: bold;
+    margin: 0;
+}
+
+.image-group img {
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    padding: 4px;
+    background-color: #f9f9f9;
+}
+
+input[type="file"] {
+    display: block;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s ease-in-out;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Profile Picture Section */
+#current-edit-avatar-picture,
+#profile-picture-preview {
+    max-width: 200px;
+    height: auto;
+    display: block;
+}
+
+/* Banner Picture Section */
+#current-edit-banner-picture,
+#banner-picture-preview {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}

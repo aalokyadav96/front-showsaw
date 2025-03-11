@@ -4,7 +4,10 @@ import { displayUserProfile  } from "../../services/profile/otherUserProfileServ
 
 async function UserProfile(isLoggedIn, contentContainer) {
     contentContainer.innerHTML = '';
-    displayProfile(isLoggedIn, contentContainer);
+    const content = document.createElement("div");
+    content.classList = "profilepage";
+    contentContainer.appendChild(content);
+    displayProfile(isLoggedIn, content);
 }
 
 export { UserProfile, displayUserProfile  };

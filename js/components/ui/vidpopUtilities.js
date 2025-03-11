@@ -120,56 +120,55 @@ function setupVideoUtilityFunctions(video, videoid) {
     const onTouchEnd = () => {
         isDragging = false;
     };
-
     const hotkeysEnabled = true;
-    window.addEventListener("keydown", (e) => {
-        if (!hotkeysEnabled) return;
-        e.preventDefault();
 
-        switch (e.key) {
-            case "+":
-                changeZoom(-1);
-                break;
-            case "-":
-                changeZoom(1);
-                break;
-            case "r":
+    const isInputField = (element) => ["INPUT", "TEXTAREA"].includes(element.tagName) || element.isContentEditable;
+    
+    window.addEventListener("keydown", (e) => {
+        if (!hotkeysEnabled || isInputField(e.target)) return;
+    
+        e.preventDefault();
+    
+        const actions = {
+            "h": flipVideo,
+            "+": () => changeZoom(-1),
+            "-": () => changeZoom(1),
+            "c": () => faster(video),
+            "x": () => resetSpeed(video),
+            "z": () => slower(video),
+            "b": () => setVolume(video, -0.1),
+            "n": () => setVolume(video, 0.1),
+            "m": () => toggleMute(video),
+            "v": () => video.paused ? video.play() : video.pause(),
+            ",": () => video.currentTime = Math.max(0, video.currentTime - 1 / 12),
+            ".": () => video.currentTime = Math.min(video.duration, video.currentTime + 1 / 12),
+            "r": () => {
                 angle = (angle + 90) % 360;
                 video.style.width = "100vh";
-                break;
-            case "h":
-                flipVideo();
-                break;
-            case ",":
-                video.currentTime = Math.max(0, video.currentTime - 1 / 12);
-                break;
-            case ".":
-                video.currentTime = Math.min(video.duration, video.currentTime + 1 / 12);
-                break;
-            case "c":
-                faster(video);
-                break;
-            case "x":
-                resetSpeed(video);
-                break;
-            case "z":
-                slower(video);
-                break;
-            case "b":
-                setVolume(video, -0.1);
-                break;
-            case "n":
-                setVolume(video, 0.1);
-                break;
-            case "m":
-                toggleMute(video);
-                break;
-            case "v":
-                video.paused ? video.play() : video.pause();
-                break;
+            },
+            
+            // Modifier key combos
+            "Shift+ArrowUp": () => setVolume(video, 0.1),
+            "Shift+ArrowDown": () => setVolume(video, -0.1),
+            "Ctrl+ArrowLeft": () => video.currentTime = Math.max(0, video.currentTime - 5),
+            "Ctrl+ArrowRight": () => video.currentTime = Math.min(video.duration, video.currentTime + 5),
+            "Alt+r": () => { angle = 0; video.style.width = ""; }, // Reset rotation
+        };
+    
+        const keyCombo = [
+            e.ctrlKey ? "Ctrl" : "",
+            e.shiftKey ? "Shift" : "",
+            e.altKey ? "Alt" : "",
+            e.metaKey ? "Meta" : "",
+            e.key,
+        ].filter(Boolean).join("+");
+    
+        if (actions[keyCombo]) {
+            actions[keyCombo]();
+            if (!["m", "v"].includes(e.key)) updateTransform(); // Only update transform if needed
         }
-        updateTransform();
     });
+    
 
     saveVideoProgress(video, videoid);
 
