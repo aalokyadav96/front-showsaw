@@ -1,359 +1,214 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    vertical-align: baseline;
+/* Root Variables for Default (Light Theme) */
+:root {
+    --bg-color: #fff;
+    --primary-color: #004c9d;
+    --secondary-color: #6c757d;
+    --border-color: #888;
+    --post-bg: #f0f0f0;
+    --button-text: #fff;
+    --input-bg:#fdfdfd;
+    --shadow: 1px 1px 1px #ccc;
+    --text-color: #222;
+    --card-bg: #f9f9f9;
+    --card-border: #ddd;
+    --accent-color: #0073e6;
+    --accent-hover: #005bb5;
+    --delete-color: #e63946;
+    --delete-hover: #c02433;
+    --font-family: Breezesans, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Open Sans, Helvetica Neue, sans-serif;
 }
 
-
-/* General styles */
-body {
-    font-family: "Breezesans", system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    line-height: 1.6;
-    color: #333;
-    min-height: 100vh;
-    user-select: none;
-    background-color: #f9f9f9;
-    /* background: #ffffff url('#') no-repeat center center fixed; */
-    background-size: cover;
-    overflow-y: hidden;
-}
-
-
-body::-webkit-scrollbar {
-    width: 14px;
-}
-
-body::-webkit-scrollbar-thumb {
-    background-color: #555;
-}
-
-
-/**********************************/
-#app {
-    display: flex;
-    flex-direction: column;
-    max-height: 100vh;
-    overflow-y: scroll;
-    padding-bottom: 6rem;
-}
-
-/* Content */
-#content {
-    gap: 10px;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-}
-
-/************/
-
-#ad-container {
-    border: 1px solid #ccc;
-    padding: 10px;
-    margin: 20px 0;
-    max-width: 300px;
-}
-
-ul {
-    list-style-type: none;
-}
-
-/* 
-.profile-image {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-} */
-
-
-.logout-btn {
-    background-color: rgb(218, 0, 65);
-}
-
-ul li {
-    list-style-type: none;
-}
-
-
-/*************************************/
-
-
-/*************************************/
-
-/* General Reset */
-
-h1,
-h2 {
-    margin-bottom: 16px;
-}
-
-ul {
-    list-style: none;
-}
-
-a {
-    text-decoration: none;
-    color: inherit;
-    cursor: pointer;
-}
-
-/* Layout */
-.hflex {
-    display: flex;
-    flex-direction: row;
-}
-
-.vflex {
-    display: flex;
-    flex-direction: column;
-}
-
-.hvflex {
-    display: flex;
-    flex-direction: row;
-    gap: 16px;
-}
-
-.griddy {
-    display: grid;
-}
-
-/* Responsive layout - makes a one column layout instead of a two-column layout */
-@media (max-width: 640px) {
-    .hvflex {
-        flex-direction: column;
-    }
-}
-
-#update-profile-btn {
-    background-color: #02b409;
-    color: white;
-}
-
-.delete-btn {
-    background-color: rgb(185, 0, 0);
-    color: white;
-    width: max-content;
-}
-
-
-.form-group {
-    margin-bottom: 16px;
-    display: flex;
-    flex-direction: column;
-}
-
-/* textarea,
-select,
-button {
-    font-size: 1rem;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    margin-right: 0.4rem;
-    width: 100%;
-} */
-
-/* 
-button:hover {
-    background-color: #555;
-} */
-
-textarea {
-    resize: vertical;
-}
-
-.suggestions-dropdown {
-    position: absolute;
-    background-color: white;
-    border: 1px solid #ddd;
-    z-index: 1000;
-}
-
-.create-place-section,
-.create-section,
-.edit-profile-form,
-.edit-event-form,
-.add-ticket-form {
-    max-width: 550px;
-    margin: 0 auto;
-    min-width: 50vw;
-}
-
-@media (max-width: 480px) {
-    .logo-link {
-        padding-top: 10px;
-        font-size: 1.2rem;
-    }
-
-    .form-group {
-        margin-bottom: 12px;
-    }
-
-    input,
-    textarea,
-    select {
-        font-size: 0.9em;
-    }
-}
-
-
-h1,
-h2,
-h3 {
-    margin: 0 0 10px;
-}
-
-ul {
-    list-style: none;
-    padding: 0;
-}
-/* 
-button:hover {
-    background-color: #0056b3;
-    color: #fff;
-} */
-
-.ticket-actions,
-.merch-actions {
-    display: flex;
-    gap: 10px;
-}
-
-.merch-item {
-    display: flex;
-    gap: 15px;
-    align-items: center;
-}
-
-.merch-img {
-    width: 80px;
-    height: 80px;
-    object-fit: cover;
-    border-radius: 8px;
-}
-
-.merch-details {
-    flex-grow: 1;
-}
-
-/* Media Section */
-.imgcon {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    background: white;
-    padding: 10px;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.media-img {
-    width: 160px;
-    height: auto;
-    border-radius: 8px;
-    object-fit: cover;
-}
-
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
-}
-
-/* Media Gallery */
-.media-gallery {
-    display: flex;
-    gap: 10px;
-}
-
-
-.media-img:hover {
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-/* Reviews */
-.review-list {
-    list-style: none;
-    padding: 0;
-}
-
-.review-item {
-    margin-bottom: 10px;
-}
-
-textarea {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    margin-top: 10px;
-}
-
-.submit-review-btn {
-    background: #333;
-    color: white;
-    border: none;
-    padding: 10px;
-    margin-top: 10px;
-    cursor: pointer;
-    border-radius: 4px;
-}
-
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* 
-footer {
-    text-align: center;
-    padding: 10px 20px;
-    background-color: #343a40;
-    color: #fff;
-    font-size: 0.9rem;
-    position: absolute;
-} */
-
-.onepadd {
-    padding: 1rem;
-}
-
-input,
-select,
-.form-group input,
-.form-group select,
-.post-title-input {
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 14px;
-}
-
-
-/* Dark Mode */
+/* 🌙 Dark Mode */
 @media (prefers-color-scheme: dark) {
-    body {
-        background: #121212;
-        color: #f1f1f1;
+    :root {
+        --bg-color: #121212;
+        --text-color: #f0f0f0;
+        --primary-color: #bb86fc;
+        --secondary-color: #03dac6;
+        --accent-color: #ff4081;
     }
 }
 
-label {
-    color: #000;
+/* 📖 Sepia Theme */
+[data-theme="sepia"] {
+    --bg-color: #f5e8d0;
+    --text-color: #5b4636;
+    --primary-color: #a67c52;
+    --secondary-color: #8b5a2b;
+    --accent-color: #d17c24;
+}
+
+/* 🌟 High Contrast Mode */
+[data-theme="high-contrast"] {
+    --bg-color: #000000;
+    --text-color: #ffffff;
+    --primary-color: #ffcc00;
+    --secondary-color: #00ffff;
+    --accent-color: #ff00ff;
+}
+
+/* 🌎 Base Styles */
+body {
+    line-height: 1.6;
+    min-height: 100vh;
+    -webkit-user-select: none;
+    user-select: none;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--font-family);
+    transition: background 0.3s, color 0.3s;
+}
+
+#content {
+    padding: 8px;
+    min-height: 101vh;
+}
+
+/* Basic Button Styling */
+button {
+    background-color: var(--primary-color);
+    color: var(--bg-color);
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+button:hover {
+    background-color: var(--accent-color);
+}
+
+/* ─────────────────────────── */
+/* 📏 Responsive Media Queries */
+/* ─────────────────────────── */
+
+/* Small Devices (phones, up to 600px) */
+@media (max-width: 600px) {
+    body {
+        font-size: 14px;
+    }
+}
+
+/* Medium Devices (Tablets, 601px - 1024px) */
+@media (min-width: 601px) and (max-width: 1024px) {
+    body {
+        font-size: 16px;
+    }
+}
+
+/* Large Devices (Desktops, 1025px and up) */
+@media (min-width: 1025px) {
+    body {
+        font-size: 18px;
+    }
+}
+
+/* 📱 Device Orientation */
+/* @media (orientation: portrait) {
+    body {
+        background-color: var(--bg-color);
+    }
+}
+
+@media (orientation: landscape) {
+    body {
+        background-color: var(--secondary-color);
+    }
+} */
+
+/* 🎭 Motion Preferences */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+/* 🖱️ Hover Support */
+@media (hover: hover) {
+    a:hover {
+        text-decoration: underline;
+    }
+}
+
+/* 🖲️ Pointer Accuracy */
+@media (pointer: coarse) {
+    button {
+        padding: 15px 25px;
+    }
+}
+
+/* 🏴 Right-to-Left Support */
+html[dir="rtl"] {
+    direction: rtl;
+    text-align: right;
+}
+
+/* 🔀 Custom Theme Switching via JavaScript */
+.theme-toggle {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    padding: 10px;
+    background: var(--primary-color);
+    color: var(--bg-color);
+    border: none;
+    cursor: pointer;
+}
+
+/* ─────────────────────────── */
+/* 📱 Mobile Devices (Up to 480px) */
+@media (max-width: 480px) {
+    body {
+        font-size: 14px;
+    }
+}
+
+/* 📲 Small Phones & Portrait Phones (481px - 600px) */
+@media (min-width: 481px) and (max-width: 600px) {
+    body {
+        font-size: 15px;
+    }
+}
+
+/* 📱 Larger Phones & Small Tablets (601px - 768px) */
+@media (min-width: 601px) and (max-width: 768px) {
+    body {
+        font-size: 16px;
+    }
+}
+
+/* 💻 Tablets & iPads (769px - 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+    body {
+        font-size: 17px;
+    }
+}
+
+/* 🖥️ Small Laptops & Notebooks (1025px - 1280px) */
+@media (min-width: 1025px) and (max-width: 1280px) {
+    body {
+        font-size: 18px;
+    }
+}
+
+/* 🖥️ Standard Desktops (1281px - 1600px) */
+@media (min-width: 1281px) and (max-width: 1600px) {
+    body {
+        font-size: 19px;
+    }
+}
+
+/* 🖥️ Large Screens (1601px - 1920px) */
+@media (min-width: 1601px) and (max-width: 1920px) {
+    body {
+        font-size: 20px;
+    }
+}
+
+/* 🖥️ Extra Large / 4K Screens (1921px and above) */
+@media (min-width: 1921px) {
+    body {
+        font-size: 22px;
+    }
 }

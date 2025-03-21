@@ -244,6 +244,7 @@ function displayNewMenu(menuData, menuList) {
         const menuImage = document.createElement("img");
         menuImage.src = `${SRC_URL}/menupic/${menuData.menu_pic}`;
         menuImage.alt = menuData.name;
+        menuImage.loading = "lazy";
         menuImage.style.maxWidth = "160px";
         menuItem.appendChild(menuImage);
     }

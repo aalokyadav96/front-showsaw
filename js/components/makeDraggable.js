@@ -3,21 +3,21 @@ export function makeDraggable(element, storageKey = null) {
 
   // Load saved position if storageKey is provided
   if (storageKey) {
-    const storedPosition = localStorage.getItem(storageKey);
-    if (storedPosition) {
-      const { x, y } = JSON.parse(storedPosition);
-      element.style.left = `${x}px`;
-      element.style.top = `${y}px`;
-    }
+    // const storedPosition = localStorage.getItem(storageKey);
+    // if (storedPosition) {
+    //   const { x, y } = JSON.parse(storedPosition);
+    //   element.style.left = `${x}px`;
+    //   element.style.top = `${y}px`;
+    // }
   }
 
   function savePosition() {
-    if (storageKey) {
-      localStorage.setItem(storageKey, JSON.stringify({
-        x: element.offsetLeft,
-        y: element.offsetTop
-      }));
-    }
+    // if (storageKey) {
+    //   localStorage.setItem(storageKey, JSON.stringify({
+    //     x: element.offsetLeft,
+    //     y: element.offsetTop
+    //   }));
+    // }
   }
 
   function keepWithinBounds(x, y) {

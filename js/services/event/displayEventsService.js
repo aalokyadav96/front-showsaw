@@ -56,16 +56,17 @@ async function fetchTotalEventCount() {
 
 
 async function displayEvents(isLoggedIn, content, contentcon, page = 1) {
-    const eventsPerPage = 4; // Number of events per page
+    const eventsPerPage = 6; // Number of events per page
     content.innerHTML = ''; // Clear the main content area
 
-    const efventhead = document.createElement("h1");
+    const efventhead = document.createElement("h3");
     efventhead.textContent = "Events";
     content.appendChild(efventhead);
     
     // Create a container for events
     const eventDiv = document.createElement("div");
     eventDiv.id = "events";
+    eventDiv.className = "hvflex";
     content.appendChild(eventDiv);
 
     try {
@@ -112,8 +113,8 @@ function generateEventHTML(eevent) {
     return `
         <div class="event" id="event-${eevent.eventid}">
             <a href="/event/${eevent.eventid}" title="View event details" id="a-${eevent.eventid}">
-                <img src="${SRC_URL}/eventpic/${eevent.banner_image}" alt="${eevent.title} Banner" style="width: 100%; max-height: 150px; object-fit: cover;" />
-                <h1>${eevent.title}</h1>
+                <img loading="lazy" src="${SRC_URL}/eventpic/${eevent.banner_image}" alt="${eevent.title} Banner" style="width: 100%; aspect-ratio:3/2; object-fit: cover;" />
+                <h3>${eevent.title}</h3>
                 <p><strong>Place:</strong> ${eevent.place}</p>
                 <p><strong>Date:</strong> ${new Date(eevent.date).toLocaleString()}</p>
                 <!--p><strong>Description:</strong> ${eevent.description}</p-->

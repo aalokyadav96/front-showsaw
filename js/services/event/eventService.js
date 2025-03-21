@@ -29,8 +29,8 @@ async function displayEvent(isLoggedIn, eventId, contentContainer) {
         contentContainer.innerHTML = '';
         displayEventDetails(contentContainer, eventData, isCreator, isLoggedIn);
 
-        let container = document.createElement('div');
-        contentContainer.appendChild(container);
+        // let container = document.createElement('div');
+        // contentContainer.appendChild(container);
 
         const tabs = [
             // { title: 'Reviews', id: 'reviews-tab', render: (container) => displayEventReviews(container, eventId, isCreator, isLoggedIn) },

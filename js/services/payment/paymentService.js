@@ -2,10 +2,9 @@
 import { apiFetch } from "../../api/api.js";
 import { Button } from "../../components/base/Button.js";
 import Modal from "../../components/ui/Modal.mjs";
-import { showSeatSelection } from "../tickets/seats.js";
 
 // Unified function for merchandise or ticket purchase
-async function handlePurchase(type = "merch", itemId, eventId, maxQuantity) {
+async function handlePurchase(type = "merch", itemId, eventId, maxQuantity, totalQuantity) {
     let entityType = "event";
     if (type === "merch") {
         entityType = "event";

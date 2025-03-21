@@ -10,6 +10,7 @@ function createImageField(label, id, currentSrc, previewId) {
     const currentImg = document.createElement("img");
     currentImg.id = `current-${id}`;
     currentImg.src = currentSrc;
+    currentImg.loading = "lazy";
     currentImg.style.maxWidth = "200px";
     if (!currentSrc) currentImg.style.display = "none";
 
@@ -32,6 +33,7 @@ function createImageField(label, id, currentSrc, previewId) {
 
     const previewImg = document.createElement("img");
     previewImg.id = previewId;
+    previewImg.loading = "lazy";
     previewImg.style.display = "none";
     previewImg.style.maxWidth = "200px";
 

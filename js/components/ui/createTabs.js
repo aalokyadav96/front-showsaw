@@ -1,4 +1,4 @@
-import { createButton, createContainer } from "../eventHelper.js";
+import { createDivButton, createContainer } from "../eventHelper.js";
 import { createElement } from "../../components/createElement.js";
 
 export function createTabs(tabs) {
@@ -12,7 +12,7 @@ export function createTabs(tabs) {
     );
 
     tabs.forEach(({ title, id, render }, index) => {
-        const tabButton = createButton({
+        const tabButton = createDivButton({
             text: title,
             classes: ["tab-button"],
             events: { click: () => activateTab(id, render, tabContentContainers[index]) },

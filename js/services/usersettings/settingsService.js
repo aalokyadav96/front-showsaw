@@ -1,4 +1,3 @@
-import "../../../css/settingspage.css";
 import { apiFetch } from "../../api/api.js";
 import ToggleSwitch from "../../components/ui/ToggleSwitch.mjs";
 import { navigate } from "../../routes/index.js";

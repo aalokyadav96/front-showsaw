@@ -1,5 +1,4 @@
 // Navigation Component
-import "../../css/navigation.css";
 import { SRC_URL, state } from "../state/state.js";
 import { navigate } from "../routes/index.js";
 import { logout } from "../services/auth/authService.js";
@@ -59,11 +58,11 @@ const createNavItem = (href, label) => {
 
 /** Profile Dropdown */
 const createProfileDropdown = (user) => {
-    const dropdown = document.createElement("li");
+    const dropdown = document.createElement("div");
     dropdown.className = "dropdown";
 
     const toggle = document.createElement("div");
-    toggle.className = "profile-dropdown-toggle";
+    toggle.className = "profile-dropdown-toggle hflex";
     toggle.tabIndex = 0;
 
     // Use user's profile picture if available; otherwise, use default "thumb.jpg"
@@ -73,6 +72,7 @@ const createProfileDropdown = (user) => {
 
     const image = document.createElement("img");
     image.src = profilePic;
+    image.loading = "lazy";
     image.alt = "Profile Picture";
     image.className = "profile-image";
 
@@ -118,10 +118,7 @@ const createNav = () => {
 
     // Create Elements
     const header = document.createElement("header");
-    header.className = "navbar";
-
-    const navbarContainer = document.createElement("div");
-    navbarContainer.className = "navbar-container";
+    header.className = "navbar hflex-sb";
 
     const logoDiv = document.createElement("div");
     logoDiv.className = "logo";
@@ -133,10 +130,10 @@ const createNav = () => {
     logoDiv.appendChild(logoLink);
 
     const nav = document.createElement("nav");
-    nav.className = "nav-menu";
+    nav.className = "nav-menu hflex";
 
     const ul = document.createElement("ul");
-    ul.className = "nav-list";
+    ul.className = "nav-list hflex";
 
     // Append Navigation Items
     const fragment = document.createDocumentFragment();
@@ -148,50 +145,33 @@ const createNav = () => {
         { href: "/create-place", text: "Loca" },
     ]));
 
-    profileOrLogin(fragment);
-
     function profileOrLogin(node) {
         // Add Profile Dropdown or Login Button
         if (isLoggedIn) {
             node.appendChild(createProfileDropdown(state.user));
         } else {
-            const loginLi = document.createElement("li");
-            const loginButton = document.createElement("button");
-            loginButton.className = "btn auth-btn nav-link";
+            // const loginLi = document.createElement("li");
+            const loginButton = document.createElement("a");
+            loginButton.className = "btn auth-btn";
             loginButton.textContent = "Login";
             loginButton.addEventListener("click", () => navigate("/login"));
-            loginLi.appendChild(loginButton);
-            node.appendChild(loginLi);
+            // loginLi.appendChild(loginButton);
+            node.appendChild(loginButton);
         }
     }
 
     ul.appendChild(fragment);
     nav.appendChild(ul);
 
-
-    // Mobile Menu
-    const mobileMenu = document.createElement("ul");
-    mobileMenu.className = "mobile-menu-icon";
-    profileOrLogin(mobileMenu);
-
-    nav.appendChild(mobileMenu);
-    navbarContainer.appendChild(logoDiv);
-    navbarContainer.appendChild(nav);
-    header.appendChild(navbarContainer);
+    header.appendChild(logoDiv);
+    header.appendChild(nav);
+    profileOrLogin(header);
 
     return header;
 };
 
 /** Attach Navigation Event Listeners */
 const attachNavEventListeners = () => {
-    // Close Mobile Menu on Navigation
-    document.querySelectorAll(".nav-list .nav-link").forEach((link) => {
-        link.addEventListener("click", () => {
-            closeElement(".nav-list", "active");
-            document.querySelector(".mobile-menu-icon")?.setAttribute("aria-expanded", "false");
-        });
-    });
-
     // Create Dropdown Toggle
     document.getElementById("create-menu")?.addEventListener("click", (e) => {
         e.preventDefault();

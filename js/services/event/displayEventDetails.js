@@ -1,5 +1,11 @@
 import { SRC_URL } from "../../state/state.js";
-import { createButton, createHeading, createContainer, createImage, createLink } from "../../components/eventHelper.js";
+import {
+    createButton,
+    createHeading,
+    createContainer,
+    createImage,
+    createLink
+} from "../../components/eventHelper.js";
 import { createElement } from "../../components/createElement.js";
 import { editEventForm } from "./editEvent.js";
 import { deleteEvent } from "./eventService.js";
@@ -9,13 +15,13 @@ import { deleteEvent } from "./eventService.js";
 async function displayEventDetails(content, eventData, isCreator, isLoggedIn) {
     content.innerHTML = '';
 
-    // Main Event Container
+    // Main Event Wrapper
     const eventWrapper = createContainer(['event-wrapper']);
 
-    // Event Card (Holds Banner & Details)
-    const eventCard = createContainer(['event-card']);
+    // Create Event Card
+    const eventCard = createContainer(['event-card', 'hvflex']);
 
-    // Event Banner Section
+    // Event Banner
     const bannerSection = createContainer(['banner-section']);
     const bannerImage = createImage({
         src: `${SRC_URL}/eventpic/${eventData.banner_image}`,
@@ -24,52 +30,61 @@ async function displayEventDetails(content, eventData, isCreator, isLoggedIn) {
     });
     bannerSection.appendChild(bannerImage);
 
-    // Event Details Section
+    // Event Details
     const eventInfo = createContainer(['event-info']);
-    if (eventData.title) { eventInfo.appendChild(createHeading('h1', eventData.title, ['event-title'])); }
-    if (eventData.description) { eventInfo.appendChild(createHeading('p', `Description: ${eventData.description}`, ['event-description'])); }
-    if (eventData.place) { eventInfo.appendChild(createHeading('strong', `Place:  ${eventData.place}`, ['event-place'])); }
-    if (eventData.status) { eventInfo.appendChild(createHeading('p', eventData.status, ['event-status'])); }
-    if (eventData.date) { eventInfo.appendChild(createHeading('p', `${new Date(eventData.date).toLocaleString()}`, ['event-date'])); }
 
-    // const then = new Date(eventData.date); // This will be in local time (e.g., 17:10 IST)
-    // console.log("then:", then); // Should log: Sat Mar 08 2025 17:10:00 GMT+0530 (India Standard Time)
-    // if (eventData.date) {
-    //     eventInfo.appendChild(CountDown(then));
-    // }
+    const details = [
+        { tag: 'h1', text: eventData.title, classes: ['event-title'] },
+        { tag: 'p', text: `Description: ${eventData.description}`, classes: ['event-description'] },
+        { tag: 'strong', text: `Place: ${eventData.place}`, classes: ['event-place'] },
+        { tag: 'p', text: eventData.status, classes: ['event-status'] },
+        { tag: 'p', text: eventData.date ? new Date(eventData.date).toLocaleString() : '', classes: ['event-date'] },
+    ];
 
+    details.forEach(({ tag, text, classes }) => {
+        if (text) eventInfo.appendChild(createHeading(tag, text, classes));
+    });
+
+    if (eventData.seatingplan) { eventInfo.appendChild(createImage({ src: "", alt: "Seating Plan", classes: ['img'] })) };
 
     // Social Links
     if (eventData.social_links) {
         const socialLinks = createContainer(['event-social-links']);
-        Object.entries(eventData.social_links || {}).forEach(([platform, url]) => {
-            const link = createLink({ href: url, textContent: platform, classes: ['social-link'] });
-            socialLinks.appendChild(link);
+        Object.entries(eventData.social_links).forEach(([platform, url]) => {
+            socialLinks.appendChild(createLink({ href: url, textContent: platform, classes: ['social-link'] }));
         });
         eventInfo.appendChild(socialLinks);
     }
 
     // Tags
-    if (eventData.tags) {
-        const tags = createContainer(['event-tags']);
-        eventData.tags.forEach((tag) => {
-            const tagElement = createElement('span', { textContent: `#${tag}`, classes: ['event-tag'] });
-            tags.appendChild(tagElement);
+    if (eventData.tags?.length) {
+        const tagsContainer = createContainer(['event-tags']);
+        eventData.tags.forEach(tag => {
+            tagsContainer.appendChild(createElement('span', { textContent: `#${tag}`, classes: ['event-tag'] }));
         });
-        eventInfo.appendChild(tags);
+        eventInfo.appendChild(tagsContainer);
     }
 
     // Custom Fields
-    const customFields = createContainer(['event-custom-fields']);
-    Object.entries(eventData.custom_fields || {}).forEach(([field, value]) => {
-        const fieldElement = createHeading('p', `${field}: ${value}`, ['custom-field']);
-        customFields.appendChild(fieldElement);
-    });
-    eventInfo.appendChild(customFields);
+    if (eventData.custom_fields) {
+        const customFieldsContainer = createContainer(['event-custom-fields']);
+        Object.entries(eventData.custom_fields).forEach(([field, value]) => {
+            customFieldsContainer.appendChild(createHeading('p', `${field}: ${value}`, ['custom-field']));
+        });
+        eventInfo.appendChild(customFieldsContainer);
+    }
 
-    // Append banner and event info
-    eventCard.appendChild(bannerSection);
-    eventCard.appendChild(eventInfo);
+    // if (eventData.tickets) {
+    //     eventInfo.appendChild(createButton({
+    //         text: "Verify Your Ticket", classes: ["button"], events: {click: () => {
+    //             alert("hi");
+    //         }}
+    //     }))
+    // };
+
+    // Append banner and event details
+    eventCard.append(bannerSection, eventInfo);
+    eventWrapper.appendChild(eventCard);
 
     // Event Actions (Edit/Delete)
     if (isLoggedIn && isCreator) {
@@ -88,12 +103,15 @@ async function displayEventDetails(content, eventData, isCreator, isLoggedIn) {
         eventWrapper.appendChild(eventActions);
     }
 
+    // Additional Sections (e.g., Venue)
     // const eventVenue = createContainer(['event-venue']);
     // displayEventVenue(eventVenue, eventData.place, eventData.eventid, isLoggedIn);
-
-    eventWrapper.appendChild(eventCard);
     // eventWrapper.appendChild(eventVenue);
+
+    // Append Edit Event Container
     eventWrapper.appendChild(createContainer(['eventedit'], 'editevent'));
+
+    // Append Everything to Content
     content.appendChild(eventWrapper);
 }
 

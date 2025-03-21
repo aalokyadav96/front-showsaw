@@ -244,6 +244,7 @@ function displayNewMerchandise(merchData, merchList) {
         const merchImage = document.createElement("img");
         merchImage.src = `${SRC_URL}/merchpic/${merchData.merch_pic}`;
         merchImage.alt = merchData.name;
+        merchImage.loading = "lazy";
         merchImage.style.maxWidth = "160px";
         merchItem.appendChild(merchImage);
     }

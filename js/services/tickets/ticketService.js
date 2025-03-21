@@ -4,33 +4,36 @@ import { Button } from "../../components/base/Button.js";
 import { createElement } from "../../components/createElement.js";
 import { showSeatSelection } from "./seats.js";
 import { clearTicketForm, deleteTicket, editTicket } from "./editTicket.js";
-// import { handlePurchase } from "../payment/paymentService.js";
+import { handlePurchase } from "../payment/paymentService.js";
 import { displayEventVenue } from "../event/eventTabs.js";
 import SnackBar from "../../components/ui/Snackbar.mjs";
+import { createButton } from "../../components/eventHelper.js";
 
-function showBuyTicketModal(ticketId, eventId, quantity, isLoggedIn, isCreator) {
-    if (!isLoggedIn) {
-        alert("Please log in to purchase tickets.");
-        return;
-    }
+// function showBuyTicketModal(ticketId, eventId, quantity, isLoggedIn, isCreator) {
+//     if (!isLoggedIn) {
+//         alert("Please log in to purchase tickets.");
+//         return;
+//     }
 
+//     let maxQuantity = 6;
+
+//     if (maxQuantity <= 0) {
+//         // alert("You need to buy at least one ticket to select seats.");
+//         alert("You need to buy at least one ticket.");
+//         return;
+//     }
+
+//     showSeatSelection(ticketId, eventId, maxQuantity);
+// }
+
+
+function showBuyTicketModal(ticketId, eventId, totalQuantity, isLoggedIn, isCreator) {
     let maxQuantity = 6;
-
-    if (maxQuantity <= 0) {
-        // alert("You need to buy at least one ticket to select seats.");
-        alert("You need to buy at least one ticket.");
-        return;
+    if(isLoggedIn) {
+        handlePurchase("ticket", ticketId, eventId, maxQuantity, totalQuantity);
     }
-
-    showSeatSelection(ticketId, eventId, maxQuantity);
 }
 
-
-// function showBuyTicketModal(ticketId, eventId, maxQuantity, isLoggedIn, isCreator) {
-//     if(isLoggedIn) {
-//         handlePurchase("ticket", ticketId, eventId, maxQuantity);
-//     }
-// }
 // Add ticket to the event
 async function addTicket(eventId, ticketList) {
     const tickName = document.getElementById('ticket-name').value.trim();
@@ -91,7 +94,7 @@ function addTicketForm(eventId, ticketList) {
     const currencySelect = document.createElement('select');
     currencySelect.id = 'ticket-currency';
     currencySelect.required = true;
-    
+
     const currencies = ["USD", "EUR", "GBP", "CAD", "AUD", "JPY"]; // Add more if needed
     currencies.forEach(currency => {
         const option = document.createElement('option');
@@ -166,14 +169,31 @@ function displayNewTicket(ticketData, ticketList) {
 }
 
 async function displayTickets(ticketLixt, ticketData, eventId, isCreator, isLoggedIn) {
+
+    if (!Array.isArray(ticketData)) {
+        throw new Error("Invalid ticket data received.");
+    }
+
     ticketLixt.innerHTML = ""; // Clear existing content
+
+    if (ticketData && !isCreator) {
+        ticketLixt.appendChild(createButton({
+            text: "Verify Your Ticket", classes: ["button"], events: {
+                click: () => {
+                    alert("hi");
+                }
+            }
+        }))
+    };
+
     let ticketList = document.createElement('div');
     ticketList.className = ('hvflex gap20');
 
+
     try {
-        if (!Array.isArray(ticketData)) {
-            throw new Error("Invalid ticket data received.");
-        }
+        // if (!Array.isArray(ticketData)) {
+        //     throw new Error("Invalid ticket data received.");
+        // }
 
         if (isCreator) {
             const button = Button("Add Tickets", "add-ticket-btn", {

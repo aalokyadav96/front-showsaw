@@ -27,17 +27,16 @@ function profilGen(profile, isLoggedIn) {
     const section = document.createElement("section");
     section.className = "channel";
 
-    const suggs = document.createElement("section");
-    displayFollowSuggestions(profile.userid, suggs);
+    // const suggs = document.createElement("section");
+    // displayFollowSuggestions(profile.userid, suggs);
 
     appendChildren(
         section,
         createBanner(profile),
-        createBannerEditButton(profile),
         createProfilePicture(profile),
         createProfileDetails(profile, isLoggedIn),
         createStatistics(profile),
-        suggs
+        // suggs
     );
 
     // Load User Data Button

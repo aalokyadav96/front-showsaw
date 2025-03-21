@@ -1,4 +1,3 @@
-import "../../../css/authpage.css";
 import { login, signup } from "../../services/auth/authService.js"; // Import login/signup functions
 
 
@@ -45,6 +44,7 @@ function displayAuthSection(isLoggedIn, contentContainer) {
 
         const loginButton = document.createElement("button");
         loginButton.type = "submit";
+        loginButton.className = "auth-btn centered-txt";
         loginButton.textContent = "Login";
         loginForm.appendChild(loginButton);
 
@@ -80,6 +80,7 @@ function displayAuthSection(isLoggedIn, contentContainer) {
 
         const signupButton = document.createElement("button");
         signupButton.type = "submit";
+        signupButton.className = "auth-btn centered-txt";
         signupButton.textContent = "Signup";
         signupForm.appendChild(signupButton);
 

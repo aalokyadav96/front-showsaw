@@ -1,6 +1,6 @@
 import { SRC_URL } from "../../state/state.js";
 import ZoomBox from "../../components/ui/ZoomBox.mjs";
-import MultiView from "../../components/ui/Multiview.mjs";
+// import MultiView from "../../components/ui/Multiview.mjs";
 
 async function RenderImagePost(mediaContainer, media) {
     const mediaClasses = [
@@ -29,6 +29,7 @@ async function RenderImagePost(mediaContainer, media) {
         // image.src = `${SRC_URL}/${img.replace("thumb/", "")}`;
         let imgurl = `${SRC_URL}/${img.replace("static/postpic/", "postpic/thumb/")}`;
         image.src = imgurl;
+        image.loading = "lazy";
         image.alt = "Post Image";
         image.className = 'post-image PostPreviewImageView_post_image__zLzXH';
         // Open image in ZoomBox on click
@@ -42,12 +43,12 @@ async function RenderImagePost(mediaContainer, media) {
 }
 
 async function startZoombox(img, index) {
-    if (img.length === 2) {
-        MultiView(img);
-    } else {
+    // if (img.length === 2) {
+    //     MultiView(img);
+    // } else {
         // new ZoomBox(img, index);
         ZoomBox(img, index);
-    }
+    // }
 }
 
 

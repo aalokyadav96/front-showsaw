@@ -27,6 +27,9 @@ function createBanner(profile) {
     const bgImg = document.createElement("span");
     bgImg.className = "bg_img";
 
+    const banncon = document.createElement("span");
+    banncon.className = "vflex";
+
     // Use user's banner picture if available; otherwise, use default banner
     const bannerPicture = profile.banner_picture 
         ? `${SRC_URL}/userpic/banner/${profile.banner_picture}` 
@@ -35,7 +38,10 @@ function createBanner(profile) {
     bgImg.style.backgroundImage = `url(${bannerPicture})`;
     bgImg.addEventListener("click", () => Sightbox(bannerPicture, "image"));
 
-    return bgImg;
+    banncon.appendChild(createBannerEditButton(profile));
+    banncon.appendChild(bgImg);
+
+    return banncon;
 }
 
 
@@ -44,6 +50,7 @@ function createBannerEditButton(profile) {
 
     const editButton = document.createElement("button");
     editButton.className = "edit-banner-pic";
+    editButton.textContent = "B";
     editButton.addEventListener("click", () => {
         const content = document.createElement("div");
         const contentx = document.createElement("div");
@@ -73,6 +80,7 @@ function createProfilePicture(profile) {
 
     const img = document.createElement("img");
     img.src = profilePic;
+    img.loading = "lazy";
     img.alt = "Profile Picture";
     img.className = "imgful";
     thumb.appendChild(img);
@@ -88,6 +96,7 @@ function createProfilePicture(profile) {
     if (profile.userid === state.user) {
         const editProfileButton = document.createElement("button");
         editProfileButton.className = "edit-profile-pic";
+        editProfileButton.textContent = "P";
         editProfileButton.addEventListener("click", () => {
             const content = document.createElement("div");
             const contentx = document.createElement("div");
@@ -112,7 +121,7 @@ function createProfileDetails(profile, isLoggedIn) {
     const profileDetails = document.createElement("div");
     profileDetails.className = "profile-details";
 
-    const username = document.createElement("h2");
+    const username = document.createElement("strong");
     username.className = "username";
     username.textContent = profile.username || "Not provided";
 

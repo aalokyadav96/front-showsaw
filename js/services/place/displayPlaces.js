@@ -1,6 +1,6 @@
 import { fetchPlaces } from "./fetchPlaces.js";
 import Snackbar from '../../components/ui/Snackbar.mjs';
-import {createElement} from "../../components/createElement.js";
+import { createElement } from "../../components/createElement.js";
 import { SRC_URL } from "../../state/state.js";
 
 // Function to display the list of places
@@ -31,15 +31,16 @@ async function displayPlaces(isLoggedIn, content) {
 function createPlaceCard(place) {
     return createElement('div', { class: 'place' }, [
         createElement('a', { href: `/place/${place.placeid}` }, [
-            createElement('h1', {}, [place.name]),
             createElement('img', {
                 src: `${SRC_URL}/placepic/${place.banner}`,
                 alt: `${place.name} Banner`,
-                // style: "aspect-ratio: 640 / 360; height:auto;width:100%;"
+                loading: "lazy",
+                style: "width: 100%; aspect-ratio:3/2; object-fit: cover;"
             }),
+            createElement('h1', {}, [place.name]),
             createElement('p', {}, [createElement('strong', {}, ["Address: "]), place.address]),
             createElement('p', {}, [createElement('strong', {}, ["Description: "]), place.description])]),
     ]);
 }
 
-export {displayPlaces, createPlaceCard};
+export { displayPlaces, createPlaceCard };

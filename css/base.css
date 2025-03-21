@@ -1,0 +1,54 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.hflex {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.hflex_nopad {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.hflex-sb {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 8px;
+}
+
+.vflex {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px;
+}
+
+.hvflex {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+ul, li {
+    list-style-type: none;
+}
+
+.container {
+    padding: 8px;
+}
+
+svg {
+    max-width: 4rem;
+    max-height: 4rem;
+}
+
+video {
+    width: 100%;
+}

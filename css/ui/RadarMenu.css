@@ -55,15 +55,15 @@
     position: absolute;
     bottom: -120px;
     left: 50%;
-    /* border: 2px solid #fff; */
+    border: 2px solid #fff;
     transform: translateX(-50%) scale(0);
     opacity: 0;
     visibility: hidden;
     transition: transform 0.2s ease-out, opacity 0.1s ease-in-out;
     border-radius: 50%;
     /* background: radial-gradient(circle at center, #00ff01 0%, #16a029 100%); */
-    background: radial-gradient(circle at center, #ffffff 0%, #929292 100%);
-    /* box-shadow: 0 0 30px rgb(255, 255, 255); */
+    /* background: radial-gradient(circle at center, #ffffff 0%, #929292 100%); */
+    box-shadow: 0 0 30px rgb(255, 255, 255);
     overflow: hidden;
 }
   /* When active, the menu appears (scaled up) */
@@ -103,9 +103,9 @@
     font-size: 0.9rem;
     color: #000000;
     /* Each item fades in on appearance */
-    opacity: 0;
-    animation: fadeIn 0.4s forwards;
-    background: radial-gradient(circle at center, #ffffff 0%, #a0a0a0 100%);
+    /* opacity: 0;
+    animation: fadeIn 0.4s forwards; */
+    /* background: radial-gradient(circle at center, #ffffff 0%, #a0a0a0 100%); */
     box-shadow: 0 0 10px rgb(255, 255, 255);
   }
   

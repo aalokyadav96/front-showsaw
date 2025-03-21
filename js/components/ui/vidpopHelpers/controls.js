@@ -2,7 +2,6 @@ import Button from "../../base/Button.js";
 import { setupVideoUtilityFunctions } from "../vidpopUtilities.js";
 import { createFilterSelector } from "./filters.js";
 import { togglePictureInPicture } from "./vutils.js";
-import "../../../../css/vidControls.css";
 
 function createControls(video, mediaSrc, qualities, videoid, videoPlayer) {
   const controls = createElement("div", "controls");

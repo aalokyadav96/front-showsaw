@@ -10,7 +10,7 @@ const Button = (title, id, events = {}) =>  {
     for (const event in events) {
       button.addEventListener(event, events[event]);
     }
-  
+    
     button.classList.add('button');
     return button;
   }

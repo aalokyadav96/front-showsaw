@@ -1,6 +1,19 @@
 
 // Components
 function createButton({ text, classes = [], id = '', events = {} }) {
+    const button = document.createElement('button');
+    button.textContent = text;
+    button.classList.add(...classes);
+    if (id) button.id = id;
+
+    for (const event in events) {
+        button.addEventListener(event, events[event]);
+    }
+
+    return button;
+}
+
+function createDivButton({ text, classes = [], id = '', events = {} }) {
     const button = document.createElement('div');
     button.textContent = text;
     button.classList.add(...classes);
@@ -57,9 +70,10 @@ function createContainer(classes = [], id = '', containerType = 'div') {
 function createImage({ src, alt, classes = [] }) {
     const image = document.createElement('img');
     image.src = src;
+    image.loading = "lazy";
     image.alt = alt;
     image.classList.add(...classes);
     return image;
 }
 
-export {createButton, createHeading, createList, createContainer, createImage, createLink};
+export {createButton, createHeading, createList, createContainer, createImage, createLink, createDivButton};

@@ -4,14 +4,14 @@
   margin: 20px 0;
   display: grid;
   gap: 15px;
-  font-family: 'Poppins', sans-serif;
 }
 
 .accordion-section {
   border-radius: 10px;
   overflow: hidden;
   transition: box-shadow 0.3s ease-in-out, transform 0.2s ease-in-out;
-  border: 2px solid;
+  border: 1px solid;
+  border-bottom: 2px solid;
 }
 
 .accordion-section:hover {

@@ -1,6 +1,5 @@
 import { createElement } from "../../components/createElement.js";
 import Button from "../../components/base/Button.js";
-import "../../../css/nearbyPlaces.css";
 import { navigate } from "../../routes/index.js";
 import { apiFetch } from "../../api/api.js";
 // import { renderPlaceDetails } from "./renderPlaceDetails.js";

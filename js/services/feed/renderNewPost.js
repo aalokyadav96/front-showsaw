@@ -18,7 +18,7 @@ function createPostHeader(post) {
     return `
         <div class="post-header hflex">
             <a class="user-icon" href="/user/${post.username}">
-                <img src="${SRC_URL}/userpic/thumb/${post.userid + ".jpg" || 'default.png'}" alt="Profile Picture" class="profile-thumb" />
+                <img loading="lazy" src="${SRC_URL}/userpic/thumb/${post.userid + ".jpg" || 'default.png'}" alt="Profile Picture" class="profile-thumb" />
             </a>
             <div class="user-time">
                 <div class="username">${post.username}</div>
@@ -75,14 +75,14 @@ function createActions(post, isLoggedIn, isCreator) {
 
 // Update Timeline Styles
 function updateTimelineStyles() {
-    document.querySelectorAll('.timeline-item').forEach(item => {
+    document.querySelectorAll('.feed-item').forEach(item => {
         const profileImg = item.querySelector('.profile-thumb').src;
         item.style.setProperty('--after-bg', `url(${profileImg})`);
     });
 
     const style = document.createElement('style');
     style.textContent = `
-        .timeline-item::after {
+        .feed-item::after {
           background-image: var(--after-bg);
         }
       `;
@@ -96,7 +96,7 @@ function renderPost(post, postsContainer, i) {
     const isCreator = isLoggedIn && state.user === post.userid;
 
     const postElement = document.createElement('article');
-    postElement.classList.add('timeline-item');
+    postElement.classList.add('feed-item');
     postElement.setAttribute("href", "./post/" + post.postid);
     postElement.setAttribute('date-is', new Date(post.timestamp).toLocaleString());
 

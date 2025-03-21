@@ -4,7 +4,6 @@
   flex-direction: column;
   gap: 20px;
   padding: 20px;
-  background: #f9f9f9;
   border-radius: 10px;
   max-width: 600px;
   margin: 0 auto;
@@ -19,8 +18,7 @@
   top: 0;
   height: 100%;
   width: 4px;
-  /* background: linear-gradient(180deg, #02c12f, #7eff7e); */
-  background: linear-gradient(180deg, transparent, #02c12f, transparent);
+  background: linear-gradient(180deg, transparent, #000000, transparent);
   border-radius: 4px;
 }
 
@@ -33,26 +31,16 @@
 }
 
 /* Time Bubble */
-/* .timeline-time {
-  background: linear-gradient(135deg, #ff7eb3, #ff758c);
-  color: white;
-  font-size: 14px;
-  font-weight: bold;
-  padding: 8px 12px;
-  border-radius: 20px;
-  min-width: 90px;
-  text-align: center;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-} */
+
 .timeline-time {
-  background: linear-gradient(135deg, #13dc1b, #7cff75);
+  background: linear-gradient(135deg, #000000, #000000);
   color: white;
   font-size: 14px;
   font-weight: bold;
-  margin-top: 4px;
+  margin-top: 0px;
   margin-left: 6px;
   padding: 8px 12px;
-  border-radius: 20px;
+  border-radius: 20px 0 0 20px;
   min-width: 90px;
   text-align: center;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
@@ -61,9 +49,9 @@
 /* Description */
 .timeline-description {
   background: white;
-  padding: 12px 16px;
-  border-radius: 8px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 8px 16px;
+  border-radius: 0 8px 8px 0;
+  border: 1px solid;
   flex: 1;
   font-size: 14px;
   color: #333;
@@ -80,7 +68,7 @@
   width: 12px;
   height: 12px;
   background: white;
-  border: 3px solid #75ff85;
+  border: 3px solid #000000;
   border-radius: 50%;
   z-index: 2;
 }

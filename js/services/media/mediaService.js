@@ -6,7 +6,6 @@ import VidPlay from '../../components/ui/VidPlay.mjs';
 import Modal from '../../components/ui/Modal.mjs';
 import { Button } from "../../components/base/Button.js";
 import { createElement } from "../../components/createElement.js";
-import "../../../css/mediaSection.css";
 
 
 let mediaItems = []; // Ensure this is globally scoped
@@ -99,7 +98,7 @@ function displayNewMedia(isLoggedIn, mediaData, mediaList) {
     // Render image or video depending on media type
     if (mediaData.type === "image") {
         mediaContent = `
-            <img src="${SRC_URL}/uploads/${mediaData.url}" alt="${mediaData.caption || "Media"}" 
+            <img loading="lazy" src="${SRC_URL}/uploads/${mediaData.url}" alt="${mediaData.caption || "Media"}" 
                 class="media-img" data-index="${mediaItems.length}" 
                 style="max-width: 160px; max-height: 240px; height: auto; width: auto;" />
         `;
@@ -227,6 +226,7 @@ function renderMediaItem(media, index, isLoggedIn, entityType, entityId) {
 
         const img = document.createElement("img");
         img.src = mediaUrl;
+        img.loading = "lazy";
         img.alt = media.caption || "Media Image";
         img.className = "media-img";
         img.dataset.index = index;

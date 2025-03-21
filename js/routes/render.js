@@ -1,122 +1,3 @@
-// import { detectLanguage, applyTranslations } from "../i18n.js";
-// import { state } from "../state/state.js";
-
-// async function renderPageContent(isLoggedIn, path, contentContainer) {
-//     if (!path || typeof path !== "string") {
-//         console.error("Invalid path:", path);
-//         contentContainer.innerHTML = `<h1>404 Not Found</h1>`;
-//         return;
-//     }
-
-//     // **Check if the content was already loaded**
-//     if (state.pageCache[path]) {
-//         console.log(`✅ Skipping re-fetch, using cached content for: ${path}`);
-//         return;
-//     }
-
-//     // **Route Handlers (Static Routes)**
-//     const routeHandlers = {
-//         "/": async () => {
-//             const { Home } = await import("../pages/home.js");
-//             Home(isLoggedIn, contentContainer);
-//         },
-//         "/login": async () => {
-//             const { Auth } = await import("../pages/auth/auth.js");
-//             Auth(isLoggedIn, contentContainer);
-//         },
-//         "/create-event": async () => {
-//             const { Create } = await import("../pages/events/createEvent.js");
-//             Create(isLoggedIn, contentContainer);
-//         },
-//         "/create-place": async () => {
-//             const { CreatePlace } = await import("../pages/places/createPlace.js");
-//             CreatePlace(isLoggedIn, contentContainer);
-//         },
-//         "/profile": async () => {
-//             const { UserProfile } = await import("../pages/profile/userProfile.js");
-//             UserProfile(isLoggedIn, contentContainer);
-//         },
-//         "/events": async () => {
-//             const { Events } = await import("../pages/events/events.js");
-//             Events(isLoggedIn, contentContainer);
-//         },
-//         "/places": async () => {
-//             const { Places } = await import("../pages/places/places.js");
-//             Places(isLoggedIn, contentContainer);
-//         },
-//         "/search": async () => {
-//             const { Search } = await import("../pages/search/search.js");
-//             Search(isLoggedIn, contentContainer);
-//         },
-//         "/settings": async () => {
-//             const { Settings } = await import("../pages/profile/settings.js");
-//             Settings(isLoggedIn, contentContainer);
-//         },
-//         "/feed": async () => {
-//             const { Feed } = await import("../pages/feed/feed.js");
-//             Feed(isLoggedIn, contentContainer);
-//         }
-//     };
-
-//     // **Dynamic Routes (Pattern Matching)**
-//     const dynamicRoutes = [
-//         {
-//             pattern: /^\/user\/([\w-]+)$/,
-//             handler: async (matches) => {
-//                 const { displayUserProfile } = await import("../pages/profile/userProfile.js");
-//                 await displayUserProfile(isLoggedIn, contentContainer, matches[1]);
-//             },
-//         },
-//         {
-//             pattern: /^\/event\/([\w-]+)$/,
-//             handler: async (matches) => {
-//                 const { Event } = await import("../pages/events/eventPage.js");
-//                 Event(isLoggedIn, matches[1], contentContainer);
-//             },
-//         },
-//         {
-//             pattern: /^\/place\/([\w-]+)$/,
-//             handler: async (matches) => {
-//                 const { Place } = await import("../pages/places/placePage.js");
-//                 Place(isLoggedIn, matches[1], contentContainer);
-//             },
-//         },
-//         {
-//             pattern: /^\/post\/([\w-]+)$/,
-//             handler: async (matches) => {
-//                 const { Post } = await import("../pages/feed/postDisplay.js");
-//                 Post(isLoggedIn, matches[1], contentContainer);
-//             },
-//         }
-//     ];
-
-//     // **Match Static Routes**
-//     const handler = routeHandlers[path];
-//     if (handler) {
-//         await handler();
-//     } else {
-//         // **Match Dynamic Routes**
-//         for (const route of dynamicRoutes) {
-//             const matches = path.match(route.pattern);
-//             if (matches) {
-//                 await route.handler(matches);
-//                 return;
-//             }
-//         }
-//         // **If no match, show 404**
-//         contentContainer.innerHTML = `<h1>404 Not Found</h1>`;
-//     }
-
-//     // **🔹 Apply Translations After Rendering**
-//     const lang = detectLanguage();
-//     await applyTranslations(lang);
-
-//     // **Cache the rendered content**
-//     state.pageCache[path] = contentContainer.innerHTML;
-// }
-
-// export { renderPageContent };
-
 import { detectLanguage, applyTranslations } from "../i18n.js";
 
 async function renderPageContent(isLoggedIn, path, contentContainer) {
@@ -149,9 +30,9 @@ async function renderPageContent(isLoggedIn, path, contentContainer) {
             CreatePlace(isLoggedIn, contentContainer);
         },
         "/profile": async () => {
-            const { UserProfile } = await import("../pages/profile/userProfile.js");
+            const { MyProfile } = await import("../pages/profile/userProfile.js");
             contentContainer.innerHTML = "";
-            UserProfile(isLoggedIn, contentContainer);
+            MyProfile(isLoggedIn, contentContainer);
         },
         "/events": async () => {
             const { Events } = await import("../pages/events/events.js");
@@ -190,8 +71,8 @@ async function renderPageContent(isLoggedIn, path, contentContainer) {
         {
             pattern: /^\/user\/([\w-]+)$/,
             handler: async (matches) => {
-                const { displayUserProfile } = await import("../pages/profile/userProfile.js");
-                await displayUserProfile(isLoggedIn, contentContainer, matches[1]);
+                const { UserProfile } = await import("../pages/profile/userProfile.js");
+                await UserProfile(isLoggedIn, contentContainer, matches[1]);
             },
         },
         {
