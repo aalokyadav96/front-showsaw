@@ -2,6 +2,8 @@ import { createNav, attachNavEventListeners } from "../components/navigation.js"
 import { renderPageContent } from "./render.js";
 import { state } from "../state/state.js";
 import RadarMenu from "../components/ui/RadarMenu.js";
+// import { profileSVG, searchSVG, liveStreamSVG, chatSVG, heartSVG, moonSVG, settingsSVG, downloadSVG, playSVG, PauseSVG, playCropSVG, headphonesSVG, imageSVG, filterSVG } from "../components/svgs.js";
+import { profileSVG, searchSVG, settingsSVG, placesSVG, coffeeSVG, calendarSVG, locaSVG, evaSVG } from "../components/svgs.js";
 // import { createProfileDropdown } from "../components/navigation.js";
 
 async function loadContent(url) {
@@ -19,31 +21,31 @@ async function loadContent(url) {
     app.appendChild(main);
 
     const menuItems = [
-        { text: "Events", action: () => navigate("/events") },
-        { text: "Places", action: () => navigate("/places") },
-        { text: "Feed", action: () => navigate("/feed") },
-        { text: "Search", action: () => navigate("/search") },
-        { text: "Eva", action: () => navigate("/create-event") },
-        { text: "Loca", action: () => navigate("/create-place") },
+        { text: "Eva", action: () => navigate("/create-event"), svg: evaSVG },
+        { text: "Loca", action: () => navigate("/create-place"), svg: locaSVG },
+        { text: "Search", action: () => navigate("/search"), svg: searchSVG },
+        { text: "Events", action: () => navigate("/events"), svg: calendarSVG },
+        { text: "Places", action: () => navigate("/places"), svg: placesSVG },
+        { text: "Feed", action: () => navigate("/feed"), svg: coffeeSVG },
     ];
 
     if (isLoggedIn) {
         menuItems.push(
-            { text: "Profile", action: () => navigate("/profile") },
-            { text: "Settings", action: () => navigate("/settings") },
+            { text: "Profile", action: () => navigate("/profile"), svg: profileSVG },
+            { text: "Settings", action: () => navigate("/settings"), svg: settingsSVG },
         );
     } else {
         menuItems.push(
-            { text: "Login", action: () => navigate("/login") }
+            { text: "Login", action: () => navigate("/login"), svg: "" }
         );
     }
 
     const radarMenuElement = RadarMenu(menuItems, {
         buttonText: "+",
-        menuSize: 300,
+        menuSize: 280,
         radius: 100,
         baseAngle: 0,
-        startAngle: 0
+        startAngle: 180
     });
 
     app.appendChild(radarMenuElement);
@@ -54,6 +56,7 @@ async function loadContent(url) {
 
 // SPA Navigation Function
 function navigate(path) {
+    sessionStorage.setItem("redirectAfterLogin", window.location.pathname);
     if (!path) {
         console.error("🚨 navigate called with null or undefined!", new Error().stack);
         return;

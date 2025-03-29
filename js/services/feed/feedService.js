@@ -112,7 +112,7 @@ function generateFeedHTML() {
     // Create the posts container section
     const postsContainer = document.createElement('section');
     postsContainer.id = 'postsContainer';
-    postsContainer.className = 'container';
+    postsContainer.className = 'postsContainer';
 
     // Assemble the main section
     main.appendChild(postCompose);

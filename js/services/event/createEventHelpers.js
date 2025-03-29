@@ -48,14 +48,20 @@ function debounce(func, delay) {
     };
 }
 
-function addEventEventListeners(eventPlaceInput, placeSuggestionsBox, createButton) {
-    // Add event listener to the create button
+
+function addEventEventListeners(eventPlaceInput, createButton) {
     createButton.addEventListener("click", createEvent);
+    addAutoConListeners(eventPlaceInput);
+}
+
+function addAutoConListeners(eventPlaceInput) {
 
     async function fetchPlaceSuggestions() {
         const query = eventPlaceInput.value.trim();
-        if (!query) {
-            placeSuggestionsBox.style.display = "none";
+        const autocompleteList = document.getElementById("ac-list");
+
+        if (query.length < 1) {
+            autocompleteList.innerHTML = "";
             return;
         }
 
@@ -63,39 +69,74 @@ function addEventEventListeners(eventPlaceInput, placeSuggestionsBox, createButt
             const response = await fetch(`/api/suggestions/places?query=${query}`);
             const suggestions = await response.json();
 
-            placeSuggestionsBox.innerHTML = "";
-            placeSuggestionsBox.style.display = suggestions.length > 0 ? "block" : "none";
-
-            suggestions.forEach(suggestion => {
-                const suggestionElement = document.createElement("div");
-                suggestionElement.className = "suggestion-item";
-                suggestionElement.textContent = suggestion.name;
-                suggestionElement.dataset.id = suggestion.id;
-
-                suggestionElement.addEventListener("click", () => {
+            autocompleteList.innerHTML = "";
+            suggestions.forEach((suggestion) => {
+                const item = document.createElement("li");
+                item.classList.add("ac-item");
+                item.textContent = suggestion.name;
+                eventPlaceInput.dataset.id = suggestion.id;
+                item.addEventListener("click", () => {
                     eventPlaceInput.value = suggestion.name;
-                    placeSuggestionsBox.style.display = "none";
+                    eventPlaceInput.dataset.id = suggestion.id;
+                    autocompleteList.innerHTML = "";
                 });
-
-                placeSuggestionsBox.appendChild(suggestionElement);
+                autocompleteList.appendChild(item);
             });
+
+            if (suggestions.length > 0) {
+                autocompleteList.style.display = "block";
+            } else {
+                autocompleteList.style.display = "none";
+            }
         } catch (error) {
-            console.error("Error fetching place suggestions:", error);
-            placeSuggestionsBox.style.display = "none";
+            console.error("Error fetching autocomplete suggestions:", error);
         }
     }
 
-    const debouncedFetchSuggestions = debounce(fetchPlaceSuggestions, 300); // Adjust delay as needed
-
-    // Event listener for place input with debouncing
+    const debouncedFetchSuggestions = debounce(fetchPlaceSuggestions, 300);
     eventPlaceInput.addEventListener("input", debouncedFetchSuggestions);
 
-    // Close suggestions when clicking outside
+    // Handle keyboard navigation
+    eventPlaceInput.addEventListener("keydown", (event) => handleKeyboardNav(event, eventPlaceInput));
+
+    // Hide suggestions when clicking outside
     document.addEventListener("click", (event) => {
-        if (!event.target.closest("#event-place") && !event.target.closest("#place-suggestions")) {
-            placeSuggestionsBox.style.display = "none";
+        if (!event.target.closest(".suggestions-container")) {
+            document.getElementById("ac-list").style.display = "none";
         }
     });
+}
+
+// Handle keyboard navigation in autocomplete
+function handleKeyboardNav(event, eventPlaceInput) {
+    const autocompleteList = document.getElementById("ac-list");
+    const items = autocompleteList.querySelectorAll(".ac-item");
+
+    if (items.length === 0) return;
+
+    let index = Array.from(items).findIndex((item) => item.classList.contains("selected"));
+
+    if (event.key === "ArrowDown") {
+        event.preventDefault();
+        if (index < items.length - 1) index++;
+        else index = 0;
+    } else if (event.key === "ArrowUp") {
+        event.preventDefault();
+        if (index > 0) index--;
+        else index = items.length - 1;
+    } else if (event.key === "Enter") {
+        event.preventDefault();
+        if (index >= 0) {
+            eventPlaceInput.value = items[index].textContent;
+            autocompleteList.innerHTML = "";
+        }
+        return;
+    } else {
+        return;
+    }
+
+    items.forEach((item) => item.classList.remove("selected"));
+    items[index].classList.add("selected");
 }
 
 
@@ -104,12 +145,15 @@ async function createEvent(isLoggedIn) {
         const title = document.getElementById("event-title").value.trim();
         const date = document.getElementById("event-date").value;
         const time = document.getElementById("event-time").value;
-        const place = document.getElementById("event-place").value.trim();
+        // const place = document.getElementById("event-place").value.trim();
         const location = document.getElementById("event-location").value.trim();
         const description = document.getElementById("event-description").value.trim();
         const category = document.getElementById("category").value;
         const bannerFile = document.getElementById("event-banner").files[0];
         const seatingPlanFile = document.getElementById("event-seating").files[0];
+        const place = document.getElementById("event-place");
+        const placeID = place.dataset.id || ""; // Get stored placeID
+        const placeName = place.value; // Get place name (displayed to user)
 
         if (!title || !date || !time || !place || !location || !description || !category) {
             SnackBar("Please fill in all required fields.", 3000);
@@ -126,7 +170,9 @@ async function createEvent(isLoggedIn) {
             title,
             date: eventDate.toISOString(), // Ensure proper formatting
             location,
-            place,
+            // place,
+            placeID,
+            placeName,
             description,
             category
         }));
@@ -139,6 +185,10 @@ async function createEvent(isLoggedIn) {
 
         try {
             const result = await apiFetch('/events/event', 'POST', formData);
+
+            // if (success) {
+            //     logActivity("event_created", { eventId: eventData.id, category: eventData.category });
+            // }
             SnackBar(`Event created successfully: ${result.title}`, 3000);
             navigate('/event/' + result.eventid);
         } catch (error) {
@@ -149,4 +199,4 @@ async function createEvent(isLoggedIn) {
     }
 }
 
-export { createFormField, addEventEventListeners };
+export { createFormField, addEventEventListeners, addAutoConListeners, handleKeyboardNav };

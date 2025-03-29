@@ -32,7 +32,7 @@ function createPlaceCard(place) {
     return createElement('div', { class: 'place' }, [
         createElement('a', { href: `/place/${place.placeid}` }, [
             createElement('img', {
-                src: `${SRC_URL}/placepic/${place.banner}`,
+                src: `${SRC_URL}/placepic/thumb/${place.banner}`,
                 alt: `${place.name} Banner`,
                 loading: "lazy",
                 style: "width: 100%; aspect-ratio:3/2; object-fit: cover;"

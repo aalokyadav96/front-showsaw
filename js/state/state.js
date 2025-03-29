@@ -7,14 +7,16 @@ import { renderPage } from "../routes/index.js";
 const API_URL = "http://localhost:4000/api";
 const SRC_URL = "http://localhost:4000/static";
 const SEARCH_URL = "http://localhost:7000/api";
-const AGI_URL = "http://localhost:5000/api";
+const AGI_URL = "http://localhost:4000/agi";
 
 // const SRC_URL       = "https://zincate.onrender.com/static";
 // const API_URL       = "https://zincate.onrender.com/api";
 // const SEARCH_URL    = "https://silicate.onrender.com/api";
+// const AGI_URL       = "https://zincate.onrender.com/agi";
 // const AGI_URL       = "https://minihomepy.onrender.com/api";
 
 // const API_URL = "/api"; // Adjust the URL as needed
+// const AGI_URL = "/agi"; // Adjust the URL as needed
 // const SRC_URL = "/static"; // Adjust the URL as needed
 // const SEARCH_URL = "/api"; // Adjust the URL as needed
 

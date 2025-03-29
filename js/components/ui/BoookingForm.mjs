@@ -6,7 +6,7 @@ const BoookingForm = (onSubmit, placeType) => {
     const form = document.createElement("form");
     form.className = "booking-form";
 
-    const title = document.createElement("h2");
+    const title = document.createElement("h3");
     title.innerText = "Book Now";
 
     const nameInput = document.createElement("input");

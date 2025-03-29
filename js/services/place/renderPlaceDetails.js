@@ -1,5 +1,5 @@
 import { createElement } from "../../components/createElement.js";
-import { editPlaceForm, deletePlace } from "./placeService.js";
+import { editPlaceForm, deletePlace, analyticsPlace } from "./placeService.js";
 import Button from "../../components/base/Button.js";
 // import { SRC_URL } from "../../api/api.js";
 
@@ -29,18 +29,25 @@ function renderPlaceDetails(isLoggedIn, content, place, isCreator) {
         createElement('p', {}, [createElement('strong', {}, ["Category: "]), place.category || "N/A"]),
     ]);
 
-
+    let contenty = createElement('div', { 'class': 'hvflex' }, []);
+    detailsSection.appendChild(contenty);
     if (isCreator) {
-        detailsSection.appendChild(
+        contenty.appendChild(
             Button("Edit Place", "edit-place-btn", {
                 click: () => editPlaceForm(isLoggedIn, place.placeid, contentx),
                 mouseenter: () => console.log("Button hovered"),
             })
         );
-        detailsSection.appendChild(
+        contenty.appendChild(
             Button("Delete Place", "delete-place-btn", {
                 click: () => deletePlace(isLoggedIn, place.placeid),
                 mouseenter: () => console.log("Button hovered"),
+            }, "delete-btn")
+        );
+        contenty.appendChild(
+            Button("View Place Analytics", "analytics-place-btn", {
+                click: () => analyticsPlace(isLoggedIn, place.placeid),
+                mouseenter: () => console.log("Analytics Button hovered"),
             })
         );
 

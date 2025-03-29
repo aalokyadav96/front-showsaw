@@ -6,7 +6,7 @@ const CalendarForm = (onSubmit, eventId) => {
     const form = document.createElement("form");
     form.className = "booking-form";
 
-    const title = document.createElement("h2");
+    const title = document.createElement("h3");
     title.innerText = "Select a Date";
 
     const dateInput = document.createElement("input");

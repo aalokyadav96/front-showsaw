@@ -75,15 +75,15 @@ async function createPlaceForm(isLoggedIn, createSection) {
                 required: true, 
                 options: [
                     { value: "", label: "Select a category" },
-                    { value: "restaurant", label: "Restaurant" },
-                    { value: "cafe", label: "Café" },
-                    { value: "hotel", label: "Hotel" },
-                    { value: "park", label: "Park" },
-                    { value: "museum", label: "Museum" },
-                    { value: "gym", label: "Gym" },
-                    { value: "theater", label: "Theater" },
-                    { value: "arena", label: "Arena" },
-                    { value: "other", label: "Other" }
+                    { value: "Restaurant", label: "Restaurant" },
+                    { value: "Cafe", label: "Café" },
+                    { value: "Hotel", label: "Hotel" },
+                    { value: "Park", label: "Park" },
+                    { value: "Museum", label: "Museum" },
+                    { value: "Gym", label: "Gym" },
+                    { value: "Theater", label: "Theater" },
+                    { value: "Arena", label: "Arena" },
+                    { value: "Other", label: "Other" }
                 ] 
             },
             { id: "place-name", label: "Place Name", placeholder: "Enter the place name", required: true },

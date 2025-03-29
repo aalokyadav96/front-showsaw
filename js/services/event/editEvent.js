@@ -97,7 +97,7 @@ async function editEventForm(isLoggedIn, eventId) {
       hour12: false, // Use 24-hour format
     });
 
-    alert(eventTime);
+    // alert(eventTime);
 
 
     // Clear existing content
@@ -121,7 +121,7 @@ async function editEventForm(isLoggedIn, eventId) {
       { label: "Event Date", inputType: "date", inputId: "event-date", inputValue: eventDate, isRequired: true },
       { label: "Event Time", inputType: "time", inputId: "event-time", inputValue: eventTime, isRequired: true },
       { label: "Event Location", inputType: "text", inputId: "event-location", inputValue: eventx.location, placeholder: "Location", isRequired: true },
-      { label: "Event Place", inputType: "text", inputId: "event-place", inputValue: eventx.place, placeholder: "Place", isRequired: true },
+      { label: "Event Place", inputType: "text", inputId: "event-place", inputValue: eventx.placename, placeholder: "Place", isRequired: true },
       { label: "Event Description", inputType: "textarea", inputId: "event-description", inputValue: eventx.description, placeholder: "Description", isRequired: true },
       { label: "Event Banner", inputType: "file", inputId: "event-banner", additionalProps: { accept: "image/*" } },
       { label: "Seating Plan Map", inputType: "file", inputId: "event-seating", additionalProps: { accept: "image/*" } },

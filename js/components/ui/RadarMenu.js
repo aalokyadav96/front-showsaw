@@ -60,11 +60,15 @@ const RadarMenu = (menuItems = [], options = {}) => {
       li.style.left = `${left}px`;
       li.style.top = `${top}px`;
 
+      const svgspan = document.createElement("span");
+      svgspan.textContent= item.text;
+
       const a = document.createElement("a");
       a.classList.add("sr_tool_a");
       a.href = "#";
-      a.textContent = item.text;
+      a.innerHTML = item.svg;
       a.style.transform = `rotate(-${baseAngle + angleOffset}deg)`;
+      a.appendChild(svgspan);
 
       // Click animation
       a.addEventListener("click", (e) => {

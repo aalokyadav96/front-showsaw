@@ -1,16 +1,11 @@
 import { SEARCH_URL, SRC_URL } from "../../state/state.js";
 import Toast from "../../components/ui/Toast.mjs";
 
-// Function to display search section
-async function displaySearch(searchsec) {
-  const srchsec = document.createElement("div");
-  srchsec.id = "srch";
-  searchsec.appendChild(srchsec);
-  displaySearchForm(srchsec);
-}
-
 // Function to display search form and tabs
 async function displaySearchForm(container) {
+  const d3container = document.createElement("div");
+  d3container.classList.add("vflex");
+
   const searchContainer = document.createElement("div");
   searchContainer.classList.add("search-container");
 
@@ -34,9 +29,16 @@ async function displaySearchForm(container) {
       <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
     </svg>`;
 
+  // Autocomplete dropdown
+  const autocompleteList = document.createElement("ul");
+  autocompleteList.id = "autocomplete-list";
+  autocompleteList.classList.add("autocomplete-list");
+
   searchBar.appendChild(searchInput);
   searchBar.appendChild(searchButton);
-  searchContainer.appendChild(searchBar);
+  d3container.appendChild(searchBar);
+  d3container.appendChild(autocompleteList);
+  searchContainer.appendChild(d3container);
 
   // Tabs Section
   const tabContainer = document.createElement("div");
@@ -49,7 +51,6 @@ async function displaySearchForm(container) {
     { title: "All", id: "all" },
     { title: "Events", id: "events" },
     { title: "Places", id: "places" },
-    // Additional tabs can be added here
   ];
 
   tabs.forEach((tab, index) => {
@@ -58,7 +59,6 @@ async function displaySearchForm(container) {
     tabButton.textContent = tab.title;
     tabButton.dataset.type = tab.id;
 
-    // Set first tab as active by default
     if (index === 0) {
       tabButton.classList.add("active");
     }
@@ -78,8 +78,84 @@ async function displaySearchForm(container) {
 
   container.appendChild(searchContainer);
 
-  // Attach event listener for search button
+  // Event Listeners
   searchButton.addEventListener("click", fetchSearchResults);
+  searchInput.addEventListener("input", handleAutocomplete);
+  searchInput.addEventListener("keydown", handleKeyboardNavigation);
+  document.addEventListener("click", (e) => {
+    if (!searchContainer.contains(e.target)) {
+      autocompleteList.innerHTML = "";
+    }
+  });
+}
+
+
+// Function to fetch autocomplete suggestions
+async function handleAutocomplete(event) {
+  const query = event.target.value.trim();
+  const autocompleteList = document.getElementById("autocomplete-list");
+
+  if (query.length < 1) {
+    autocompleteList.innerHTML = "";
+    return;
+  }
+
+  try {
+    const response = await fetch(`http://localhost:7000/ac?prefix=${encodeURIComponent(query)}`);
+    const suggestions = await response.json();
+
+    autocompleteList.innerHTML = "";
+    suggestions.forEach((suggestion) => {
+      const item = document.createElement("li");
+      item.classList.add("autocomplete-item");
+      item.textContent = suggestion;
+      item.addEventListener("click", () => {
+        document.getElementById("search-query").value = suggestion;
+        autocompleteList.innerHTML = "";
+        fetchSearchResults(); // Perform search immediately
+      });
+      autocompleteList.appendChild(item);
+    });
+  } catch (error) {
+    console.error("Error fetching autocomplete suggestions:", error);
+  }
+}
+
+// Handle keyboard navigation in autocomplete
+function handleKeyboardNavigation(event) {
+  const autocompleteList = document.getElementById("autocomplete-list");
+  const items = autocompleteList.querySelectorAll(".autocomplete-item");
+
+  if (items.length === 0) return;
+
+  let index = Array.from(items).findIndex((item) => item.classList.contains("selected"));
+
+  if (event.key === "ArrowDown") {
+    if (index < items.length - 1) index++;
+    else index = 0;
+  } else if (event.key === "ArrowUp") {
+    if (index > 0) index--;
+    else index = items.length - 1;
+  } else if (event.key === "Enter") {
+    if (index >= 0) {
+      items[index].click();
+      event.preventDefault();
+    }
+    return;
+  } else {
+    return;
+  }
+
+  items.forEach((item) => item.classList.remove("selected"));
+  items[index].classList.add("selected");
+}
+
+// Function to display search section
+async function displaySearch(searchsec) {
+  const srchsec = document.createElement("div");
+  srchsec.id = "srch";
+  searchsec.appendChild(srchsec);
+  displaySearchForm(srchsec);
 }
 
 // Function to handle tab switching
@@ -140,10 +216,10 @@ function createCard(entityType, item) {
   let imageSrc = "";
   let altText = "";
   if (entityType === "events") {
-    imageSrc = `${SRC_URL}/eventpic/${item.eventid}.jpg`;
+    imageSrc = `${SRC_URL}/eventpic/thumb/${item.eventid}.jpg`;
     altText = item.title || "Event";
   } else if (entityType === "places") {
-    imageSrc = `${SRC_URL}/placepic/${item.placeid}.webp`;
+    imageSrc = `${SRC_URL}/placepic/thumb/${item.placeid}.jpg`;
     altText = item.name || "Place";
   }
   if (imageSrc) {

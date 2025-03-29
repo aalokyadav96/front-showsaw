@@ -112,6 +112,7 @@ const createNav = () => {
     const navItems = [
         { href: "/events", label: "Events" },
         { href: "/places", label: "Places" },
+        { href: "/itinerary", label: "Itinerary" },
         { href: "/feed", label: "Feed" },
         { href: "/search", label: "Search" },
     ];

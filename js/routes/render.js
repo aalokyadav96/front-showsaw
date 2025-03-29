@@ -1,12 +1,13 @@
 import { detectLanguage, applyTranslations } from "../i18n.js";
 
+
 async function renderPageContent(isLoggedIn, path, contentContainer) {
     if (!path || typeof path !== "string") {
         console.error("Invalid path:", path);
         contentContainer.innerHTML = `<h1>404 Not Found</h1>`;
         return;
     }
-    
+
     // Route Handlers (Static Routes)
     const routeHandlers = {
         "/": async () => {
@@ -59,11 +60,27 @@ async function renderPageContent(isLoggedIn, path, contentContainer) {
             contentContainer.innerHTML = "";
             Feed(isLoggedIn, contentContainer);
         },
-        //~ "/blogs": async () => {
-            //~ const { Blog } = await import("../pages/blog/blog.js");
-            //~ contentContainer.innerHTML = "";
-            //~ Blog(isLoggedIn, contentContainer);
-        //~ },
+        // "/blogs": async () => {
+        // const { Blog } = await import("../pages/blog/blog.js");
+        // contentContainer.innerHTML = "";
+        // Blog(isLoggedIn, contentContainer);
+        // },
+
+        "/create-itinerary": async () => {
+            const { CreateItinerary } = await import("../pages/itinerary/createItinerary.js");
+            contentContainer.innerHTML = "";
+            CreateItinerary(isLoggedIn, contentContainer);
+        },
+        "/edit-itinerary": async () => {
+            const { EditItinerary } = await import("../pages/itinerary/editItinerary.js");
+            contentContainer.innerHTML = "";
+            EditItinerary(isLoggedIn, contentContainer);
+        },
+        "/itinerary": async () => {
+            const { Itinerary } = await import("../pages/itinerary/itinerary.js");
+            contentContainer.innerHTML = "";
+            Itinerary(isLoggedIn, contentContainer);
+        },
     };
 
     // Dynamic Routes (Pattern Matching)
@@ -92,7 +109,7 @@ async function renderPageContent(isLoggedIn, path, contentContainer) {
             handler: async (matches) => {
                 const { Place } = await import("../pages/places/placePage.js");
                 try {
-                    Place(isLoggedIn, matches[1],content);
+                    Place(isLoggedIn, matches[1], content);
                 } catch {
                     content.innerHTML = `<h1>Place Not Found</h1>`;
                 }
@@ -103,23 +120,34 @@ async function renderPageContent(isLoggedIn, path, contentContainer) {
             handler: async (matches) => {
                 const { Post } = await import("../pages/feed/postDisplay.js");
                 try {
-                    Post(isLoggedIn, matches[1],content);
+                    Post(isLoggedIn, matches[1], content);
                 } catch {
                     content.innerHTML = `<h1>Post Not Found</h1>`;
                 }
             },
-        },        
-        //~ {
-            //~ pattern: /^\/blog\/([\w-]+)$/,
-            //~ handler: async (matches) => {
-                //~ const { Post } = await import("../pages/blog/blogpostDisplay.js");
-                //~ try {
-                    //~ Post(isLoggedIn, matches[1],content);
-                //~ } catch {
-                    //~ content.innerHTML = `<h1>Post Not Found</h1>`;
-                //~ }
-            //~ },
-        //~ },
+        },
+        {
+            pattern: /^\/itinerary\/([\w-]+)$/,
+            handler: async (matches) => {
+                const { Itinerary } = await import("../pages/itinerary/itineraryDisplay.js");
+                try {
+                    Itinerary(isLoggedIn, matches[1], content);
+                } catch {
+                    content.innerHTML = `<h1>Post Not Found</h1>`;
+                }
+            },
+        },
+        // {
+        // pattern: /^\/blog\/([\w-]+)$/,
+        // handler: async (matches) => {
+        // const { Post } = await import("../pages/blog/blogpostDisplay.js");
+        // try {
+        // Post(isLoggedIn, matches[1],content);
+        // } catch {
+        // content.innerHTML = `<h1>Post Not Found</h1>`;
+        // }
+        // },
+        // },
     ];
 
     // Match static routes

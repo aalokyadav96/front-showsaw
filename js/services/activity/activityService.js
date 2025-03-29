@@ -1,25 +1,47 @@
 import Snackbar from '../components/ui/Snackbar.mjs';
 
 let activityAbortController;
+let activityQueue = []; // Store activities before sending
+let syncInterval = null; // Timer for periodic syncing
 
-async function logActivity(activityDescription) {
+// Get user and device details
+function getUserMetadata() {
+    return {
+        userAgent: navigator.userAgent,
+        screenSize: `${window.innerWidth}x${window.innerHeight}`,
+        referrer: document.referrer || 'Direct',
+        url: window.location.href
+    };
+}
+
+// Add activity to queue
+function queueActivity(action, additionalData = {}) {
     if (!state.token) {
         Snackbar("Please log in to log activities.", 3000);
         return;
     }
 
     const activity = {
-        action: activityDescription,
-        timestamp: new Date().toISOString()
+        userId: state.userId || 'guest',
+        action: action,
+        timestamp: new Date().toISOString(),
+        metadata: getUserMetadata(),
+        ...additionalData // Merge any extra data
     };
 
-    // Abort the previous logActivity fetch if it's still ongoing
+    activityQueue.push(activity);
+}
+
+// Send batch activities
+async function syncActivities() {
+    if (!state.token || activityQueue.length === 0) return;
+
     if (activityAbortController) {
         activityAbortController.abort();
     }
 
-    activityAbortController = new AbortController(); // Create a new instance
-    const signal = activityAbortController.signal; // Get the signal to pass to fetch
+    activityAbortController = new AbortController();
+    const signal = activityAbortController.signal;
 
     const headers = {
         "Content-Type": "application/json",
@@ -27,38 +49,67 @@ async function logActivity(activityDescription) {
     };
 
     try {
-        const response = await fetch('/api/activity', {
+        const response = await fetch('/api/activity/log', {
             method: 'POST',
             headers: headers,
-            body: JSON.stringify(activity),
+            body: JSON.stringify(activityQueue),
             signal: signal
         });
 
-        // Check if the response has content before parsing it
         if (response.ok) {
-            const responseData = await response.text(); // Read the response as plain text
-            if (responseData) {
-                const jsonData = JSON.parse(responseData); // Only parse if there is content
-                Snackbar("Activity logged successfully.", 3000);
-                console.log(jsonData); // Log the JSON response for debugging
-            } else {
-                Snackbar("Activity logged successfully, but no response body.", 3000);
-            }
+            Snackbar("Activities logged successfully.", 3000);
+            activityQueue = []; // Clear queue after successful sync
         } else {
             const errorData = await response.json();
-            console.error(`Failed to log activity: ${errorData.message || 'Unknown error'}`);
-            Snackbar(`Failed to log activity: ${errorData.message || 'Unknown error'}`, 3000);
+            console.error(`Failed to log activities: ${errorData.message || 'Unknown error'}`);
+            Snackbar(`Failed to log activities: ${errorData.message || 'Unknown error'}`, 3000);
         }
     } catch (error) {
         if (error.name === 'AbortError') {
             console.log('Activity log aborted');
-            return; // Do nothing for aborted fetch
+            return;
         }
-
-        console.error(`Failed to log activity: ${error.message || 'Unknown error'}`);
-        Snackbar(`Failed to log activity: ${error.message || 'Unknown error'}`, 3000);
+        console.error(`Failed to log activities: ${error.message || 'Unknown error'}`);
+        Snackbar(`Failed to log activities: ${error.message || 'Unknown error'}`, 3000);
     }
 }
 
+// Automatically sync activities every 10 seconds
+function startActivitySync() {
+    if (!syncInterval) {
+        syncInterval = setInterval(syncActivities, 10000);
+    }
+}
 
-export { logActivity };
+// Save activities when offline and retry when online
+window.addEventListener('offline', () => {
+    localStorage.setItem('offlineActivities', JSON.stringify(activityQueue));
+});
+
+window.addEventListener('online', async () => {
+    const offlineData = localStorage.getItem('offlineActivities');
+    if (offlineData) {
+        activityQueue = [...JSON.parse(offlineData), ...activityQueue];
+        localStorage.removeItem('offlineActivities');
+        await syncActivities();
+    }
+});
+
+// Track specific actions
+function trackPageView() {
+    queueActivity('page_view', { page: window.location.pathname });
+}
+
+function trackButtonClick(buttonName) {
+    queueActivity('button_click', { button: buttonName });
+}
+
+function trackPurchase(itemId, price) {
+    queueActivity('purchase', { itemId, price });
+}
+
+// Auto-track page views
+window.addEventListener('load', trackPageView);
+startActivitySync(); // Start periodic syncing
+
+export { queueActivity, trackPageView, trackButtonClick, trackPurchase, syncActivities };

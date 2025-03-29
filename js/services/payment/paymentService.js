@@ -2,6 +2,7 @@
 import { apiFetch } from "../../api/api.js";
 import { Button } from "../../components/base/Button.js";
 import Modal from "../../components/ui/Modal.mjs";
+import { logActivity } from "../activity/activity.js";
 
 // Unified function for merchandise or ticket purchase
 async function handlePurchase(type = "merch", itemId, eventId, maxQuantity, totalQuantity) {
@@ -224,6 +225,10 @@ async function submitPayment(entityType, itemType, paymentSession, paymentMessag
             const payload = JSON.stringify(CONFIRM_PURCHASE_CONFIG[itemType].payload(paymentSession));
 
             const response = await apiFetch(apiUrl, "POST", payload);
+            let success = response?.message.includes("Payment successfully processed");
+            if (success) {
+                logActivity("ticket_purchased", { itemId, eventId });
+            }
             if (response?.message.includes("Payment successfully processed")) {
                 alert(`${itemType.charAt(0).toUpperCase() + itemType.slice(1)} purchased successfully!`);
                 // window.location.href = `/event/${eventId}`;

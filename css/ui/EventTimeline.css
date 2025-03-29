@@ -1,74 +1,75 @@
-/* Event Timeline Container */
+/* Timeline Container */
 .event-timeline {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  padding: 20px;
-  border-radius: 10px;
   max-width: 600px;
-  margin: 0 auto;
-  position: relative;
+  margin: 20px auto;
+  padding: 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Timeline Line */
-.event-timeline::before {
-  content: "";
-  position: absolute;
-  left: 20px;
-  top: 0;
-  height: 100%;
-  width: 4px;
-  background: linear-gradient(180deg, transparent, #000000, transparent);
-  border-radius: 4px;
-}
-
-/* Individual Timeline Item */
+/* Timeline Item */
 .timeline-item {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 15px;
+  padding: 15px;
+  border-left: 4px solid #007bff;
   position: relative;
+  transition: 0.3s;
 }
 
-/* Time Bubble */
-
+/* Time Styling */
 .timeline-time {
-  background: linear-gradient(135deg, #000000, #000000);
-  color: white;
-  font-size: 14px;
   font-weight: bold;
-  margin-top: 0px;
-  margin-left: 6px;
-  padding: 8px 12px;
-  border-radius: 20px 0 0 20px;
-  min-width: 90px;
-  text-align: center;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  color: #007bff;
+  min-width: 80px;
+  text-align: right;
 }
 
-/* Description */
+/* Description Styling */
 .timeline-description {
-  background: white;
-  padding: 8px 16px;
-  border-radius: 0 8px 8px 0;
-  border: 1px solid;
-  flex: 1;
-  font-size: 14px;
+  margin: 0;
+  flex-grow: 1;
   color: #333;
-  position: relative;
 }
 
-/* Circle Bullet Point */
+/* Circle Indicator */
 .timeline-item::before {
-  content: "";
+  content: '';
   position: absolute;
-  left: 0;
+  left: -10px;
   top: 50%;
   transform: translateY(-50%);
   width: 12px;
   height: 12px;
-  background: white;
-  border: 3px solid #000000;
+  background: #007bff;
   border-radius: 50%;
-  z-index: 2;
+  border: 2px solid white;
+}
+
+/* Hover Effect */
+.timeline-item:hover {
+  background: #007bff10;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  .timeline-item {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 5px;
+      padding-left: 20px;
+  }
+  
+  .timeline-time {
+      text-align: left;
+      min-width: auto;
+  }
+  
+  .timeline-item::before {
+      left: -6px;
+      width: 10px;
+      height: 10px;
+  }
 }

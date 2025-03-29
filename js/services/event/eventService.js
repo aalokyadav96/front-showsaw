@@ -94,4 +94,21 @@ async function deleteEvent(isLoggedIn, eventId) {
     }
 };
 
-export { updateEvent, fetchEventData, editEventForm, deleteEvent, displayEvent, displayEventFAQ, displayEventReviews };
+
+async function viewEventAnalytics(isLoggedIn, eventId) {
+    if (!isLoggedIn) {
+        SnackBar("Please log in to view your event analytics.", 3000);
+        return;
+    }
+    if (confirm("Are you sure you want to view your event analytics?")) {
+        try {
+            // await apiFetch(`/events/event/${eventId}`, 'DELETE');
+            // SnackBar("Event deleted successfully.", 3000);
+            // navigate('/events'); // Redirect to home or another page
+        } catch (error) {
+            // SnackBar(`Error deleting event: ${error.message}`, 3000);
+        }
+    }
+};
+
+export { updateEvent, fetchEventData, editEventForm, deleteEvent, displayEvent, displayEventFAQ, displayEventReviews, viewEventAnalytics };

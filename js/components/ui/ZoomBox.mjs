@@ -81,7 +81,7 @@ const ZoomBox = (images, initialIndex = 0) => {
 
     zoomLevel *= delta > 0 ? 0.9 : 1.1; // Exponential zoom for a natural feel
     // zoomLevel = Math.max(1, Math.min(zoomLevel, Math.max(naturalW / img.width, naturalH / img.height)));
-    zoomLevel = Math.max(1, Math.min(zoomLevel, Math.max(naturalW / img.width, naturalH / img.height)));
+    zoomLevel = Math.max(1, Math.min(zoomLevel, Math.min(naturalW / img.width, naturalH / img.height)));
     
     if (zoomLevel > 6) {zoomLevel = 6}
 

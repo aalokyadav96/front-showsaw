@@ -28,7 +28,7 @@ function createBanner(profile) {
     bgImg.className = "bg_img";
 
     const banncon = document.createElement("span");
-    banncon.className = "vflex";
+    // banncon.className = "vflex";
 
     // Use user's banner picture if available; otherwise, use default banner
     const bannerPicture = profile.banner_picture 

@@ -50,7 +50,7 @@ async function displayPlace(isLoggedIn, placeId, contentContainer) {
                 } else {
                     return showNormalBooking();
                 }
-                return null; // If the type is unknown, return nothing
+                // return null; // If the type is unknown, return nothing
             };
 
             const showNormalBooking = () => {
@@ -58,7 +58,7 @@ async function displayPlace(isLoggedIn, placeId, contentContainer) {
             };
 
             const showRestaurantBooking = () => {
-                return BoookingForm(() => Snackbar("Restaurant Booking Confirmed!", 3000), "restaurant");
+                return CalendarForm(() => Snackbar("Restaurant Booking Confirmed!", 3000), "restaurant");
             };
 
             // // const showArenaBooking = () => {

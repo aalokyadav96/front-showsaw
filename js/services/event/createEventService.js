@@ -14,20 +14,10 @@ async function createEventForm(isLoggedIn, content) {
 
         // Define form fields
         const formFields = [
-            { type: "text", id: "event-title", label: "Event Title", required: true },
-            { type: "textarea", id: "event-description", label: "Event Description", required: true },
-            { type: "text", id: "event-place", label: "Event Place", required: true },
-            { type: "text", id: "event-location", label: "Event Location", required: true },
-            { type: "date", id: "event-date", label: "Select a Date", required: true },
-            { type: "time", id: "event-time", label: "Select a Time", required: true },
-            { type: "text", id: "organizer-name", label: "Organizer Name", required: true },
-            { type: "text", id: "organizer-contact", label: "Organizer Contact", required: true },
-            { type: "number", id: "total-capacity", label: "Total Capacity", required: true },
-            { type: "url", id: "website-url", label: "Website URL" },
             {
-                type: "select", id: "category", label: "Event Category", required: true,
+                type: "select", id: "category", label: "Event Type", required: true,
                 options: [
-                    { value: "", label: "Select a category" },
+                    { value: "", label: "Select a Type" },
                     { value: "conference", label: "Conference" },
                     { value: "concert", label: "Concert" },
                     { value: "sports", label: "Sports" },
@@ -38,13 +28,44 @@ async function createEventForm(isLoggedIn, content) {
                     { value: "other", label: "Other" }
                 ]
             },
+            { type: "text", id: "event-title", label: "Event Title", required: true },
+            { type: "textarea", id: "event-description", label: "Event Description", required: true },
+            { type: "text", id: "event-place", label: "Event Place", required: true },
+            { type: "text", id: "event-location", label: "Event Location", required: true },
+            { type: "date", id: "event-date", label: "Select a Date", required: true },
+            { type: "time", id: "event-time", label: "Select a Time", required: true },
+            { type: "text", id: "organizer-name", label: "Organizer Name", required: true },
+            { type: "text", id: "organizer-contact", label: "Organizer Contact", required: true },
+            { type: "number", id: "total-capacity", label: "Total Capacity", required: true },
+            { type: "url", id: "website-url", label: "Website URL" },
             { type: "file", id: "event-banner", label: "Event Banner", accept: "image/*" },
             { type: "file", id: "event-seating", label: "Event Seating", accept: "image/*" },
         ];
 
 
-        // Create and append form fields
-        formFields.forEach(field => createSection.appendChild(createFormField(field)));
+        // // Create and append form fields
+        // formFields.forEach(field => createSection.appendChild(createFormField(field)));
+        
+        formFields.forEach(field => {
+            if (field.id === "event-place") {
+                // Wrap input in a container for positioning
+                const wrapper = document.createElement("div");
+                wrapper.className = "suggestions-container";
+
+                const input = createFormField(field);
+                wrapper.appendChild(input);
+
+                const autocompleteList = document.createElement("ul");
+                autocompleteList.id = "ac-list";
+                autocompleteList.classList.add("ac-list");
+
+                wrapper.appendChild(autocompleteList);
+
+                createSection.appendChild(wrapper);
+            } else {
+                createSection.appendChild(createFormField(field));
+            }
+        });
 
         // Create and append the create button
         const createButton = document.createElement("button");
@@ -52,17 +73,12 @@ async function createEventForm(isLoggedIn, content) {
         createButton.textContent = "Create Event";
         createSection.appendChild(createButton);
 
-        // Add place suggestions box
-        const eventPlaceInput = createSection.querySelector("#event-place");
-        const placeSuggestionsBox = document.createElement("div");
-        placeSuggestionsBox.id = "place-suggestions";
-        placeSuggestionsBox.className = "suggestions-dropdown";
-        createSection.appendChild(placeSuggestionsBox);
-
         content.appendChild(createSection);
+        
+        const eventPlaceInput = createSection.querySelector("#event-place");
 
         // Add event listeners
-        addEventEventListeners(eventPlaceInput, placeSuggestionsBox, createButton);
+        addEventEventListeners(eventPlaceInput, createButton);
     } else {
         SnackBar("Please log in to create an event.", 3000);
         navigate('/login');

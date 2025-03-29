@@ -3,7 +3,7 @@ const BookingForm = (onSubmit) => {
     const form = document.createElement('form');
     form.className = 'booking-form';
   
-    const htwo = document.createElement('h2');
+    const htwo = document.createElement('h3');
     htwo.innerText = 'Book';
 
     const nameInput = document.createElement('input');

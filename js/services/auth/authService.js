@@ -42,6 +42,7 @@ async function signup(event) {
     }
 }
 
+
 async function login(event) {
     event.preventDefault();
 
@@ -68,7 +69,15 @@ async function login(event) {
                 true // Persist in localStorage
             );
 
-            navigate("/");
+            // Get the URL the user should be redirected to after login
+            const redirectUrl = sessionStorage.getItem("redirectAfterLogin") || "/";
+            sessionStorage.removeItem("redirectAfterLogin");
+
+            if(redirectUrl == "/login") {
+                navigate("/");
+            } else {
+                navigate(redirectUrl);
+            }
             renderPage();
             Snackbar("Login successful!", 2000);
         } else {

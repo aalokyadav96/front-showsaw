@@ -1,7 +1,7 @@
 import "../../../css/ui/Button.css";
 
 // Button with custom event handler
-const Button = (title, id, events = {}) =>  {
+const Button = (title, id, events = {}, classes) =>  {
     const button = document.createElement('button');
     button.textContent = title;
     button.id = id;
@@ -12,6 +12,7 @@ const Button = (title, id, events = {}) =>  {
     }
     
     button.classList.add('button');
+    button.classList.add(classes);
     return button;
   }
 

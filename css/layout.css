@@ -65,7 +65,7 @@ body {
 }
 
 /* Basic Button Styling */
-button {
+/* button {
     background-color: var(--primary-color);
     color: var(--bg-color);
     padding: 10px 20px;
@@ -76,7 +76,7 @@ button {
 
 button:hover {
     background-color: var(--accent-color);
-}
+} */
 
 /* ─────────────────────────── */
 /* 📏 Responsive Media Queries */

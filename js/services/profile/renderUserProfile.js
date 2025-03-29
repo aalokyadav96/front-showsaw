@@ -35,7 +35,7 @@ function profilGen(profile, isLoggedIn) {
         createBanner(profile),
         createProfilePicture(profile),
         createProfileDetails(profile, isLoggedIn),
-        createStatistics(profile),
+        // createStatistics(profile),
         // suggs
     );
 

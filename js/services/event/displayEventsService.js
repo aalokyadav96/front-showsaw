@@ -113,9 +113,9 @@ function generateEventHTML(eevent) {
     return `
         <div class="event" id="event-${eevent.eventid}">
             <a href="/event/${eevent.eventid}" title="View event details" id="a-${eevent.eventid}">
-                <img loading="lazy" src="${SRC_URL}/eventpic/${eevent.banner_image}" alt="${eevent.title} Banner" style="width: 100%; aspect-ratio:3/2; object-fit: cover;" />
+                <img loading="lazy" src="${SRC_URL}/eventpic/thumb/${eevent.eventid}.jpg" alt="${eevent.title} Banner" style="width: 100%; aspect-ratio:3/2; object-fit: cover;" />
                 <h3>${eevent.title}</h3>
-                <p><strong>Place:</strong> ${eevent.place}</p>
+                <p><strong>Place:</strong> <a href="${eevent.placeid}">${eevent.placename}</a></p>
                 <p><strong>Date:</strong> ${new Date(eevent.date).toLocaleString()}</p>
                 <!--p><strong>Description:</strong> ${eevent.description}</p-->
             </a>

@@ -27,7 +27,7 @@ async function RenderImagePost(mediaContainer, media) {
 
         // 🔥 Remove "thumb/" from image path
         // image.src = `${SRC_URL}/${img.replace("thumb/", "")}`;
-        let imgurl = `${SRC_URL}/${img.replace("static/postpic/", "postpic/thumb/")}`;
+        let imgurl = `${SRC_URL}/${img.replace("postpic/", "postpic/thumb/")}`;
         image.src = imgurl;
         image.loading = "lazy";
         image.alt = "Post Image";

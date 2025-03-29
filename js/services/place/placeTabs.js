@@ -26,7 +26,7 @@ async function displayPlaceNearby(container, placeId) {
     }
 
     // Nearby places section
-    const nearbySection = createElement("div", { class: "nearby-section" }, [
+    const nearbySection = createElement("div", { class: "nearby-section hvflex" }, [
         // createElement("h3", {}, ["Nearby Places"]),
         ...nearbyPlaces.map((place, index) =>
             createElement("div", { class: "nearby-item" }, [

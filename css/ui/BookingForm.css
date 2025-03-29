@@ -4,6 +4,10 @@
     gap: 10px;
     flex: 2;
     max-width: 20rem;
+    border: 1px solid #eeeeee;
+    box-shadow: 1px 1px 6px #d0cfcf;
+    padding: 1rem;
+    border-radius: 1rem;
   }
   
   .booking-form input,

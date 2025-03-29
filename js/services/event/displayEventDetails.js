@@ -8,7 +8,7 @@ import {
 } from "../../components/eventHelper.js";
 import { createElement } from "../../components/createElement.js";
 import { editEventForm } from "./editEvent.js";
-import { deleteEvent } from "./eventService.js";
+import { deleteEvent, viewEventAnalytics } from "./eventService.js";
 // import { displayEventVenue } from "./eventTabs.js";
 // import CountDown from "../../components/ui/Countdown.mjs";
 
@@ -24,7 +24,7 @@ async function displayEventDetails(content, eventData, isCreator, isLoggedIn) {
     // Event Banner
     const bannerSection = createContainer(['banner-section']);
     const bannerImage = createImage({
-        src: `${SRC_URL}/eventpic/${eventData.banner_image}`,
+        src: `${SRC_URL}/eventpic/${eventData.eventid}.jpg`,
         alt: `Banner for ${eventData.title}`,
         classes: ['event-banner-image'],
     });
@@ -36,7 +36,7 @@ async function displayEventDetails(content, eventData, isCreator, isLoggedIn) {
     const details = [
         { tag: 'h1', text: eventData.title, classes: ['event-title'] },
         { tag: 'p', text: `Description: ${eventData.description}`, classes: ['event-description'] },
-        { tag: 'strong', text: `Place: ${eventData.place}`, classes: ['event-place'] },
+        // { tag: 'strong', text: `Place: ${eventData.place}`, classes: ['event-place'] },
         { tag: 'p', text: eventData.status, classes: ['event-status'] },
         { tag: 'p', text: eventData.date ? new Date(eventData.date).toLocaleString() : '', classes: ['event-date'] },
     ];
@@ -44,6 +44,8 @@ async function displayEventDetails(content, eventData, isCreator, isLoggedIn) {
     details.forEach(({ tag, text, classes }) => {
         if (text) eventInfo.appendChild(createHeading(tag, text, classes));
     });
+
+    eventInfo.appendChild(createElement('p', {}, [createElement('strong', {}, [`Place: `]), createElement('a', { href: `/place/${eventData.placeid}` }, [eventData.placename])]));
 
     if (eventData.seatingplan) { eventInfo.appendChild(createImage({ src: "", alt: "Seating Plan", classes: ['img'] })) };
 
@@ -92,6 +94,7 @@ async function displayEventDetails(content, eventData, isCreator, isLoggedIn) {
         const actions = [
             { text: '✏ Edit Event', onClick: () => editEventForm(isLoggedIn, eventData.eventid) },
             { text: '🗑 Delete Event', onClick: () => deleteEvent(isLoggedIn, eventData.eventid), classes: ['delete-btn'] },
+            { text: 'View Analytics', onClick: () => viewEventAnalytics(isLoggedIn, eventData.eventid), classes: ['analytics-btn'] },
         ];
         actions.forEach(({ text, onClick, classes = [] }) => {
             eventActions.appendChild(createButton({
