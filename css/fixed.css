@@ -242,6 +242,7 @@
   overflow: hidden;
   max-width: 320px;
   flex: 1 1 270px;
+  padding: 12px;
   /* Responsive width */
   transition: transform 0.2s ease-in-out;
 }
@@ -251,13 +252,12 @@
   transform: translateY(-3px);
 }
 
-.place a,
+/* .place a,
 .event a {
   display: block;
   text-decoration: none;
   color: inherit;
-  padding: 12px;
-}
+} */
 
 .place img,
 .event img {

@@ -1,7 +1,7 @@
 // import { state } from "../../state/state.js";
 import Button from "../../components/base/Button.js";
 import { displayUserProfileData } from "./otherUserProfileService.js";
-import { displayFollowSuggestions } from "./displayFollowSugg.js";
+// import { displayFollowSuggestions } from "./displayFollowSugg.js";
 import { createBanner, createBannerEditButton, createProfilePicture, createProfileDetails, createStatistics } from "./profileGenHelpers.js";
 
 // /* Utility function to append multiple children */
@@ -28,6 +28,7 @@ function profilGen(profile, isLoggedIn) {
     section.className = "channel";
 
     // const suggs = document.createElement("section");
+    // suggs.className = "hflex";
     // displayFollowSuggestions(profile.userid, suggs);
 
     appendChildren(
@@ -60,6 +61,6 @@ function profilGen(profile, isLoggedIn) {
     return profileContainer;
 }
 
-export { displayFollowSuggestions };
+// export { displayFollowSuggestions };
 
 export default profilGen;

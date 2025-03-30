@@ -2,7 +2,6 @@ import { displayProfile  } from "../../services/profile/userProfileService";
 import { displayUserProfile  } from "../../services/profile/otherUserProfileService";
 
 async function MyProfile(isLoggedIn, contentContainer) {
-    contentContainer.innerHTML = '';
     const content = document.createElement("div");
     content.classList = "profilepage";
     contentContainer.appendChild(content);
@@ -10,7 +9,6 @@ async function MyProfile(isLoggedIn, contentContainer) {
 }
 
 async function UserProfile(isLoggedIn, contentContainer, username) {
-    contentContainer.innerHTML = '';
     const content = document.createElement("div");
     content.classList = "profilepage";
     contentContainer.appendChild(content);

@@ -19,7 +19,7 @@ async function displayUserProfile(isLoggedIn, content, username) {
             const profileElement = profilGen(userProfile, isLoggedIn);
             content.appendChild(profileElement);
             attachProfileEventListeners(content);
-            // displayFollowSuggestions(userProfile.userid);
+            // displayFollowSuggestions(userProfile.userid,);
         } else {
             const notFoundMessage = document.createElement("p");
             notFoundMessage.textContent = "User not found.";

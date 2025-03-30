@@ -5,7 +5,7 @@ import { deleteTicket, editTicket } from "./editTicket.js";
 import { showBuyTicketModal } from "./showBuy.js";
 import { displayEventVenue } from "../event/eventTabs.js";
 import { createButton } from "../../components/eventHelper.js";
-
+import { addTicketForm } from './ticketService.js';
 
 function displayNewTicket(ticketData, ticketList) {
     const ticketItem = document.createElement("li");

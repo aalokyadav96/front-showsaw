@@ -95,7 +95,7 @@ function generateFeedHTML() {
     const mediaPreview = document.createElement('div');
     mediaPreview.id = 'mediaPreview';
     mediaPreview.className = 'media-preview hflex';
-    mediaPreview.contentEditable = 'true';
+    // mediaPreview.contentEditable = 'true';
 
     // Create the post button
     const postButton = document.createElement('button');
