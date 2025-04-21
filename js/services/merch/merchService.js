@@ -254,6 +254,7 @@ function displayNewMerchandise(merchData, merchList) {
 
 // Update the usage of MerchCard in displayMerchandise
 async function displayMerchandise(merchcon, merchData, eventId, isCreator, isLoggedIn) {
+    merchcon.appendChild(createElement('h2',"",["Merchandise"]));
     var merchList = document.createElement('div');
     merchList.className = "merchcon hvflex";
 

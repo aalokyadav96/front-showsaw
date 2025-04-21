@@ -1,7 +1,7 @@
 import { apiFetch } from "../../api/api.js";
 import { clearTicketForm, deleteTicket, editTicket } from "./editTicket.js";
 import SnackBar from "../../components/ui/Snackbar.mjs";
-import {displayNewTicket, displayTickets} from "./displayTickets.js";
+import { displayNewTicket, displayTickets } from "./displayTickets.js";
 
 // Add ticket to the event
 async function addTicket(eventId, ticketList) {
@@ -10,7 +10,14 @@ async function addTicket(eventId, ticketList) {
     const tickQuantity = parseInt(document.getElementById('ticket-quantity').value);
     const tickColor = document.getElementById('ticket-color').value; // Get color
     const tickCurrency = document.getElementById('ticket-currency').value; // Get currency
-
+    const seatStart = parseInt(document.getElementById('seat-start').value);
+    const seatEnd = parseInt(document.getElementById('seat-end').value);
+    
+    if (isNaN(seatStart) || isNaN(seatEnd) || seatStart > seatEnd) {
+        alert("Please enter a valid seat number range.");
+        return;
+    }
+    
     if (!tickName || isNaN(tickPrice) || isNaN(tickQuantity) || !tickCurrency) {
         alert("Please fill in all fields correctly.");
         return;
@@ -22,7 +29,9 @@ async function addTicket(eventId, ticketList) {
     formData.append('quantity', tickQuantity);
     formData.append('color', tickColor); // Include color
     formData.append('currency', tickCurrency); // Include currency
-
+    formData.append('seatStart', seatStart);
+    formData.append('seatEnd', seatEnd);
+    
     try {
         const response = await apiFetch(`/ticket/event/${eventId}`, 'POST', formData);
 
@@ -88,6 +97,21 @@ function addTicketForm(eventId, ticketList) {
     colorLabel.textContent = 'Choose Ticket Color: ';
     colorLabel.appendChild(colorInput);
 
+    // Start Seat Number input
+    const seatStartInput = document.createElement('input');
+    seatStartInput.type = 'number';
+    seatStartInput.id = 'seat-start';
+    seatStartInput.placeholder = 'Start Seat Number (e.g. 1)';
+    seatStartInput.required = true;
+
+    // End Seat Number input
+    const seatEndInput = document.createElement('input');
+    seatEndInput.type = 'number';
+    seatEndInput.id = 'seat-end';
+    seatEndInput.placeholder = 'End Seat Number (e.g. 100)';
+    seatEndInput.required = true;
+
+
     const submitButton = document.createElement('button');
     submitButton.type = 'submit';
     submitButton.textContent = 'Add Ticket';
@@ -97,6 +121,8 @@ function addTicketForm(eventId, ticketList) {
     form.appendChild(currencySelect); // Add currency dropdown
     form.appendChild(quantityInput);
     form.appendChild(colorLabel);  // Add color picker
+    form.appendChild(seatStartInput);
+    form.appendChild(seatEndInput);
     form.appendChild(submitButton);
 
     const cancelButton = document.createElement('button');

@@ -48,16 +48,19 @@ async function displayPlaceNearby(container, placeId) {
     container.appendChild(createElement("h3", {}, ["Nearby Places"]));
     container.appendChild(nearbySection);
 }
-    
+
 
 function displayPlaceInfo(container, placeData, isCreator) {
     // Clear the container
     container.innerHTML = "";
-
+    console.log(placeData);
     // Initialize place information
     const info = {
         category: placeData.category || "N/A",
+        description: placeData.description || "N/A",
         capacity: placeData.capacity || "N/A",
+        createdDate: placeData.created_at || "N/A",
+        updatedDate: placeData.updated_at || "N/A",
         accessibility: placeData.accessibility || "Not specified",
         services: placeData.services || [],
     };
@@ -74,14 +77,19 @@ function displayPlaceInfo(container, placeData, isCreator) {
             });
             container.appendChild(addInfoButton);
         }
-        
+
+        // Create the info display
+
         // Create the info display
         const infoDisplay = createElement("div", { class: "place-info" }, [
             createElement("h2", {}, [placeData.name || "Unknown Place"]),
-            createElement("p", {}, [`Category: ${info.category}`]),
-            createElement("p", {}, [`Capacity: ${info.capacity}`]),
-            createElement("p", {}, [`Accessibility: ${info.accessibility}`]),
-            createElement("p",{},[`Services: ${info.services.length > 0 ? info.services.join(", ") : "None"}`]),
+            createElement("p", {}, [createElement("strong", {}, ["Description: "]),createElement("span", {}, [`${info.description}`])]),
+            createElement("p", {}, [createElement("strong", {}, ["Category: "]),createElement("span", {}, [`${info.category}`])]),
+            createElement("p", {}, [createElement("strong", {}, ["Capacity: "]),createElement("span", {}, [`${info.capacity}`])]),
+            createElement('p', {}, [createElement("strong", {}, ["Created On: "]),createElement("span", {}, [`${info.createdDate}`])]),
+            createElement('p', {}, [createElement("strong", {}, ["Last Updated: "]),createElement("span", {}, [`${info.updatedDate}`])]),
+            createElement("p", {}, [createElement("strong", {}, ["Accessibility: "]),createElement("span", {}, [`${info.accessibility}`])]),
+            createElement("p", {}, [createElement("strong", {}, ["Services: "]),createElement("span", {}, [`${info.services.length > 0 ? info.services.join(", ") : "None"}`])]),
         ]);
 
         container.appendChild(infoDisplay);
@@ -105,3 +113,5 @@ function displayPlaceInfo(container, placeData, isCreator) {
 
 
 export { displayPlaceHome, displayPlaceNearby, displayPlaceInfo };
+
+

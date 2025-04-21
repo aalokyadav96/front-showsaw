@@ -48,7 +48,6 @@ function debounce(func, delay) {
     };
 }
 
-
 function addEventEventListeners(eventPlaceInput, createButton) {
     createButton.addEventListener("click", createEvent);
     addAutoConListeners(eventPlaceInput);
@@ -99,12 +98,12 @@ function addAutoConListeners(eventPlaceInput) {
     // Handle keyboard navigation
     eventPlaceInput.addEventListener("keydown", (event) => handleKeyboardNav(event, eventPlaceInput));
 
-    // Hide suggestions when clicking outside
-    document.addEventListener("click", (event) => {
-        if (!event.target.closest(".suggestions-container")) {
-            document.getElementById("ac-list").style.display = "none";
-        }
-    });
+    // // Hide suggestions when clicking outside
+    // document.addEventListener("click", (event) => {
+    //     if (!event.target.closest(".suggestions-container")) {
+    //         document.getElementById("ac-list").style.display = "none";
+    //     }
+    // });
 }
 
 // Handle keyboard navigation in autocomplete

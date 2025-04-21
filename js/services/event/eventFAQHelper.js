@@ -5,7 +5,7 @@ import { Accordion } from "../../components/ui/Accordion.mjs";
 
 async function displayEventFAQs(isCreator, faqContainer, eventId, faques) {
     faqContainer.innerHTML = ''; // Clear existing content
-
+    faqContainer.appendChild(createElement('h2',"",["FAQs"]));
     // If the user is the creator, show the "Add FAQs" button
     if (isCreator) {
         const addFaqButton = Button("Add FAQs", "add-faq-btn", {

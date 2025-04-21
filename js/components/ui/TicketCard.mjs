@@ -1,7 +1,7 @@
 import "../../../css/ui/TicketCard.css";
 import { applyButtonColors, getContrastColor } from "../../utils/lumicolor.js";
 
-const TicketCard = ({ isl, creator, name, price, quantity, color, attributes = {}, onClick }) => {
+const TicketCard = ({ isl, seatstart, seatend, creator, name, price, quantity, color, attributes = {}, onClick }) => {
   const card = document.createElement('div');
   card.className = 'ticket-card';
   

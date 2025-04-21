@@ -1,6 +1,11 @@
 import { API_URL, SRC_URL, state, setState } from "../state/state.js";
 
 async function apiFetch(endpoint, method = "GET", body = null, options = {}) {
+    let endpointx =  `${API_URL}${endpoint}`;
+    return apixFetch(endpointx, method, body, options);
+}
+
+async function apixFetch(endpoint, method = "GET", body = null, options = {}) {
     const fetchOptions = {
         method,
         headers: {
@@ -24,7 +29,7 @@ async function apiFetch(endpoint, method = "GET", body = null, options = {}) {
     }
 
     try {
-        const response = await fetch(`${API_URL}${endpoint}`, fetchOptions);
+        const response = await fetch(`${endpoint}`, fetchOptions);
 
         if (response.status === 429) {
             console.warn("Too many Requests");
@@ -93,4 +98,4 @@ async function refreshToken() {
     }
 }
 
-export { apiFetch, API_URL, SRC_URL };
+export { apiFetch, API_URL, SRC_URL, apixFetch };

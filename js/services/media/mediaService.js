@@ -202,6 +202,7 @@ function renderMediaItem(media, index, isLoggedIn, entityType, entityId) {
 
 async function displayMedia(content, entityType, entityId, isLoggedIn) {
     content.innerHTML = ""; // Clear existing content
+    content.appendChild(createElement('h2',"",["Media Gallery"]));
     const response = await apiFetch(`/media/${entityType}/${entityId}`);
     const mediaData = response;
 
@@ -284,7 +285,7 @@ function showMediaUploadForm(isLoggedIn, entityType, entityId, mediaList) {
     previewDiv.id = "mediaPreview";
 
     const uploadButton = Button("Upload", "uploadMediaBtn", {
-        click: () => uploadMedia(isLoggedIn, entityType, entityId, mediaList, modal),
+        click: () => {uploadMedia(isLoggedIn, entityType, entityId, mediaList, modal);uploadButton.style.display="none";},
     });
 
     // content.appendChild(title);

@@ -1,53 +1,64 @@
 import "../../../css/ui/ContextMenu.css";
 
-const ContextMenu = (options, x, y) => {
-  // Remove any existing context menu before adding a new one
-  const existingMenu = document.querySelector(".context-menu");
-  if (existingMenu) existingMenu.remove();
+const ContextMenu = (() => {
+  let menu = null;
 
-  // Create the menu
-  const menu = document.createElement("div");
-  menu.className = "context-menu";
+  const createMenu = (options, x, y) => {
+    // Remove the existing menu
+    if (menu) removeMenu();
 
-  options.forEach(({ label, action }) => {
-    const menuItem = document.createElement("div");
-    menuItem.className = "menu-item";
-    menuItem.textContent = label;
+    // Create new menu
+    menu = document.createElement("div");
+    menu.className = "context-menu";
 
-    menuItem.addEventListener("click", (event) => {
-      event.stopPropagation();
-      action();
-      menu.remove();
+    options.forEach(({ label, action }) => {
+      const menuItem = document.createElement("div");
+      menuItem.className = "menu-item";
+      menuItem.textContent = label;
+      menuItem.addEventListener("click", (event) => {
+        event.stopPropagation();
+        action();
+        removeMenu();
+      });
+      menu.appendChild(menuItem);
     });
 
-    menu.appendChild(menuItem);
-  });
+    document.body.appendChild(menu);
+    positionMenu(x, y);
+    setupEventListeners();
+  };
 
-  // Append menu to body
-  document.body.appendChild(menu);
+  const positionMenu = (x, y) => {
+    // Ensure the menu stays within viewport
+    const menuWidth = menu.offsetWidth;
+    const menuHeight = menu.offsetHeight;
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
 
-  // Ensure menu stays within the viewport
-  const menuWidth = menu.offsetWidth;
-  const menuHeight = menu.offsetHeight;
-  const viewportWidth = window.innerWidth;
-  const viewportHeight = window.innerHeight;
+    if (x + menuWidth > viewportWidth) x = viewportWidth - menuWidth;
+    if (y + menuHeight > viewportHeight) y = viewportHeight - menuHeight;
 
-  if (x + menuWidth > viewportWidth) x = viewportWidth - menuWidth;
-  if (y + menuHeight > viewportHeight) y = viewportHeight - menuHeight;
+    menu.style.cssText = `top: ${y}px; left: ${x}px;`;
+  };
 
-  menu.style.top = `${y}px`;
-  menu.style.left = `${x}px`;
+  const setupEventListeners = () => {
+    // Close menu on click outside
+    document.body.addEventListener("mousedown", removeMenu, { once: true });
 
-  // Close menu when clicking anywhere else
-  const closeMenu = () => menu.remove();
-  document.body.addEventListener("click", closeMenu, { once: true });
+    // Close menu on Escape key
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") removeMenu();
+    }, { once: true });
+  };
 
-  // Close menu on Escape key
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") closeMenu();
-  }, { once: true });
+  const removeMenu = () => {
+    if (menu) {
+      menu.remove();
+      menu = null;
+    }
+  };
 
-  return menu;
-};
+  return createMenu;
+})();
 
 export default ContextMenu;

@@ -2,7 +2,7 @@ import "../../../css/ui/Vidpop.css";
 import {generateVideoPlayer} from "./vidpopHelpers";
 
 const Vidpop = (mediaSrc, type, videoid, options = {}) => {
-console.log(videoid);
+
   const { poster = "#", theme = "light", qualities = [], subtitles = [] } = options;
 
   const sightbox = document.createElement("div");
@@ -23,7 +23,6 @@ console.log(videoid);
 
   sightbox.appendChild(overlay);
   sightbox.appendChild(content);
-
   // Directly append the generated video player
   generateVideoPlayer(mediaSrc, poster, qualities, subtitles, videoid).then(videoPlayer => {
     content.appendChild(videoPlayer);

@@ -9,8 +9,7 @@ import {
 import { createElement } from "../../components/createElement.js";
 import { editEventForm } from "./editEvent.js";
 import { deleteEvent, viewEventAnalytics } from "./eventService.js";
-// import { displayEventVenue } from "./eventTabs.js";
-// import CountDown from "../../components/ui/Countdown.mjs";
+import { displayEventVenue } from "./eventTabs.js";
 
 async function displayEventDetails(content, eventData, isCreator, isLoggedIn) {
     content.innerHTML = '';
@@ -18,42 +17,60 @@ async function displayEventDetails(content, eventData, isCreator, isLoggedIn) {
     // Main Event Wrapper
     const eventWrapper = createContainer(['event-wrapper']);
 
-    // Create Event Card
+    // Event Card Section
     const eventCard = createContainer(['event-card', 'hvflex']);
 
-    // Event Banner
+    // Banner Section
     const bannerSection = createContainer(['banner-section']);
     const bannerImage = createImage({
-        src: `${SRC_URL}/eventpic/${eventData.eventid}.jpg`,
+        src: `${SRC_URL}/eventpic/banner/${eventData.eventid}.jpg`,
         alt: `Banner for ${eventData.title}`,
         classes: ['event-banner-image'],
     });
     bannerSection.appendChild(bannerImage);
 
-    // Event Details
+    // Event Info Section
     const eventInfo = createContainer(['event-info']);
-
     const details = [
         { tag: 'h1', text: eventData.title, classes: ['event-title'] },
         { tag: 'p', text: `Description: ${eventData.description}`, classes: ['event-description'] },
-        // { tag: 'strong', text: `Place: ${eventData.place}`, classes: ['event-place'] },
         { tag: 'p', text: eventData.status, classes: ['event-status'] },
         { tag: 'p', text: eventData.date ? new Date(eventData.date).toLocaleString() : '', classes: ['event-date'] },
     ];
-
     details.forEach(({ tag, text, classes }) => {
         if (text) eventInfo.appendChild(createHeading(tag, text, classes));
     });
 
-    eventInfo.appendChild(createElement('p', {}, [createElement('strong', {}, [`Place: `]), createElement('a', { href: `/place/${eventData.placeid}` }, [eventData.placename])]));
+    // Place Link
+    eventInfo.appendChild(
+        createElement('p', {}, [
+            createElement('strong', {}, [`Place: ${eventData.placename}`]),
+            createLink({ href: `/place/${eventData.placeid}`, children: [eventData.placename] })
+        ])
+    );
 
-    if (eventData.seatingplan) { eventInfo.appendChild(createImage({ src: "", alt: "Seating Plan", classes: ['img'] })) };
+    // // Seating Plan
+    // if (eventData.seatingplan) {
+    //     eventInfo.appendChild(
+    //         createImage({
+    //             src: `${SRC_URL}/seating/${eventData.eventid}.jpg`,
+    //             alt: "Seating Plan",
+    //             classes: ['img']
+    //         })
+    //     );
+    // }
 
     // Social Links
     if (eventData.social_links) {
         const socialLinks = createContainer(['event-social-links']);
         Object.entries(eventData.social_links).forEach(([platform, url]) => {
-            socialLinks.appendChild(createLink({ href: url, textContent: platform, classes: ['social-link'] }));
+            socialLinks.appendChild(
+                createLink({
+                    href: url,
+                    children: [platform],
+                    classes: ['social-link']
+                })
+            );
         });
         eventInfo.appendChild(socialLinks);
     }
@@ -62,7 +79,9 @@ async function displayEventDetails(content, eventData, isCreator, isLoggedIn) {
     if (eventData.tags?.length) {
         const tagsContainer = createContainer(['event-tags']);
         eventData.tags.forEach(tag => {
-            tagsContainer.appendChild(createElement('span', { textContent: `#${tag}`, classes: ['event-tag'] }));
+            tagsContainer.appendChild(
+                createElement('span', { class: 'event-tag' }, [`#${tag}`])
+            );
         });
         eventInfo.appendChild(tagsContainer);
     }
@@ -71,51 +90,63 @@ async function displayEventDetails(content, eventData, isCreator, isLoggedIn) {
     if (eventData.custom_fields) {
         const customFieldsContainer = createContainer(['event-custom-fields']);
         Object.entries(eventData.custom_fields).forEach(([field, value]) => {
-            customFieldsContainer.appendChild(createHeading('p', `${field}: ${value}`, ['custom-field']));
+            customFieldsContainer.appendChild(
+                createHeading('p', `${field}: ${value}`, ['custom-field'])
+            );
         });
         eventInfo.appendChild(customFieldsContainer);
     }
 
+    // Ticket Verification Placeholder
     // if (eventData.tickets) {
     //     eventInfo.appendChild(createButton({
-    //         text: "Verify Your Ticket", classes: ["button"], events: {click: () => {
-    //             alert("hi");
-    //         }}
-    //     }))
-    // };
+    //         text: "Verify Your Ticket",
+    //         classes: ["button"],
+    //         events: { click: () => alert("hi") }
+    //     }));
+    // }
 
-    // Append banner and event details
-    eventCard.append(bannerSection, eventInfo);
+    // Compose the card
     eventWrapper.appendChild(eventCard);
+    eventCard.append(bannerSection, eventInfo);
 
-    // Event Actions (Edit/Delete)
+    // Event Action Buttons
     if (isLoggedIn && isCreator) {
         const eventActions = createContainer(['event-actions']);
         const actions = [
             { text: '✏ Edit Event', onClick: () => editEventForm(isLoggedIn, eventData.eventid) },
             { text: '🗑 Delete Event', onClick: () => deleteEvent(isLoggedIn, eventData.eventid), classes: ['delete-btn'] },
-            { text: 'View Analytics', onClick: () => viewEventAnalytics(isLoggedIn, eventData.eventid), classes: ['analytics-btn'] },
+            { text: '📊 View Analytics', onClick: () => viewEventAnalytics(isLoggedIn, eventData.eventid), classes: ['analytics-btn'] },
         ];
         actions.forEach(({ text, onClick, classes = [] }) => {
-            eventActions.appendChild(createButton({
-                text,
-                classes: ['action-btn', ...classes],
-                events: { click: onClick },
-            }));
+            eventActions.appendChild(
+                createButton({
+                    text,
+                    classes: ['action-btn', ...classes],
+                    events: { click: onClick }
+                })
+            );
         });
         eventWrapper.appendChild(eventActions);
     }
 
-    // Additional Sections (e.g., Venue)
-    // const eventVenue = createContainer(['event-venue']);
-    // displayEventVenue(eventVenue, eventData.place, eventData.eventid, isLoggedIn);
-    // eventWrapper.appendChild(eventVenue);
+    // Append edit placeholder container
+    const editContainer = createContainer(['eventedit']);
+    editContainer.id = "editevent";
+    eventWrapper.appendChild(editContainer);
 
-    // Append Edit Event Container
-    eventWrapper.appendChild(createContainer(['eventedit'], 'editevent'));
-
-    // Append Everything to Content
+    // Final Append
     content.appendChild(eventWrapper);
+
+    if (eventData.seatingplan) {
+        // Venue Details
+        const eventVenue = createContainer(['event-venue', 'tabs-container']);
+        // await displayEventVenue(eventVenue, isLoggedIn, `${SRC_URL}/eventpic/seating/${eventData.seatingplan}`);
+        await displayEventVenue(eventVenue, isLoggedIn, eventData.eventid);
+        // content.appendChild(eventVenue);
+
+        content.appendChild(eventVenue);
+    }
 }
 
 export { displayEventDetails };

@@ -1,0 +1,273 @@
+// postCreation.js
+
+import { apiFetch } from "../../api/api.js";
+import { renderNewPost } from "./renderNewPost.js";
+import { CheckFile, GetFileHash } from "../../utils/getFileHash.js";
+import { createElement } from "../../components/createElement.js";
+
+/**
+ * Retrieves the CSRF token from a meta tag.
+ * You may adjust this helper to obtain the token depending on your setup.
+ */
+function getCsrfToken() {
+  const meta = document.querySelector('meta[name="csrf-token"]');
+  return meta ? meta.getAttribute("content") : "";
+}
+
+/**
+ * Post type configuration. Additional types can be added here.
+ * Each type requires:
+ *  - a display label (optional)
+ *  - the file input element ID
+ *  - the file key used when appending to FormData
+ *  - a creation method for the media preview element
+ *  - a validation function for the file
+ */
+const postTypeConfig = {
+  image: {
+    inputId: "imageUpload",
+    fileKey: "images",
+    createMediaElement: (src) => {
+      const img = new Image();
+      img.src = src;
+      return img;
+    },
+    validateFile: (file) =>
+      file.type.startsWith("image/") &&
+      file.size >= 10 * 1024 &&
+      file.size <= 1024 * 1024 * 1024,
+  },
+  video: {
+    inputId: "videoUpload",
+    fileKey: "videos",
+    createMediaElement: (src) => {
+      const video = document.createElement("video");
+      video.src = src;
+      video.controls = true;
+      return video;
+    },
+    validateFile: (file) =>
+      file.type.startsWith("video/") &&
+      file.size >= 10 * 1024 &&
+      file.size <= 1024 * 1024 * 1024,
+  },
+  // Add new post type configurations here.
+};
+
+export function setupPostCreation() {
+  // Get DOM elements
+  const postButton = document.getElementById("postButton");
+  const mediaPreview = document.getElementById("mediaPreview");
+  const postTypeSelector = document.getElementById("postType");
+
+  // Set up file input elements for each post type based on configuration
+  // You may store references to these so you don’t need to use document.getElementById repeatedly.
+  const fileInputs = {};
+  Object.entries(postTypeConfig).forEach(([key, config]) => {
+    fileInputs[key] = document.getElementById(config.inputId);
+  });
+
+  // State: an array of objects { src, file, type } for previewed files
+  let uploadedMedia = [];
+
+  // Bind events
+  postTypeSelector.addEventListener("change", handlePostTypeChange);
+  postButton.addEventListener("click", handlePostButtonClick);
+
+  // For each post type, bind file input changes to a generic handler
+  Object.entries(fileInputs).forEach(([type, inputElement]) => {
+    inputElement.addEventListener("change", (e) => {
+      handleMediaFileChange(e, inputElement, type);
+    });
+  });
+
+  /**
+   * Changes which file input element is visible based on selected post type.
+   * Clears any existing previews and state.
+   */
+  function handlePostTypeChange(e) {
+    const selectedType = e.target.value;
+
+    // Loop through all types and show/hide inputs accordingly.
+    Object.entries(fileInputs).forEach(([type, inputElement]) => {
+      if (type === selectedType) {
+        inputElement.style.display = "block";
+      } else {
+        inputElement.style.display = "none";
+        // Optionally clear the value of hidden inputs
+        inputElement.value = "";
+      }
+    });
+
+    mediaPreview.innerHTML = "";
+    uploadedMedia = [];
+  }
+
+  /**
+   * The post button click handler: prepares the media files along with any other post content,
+   * then calls addPost.
+   */
+  async function handlePostButtonClick() {
+    const selectedType = postTypeSelector.value;
+    const content = ""; // Extend to include text content if needed
+
+    // Disable the post button to prevent duplicate submissions.
+    postButton.disabled = true;
+    postButton.style.display = "none";
+
+    // Check whether there's content or any media preview
+    if (
+      content ||
+      mediaPreview.querySelector("img") ||
+      mediaPreview.querySelector("video")
+    ) {
+      let files = [];
+      // Get files from the file input for this post type.
+      files = Array.from(fileInputs[selectedType].files);
+
+      await addPost(selectedType, content, files);
+    }
+  }
+
+  /**
+   * Processes media files: validation, duplicate checking, and generating previews.
+   */
+  async function handleMediaFileChange(event, inputElement, type) {
+    const config = postTypeConfig[type];
+
+    Array.from(event.target.files).forEach(async (file) => {
+      // Validate file using post type specific function.
+      if (!config.validateFile(file)) {
+        alert(
+          `Invalid ${type} file. Please ensure it is a valid ${type} and its size is between 10KB and 1GB.`
+        );
+        return;
+      }
+
+      // Check for duplicate based on file hash or uniqueness.
+      let res = await CheckFile(file);
+      console.log("diskchk : ", res.exists);
+      if (res.exists === true) {
+        alert(`You already uploaded the file ${res.url}`);
+        console.log("diskchk : ", res.url);
+      }
+      if (res.postid) {
+        mediaPreview.appendChild(
+          createElement("a", { href: `/post/${res.postid}` }, ["Go To Post"])
+        );
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const mediaSrc = e.target.result;
+
+        // Check for duplicates in the in-memory store.
+        if (uploadedMedia.some((item) => item.src === mediaSrc)) {
+          alert(`This ${type} has already been uploaded.`);
+          return;
+        }
+
+        // Use the configured function to create the media element.
+        const mediaElement = config.createMediaElement(mediaSrc);
+
+        // Create a wrapper for the media element with removal functionality.
+        const mediaWrapper = createMediaWrapper(
+          mediaElement,
+          type,
+          file,
+          inputElement
+        );
+        mediaPreview.appendChild(mediaWrapper);
+
+        // Add the media entry to the state array.
+        uploadedMedia.push({ src: mediaSrc, file, type });
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  /**
+   * Creates a wrapper around the media element that includes a remove button.
+   */
+  function createMediaWrapper(mediaElement, type, file, inputElement) {
+    const wrapper = document.createElement("div");
+    wrapper.classList.add("media-preview-item");
+
+    const removeButton = document.createElement("button");
+    removeButton.textContent = "Remove";
+    removeButton.classList.add("remove-btn");
+
+    removeButton.addEventListener("click", () => {
+      wrapper.remove();
+      // Remove from the uploadedMedia array based on data URL.
+      uploadedMedia = uploadedMedia.filter(
+        (item) => item.src !== mediaElement.src
+      );
+      // Remove the file from the input element.
+      removeFileFromInput(inputElement, file);
+    });
+
+    wrapper.appendChild(mediaElement);
+    wrapper.appendChild(removeButton);
+    return wrapper;
+  }
+
+  /**
+   * Rebuilds the FileList for an input element by excluding the removed file.
+   */
+  function removeFileFromInput(inputElement, fileToRemove) {
+    const dt = new DataTransfer();
+    Array.from(inputElement.files)
+      .filter((file) => file !== fileToRemove)
+      .forEach((file) => dt.items.add(file));
+    inputElement.files = dt.files;
+  }
+
+  /**
+   * Submits the post to the backend using FormData.
+   * Includes CSRF protection and appends file hashes for each file.
+   */
+  async function addPost(type, content, files) {
+    const csrfToken = getCsrfToken();
+    const formData = new FormData();
+    formData.append("type", type);
+    formData.append("text", content);
+    // Include the CSRF token in the form data. 
+    formData.append("csrf_token", csrfToken);
+
+    // Append each file with its hash.
+    files.forEach((file) => {
+      const fileHash = GetFileHash(file);
+      console.log("File Hash:", fileHash);
+      formData.append("hash", fileHash);
+      formData.append(postTypeConfig[type].fileKey, file);
+    });
+
+    try {
+      // Optionally you can also add the CSRF token as a header:
+      // const data = await apiFetch("/feed/post", "POST", formData, { "X-CSRF-Token": csrfToken });
+      const data = await apiFetch("/feed/post", "POST", formData);
+      if (data.ok) {
+        renderNewPost(data.data, 0);
+        clearPostForm();
+      } else {
+        alert("Failed to post");
+      }
+    } catch (error) {
+      console.error("Error posting:", error);
+      alert("There was an error posting your content.");
+    }
+  }
+
+  /**
+   * Clears the post creation form and resets internal state.
+   */
+  function clearPostForm() {
+    mediaPreview.innerHTML = "";
+    // Reset all file inputs
+    Object.values(fileInputs).forEach((input) => (input.value = ""));
+    uploadedMedia = [];
+    postButton.disabled = false;
+    postButton.style.display = "block";
+  }
+}

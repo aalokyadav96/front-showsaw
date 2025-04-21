@@ -11,9 +11,9 @@ function createForm(fields, onSubmit) {
         event.preventDefault();
         const formData = new FormData(form); // Support file inputs
         try {
-            await onSubmit(formData);
+            let resp = await onSubmit(formData);
             Snackbar("Place created successfully!", 3000);
-            // navigate('/places'); // Redirect to places after success
+            navigate(`/place/${resp.placeid}`); // Redirect to places after success
         } catch (error) {
             console.error("Error creating place:", error);
             Snackbar("Failed to create place. Please try again.", 3000);

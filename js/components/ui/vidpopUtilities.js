@@ -8,7 +8,7 @@ function setupVideoUtilityFunctions(video, videoid) {
     let zoomLevel = 1;
     let panX = 0, panY = 0;
     let angle = 0, flip = false;
-    const minZoom = 1, maxZoom = 4;
+    const minZoom = 1, maxZoom = 8;
     let isDragging = false, startX = 0, startY = 0;
 
     const updateTransform = debounce(() => {
@@ -123,12 +123,12 @@ function setupVideoUtilityFunctions(video, videoid) {
     const hotkeysEnabled = true;
 
     const isInputField = (element) => ["INPUT", "TEXTAREA"].includes(element.tagName) || element.isContentEditable;
-    
+
     window.addEventListener("keydown", (e) => {
         if (!hotkeysEnabled || isInputField(e.target)) return;
-    
+
         e.preventDefault();
-    
+
         const actions = {
             "h": flipVideo,
             "+": () => changeZoom(-1),
@@ -146,7 +146,7 @@ function setupVideoUtilityFunctions(video, videoid) {
                 angle = (angle + 90) % 360;
                 video.style.width = "100vh";
             },
-            
+
             // Modifier key combos
             "Shift+ArrowUp": () => setVolume(video, 0.1),
             "Shift+ArrowDown": () => setVolume(video, -0.1),
@@ -154,7 +154,7 @@ function setupVideoUtilityFunctions(video, videoid) {
             "Ctrl+ArrowRight": () => video.currentTime = Math.min(video.duration, video.currentTime + 5),
             "Alt+r": () => { angle = 0; video.style.width = ""; }, // Reset rotation
         };
-    
+
         const keyCombo = [
             e.ctrlKey ? "Ctrl" : "",
             e.shiftKey ? "Shift" : "",
@@ -162,15 +162,16 @@ function setupVideoUtilityFunctions(video, videoid) {
             e.metaKey ? "Meta" : "",
             e.key,
         ].filter(Boolean).join("+");
-    
+
         if (actions[keyCombo]) {
             actions[keyCombo]();
             if (!["m", "v"].includes(e.key)) updateTransform(); // Only update transform if needed
         }
     });
-    
 
-    saveVideoProgress(video, videoid);
+    if (videoid) {
+        saveVideoProgress(video, videoid);
+    }
 
     video.addEventListener("wheel", onWheel, { passive: false });
     video.addEventListener("mousedown", onMouseDown);

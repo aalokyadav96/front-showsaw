@@ -112,7 +112,7 @@ async function displayEvents(isLoggedIn, content, contentcon, page = 1) {
 function generateEventHTML(eevent) {
     return `
     <div class="event" id="event-${eevent.eventid}">
-                <img loading="lazy" src="${SRC_URL}/eventpic/thumb/${eevent.eventid}.jpg" alt="${eevent.title} Banner" style="width: 100%; aspect-ratio:3/2; object-fit: cover;" />
+                <img loading="lazy" src="${SRC_URL}/eventpic/banner/thumb/${eevent.eventid}.jpg" alt="${eevent.title} Banner" style="width: 100%; aspect-ratio:3/2; object-fit: cover;" />
                 <h3>${eevent.title}</h3>
                 <p><strong>Date:</strong> ${new Date(eevent.date).toLocaleString()}</p>
                 <p><strong>Place:${eevent.placename}</strong></p>

@@ -1,5 +1,6 @@
 import { showSeatSelection } from "./seats.js";
-import { handlePurchase } from "../payment/paymentService.js";
+// import { handlePurchase } from "../payment/paymentService.js";
+import { handlePurchase } from "../payment/pay.js";
 
 // function showBuyTicketModal(ticketId, eventId, quantity, isLoggedIn, isCreator) {
 //     if (!isLoggedIn) {

@@ -1,0 +1,262 @@
+import { createElement } from "../../components/createElement.js";
+import { SRC_URL, apiFetch } from "../../api/api.js";
+import displayPlace from "../place/displayPlace.js";
+
+/**
+ * Loads map configuration and marker data from backend,
+ * then calls displayMap to render the map.
+ */
+export async function loadMap(contentContainer, isLoggedIn, entityx) {
+  try {
+    // Fetch the map configuration (map image, sprite positions, labels)
+    const config = await apiFetch(`/maps/config/${entityx.type}?id=${encodeURIComponent(entityx.id)}`);
+    // Fetch markers for the map
+    const markers = await apiFetch(`/maps/markers/${entityx.type}?id=${encodeURIComponent(entityx.id)}`);
+    if (entityx.type == "event") {
+      config.mapImage = `${SRC_URL}/eventpic/seating/${entityx.id}seating.jpg`;
+    }
+    displayMap(contentContainer, isLoggedIn, config, markers);
+  } catch (err) {
+    console.error("Failed to load map:", err);
+  }
+}
+
+/**
+ * Displays the map using configuration and marker data from the backend.
+ *
+ * @param {HTMLElement} contentContainer - The container for the map and controls.
+ * @param {boolean} isLoggedIn - Indicates if the user is logged in.
+ * @param {Object} config - The map configuration containing:
+ *   - mapImage: URL for the map image.
+ *   - spritePositions: Object mapping marker types to sprite positions.
+ *   - typeLabels: Object mapping marker types to labels.
+ * @param {Array} markers - Array of marker objects from the backend.
+ */
+export function displayMap(contentContainer, isLoggedIn, config, markers) {
+  contentContainer.innerHTML = "";
+
+  // Use dynamic configuration from backend
+  const spritePositions = config.spritePositions || {};
+  const typeLabels = config.typeLabels || {};
+  const mapImage = config.mapImage;
+
+  const mapInner = createElement("img", { id: "map-inner", src: mapImage });
+
+  const markerLayer = createElement("div", {
+    style: "position:absolute;top:0;left:0;width:100%;height:100%",
+  });
+
+  const mapWrapper = createElement("div", { id: "map-wrapper" }, [
+    mapInner,
+    markerLayer,
+  ]);
+
+  const mapContainer = createElement("div", { id: "custom-map-container" }, [
+    mapWrapper,
+  ]);
+  contentContainer.appendChild(mapContainer);
+
+  // Create legend using dynamic typeLabels keys
+  const legend = createElement("div", { id: "legend", class: "hidden" });
+  const types = Object.keys(typeLabels);
+  types.forEach((type) => {
+    const btn = createElement("button", { "data-type": type }, [
+      typeLabels[type] || type,
+    ]);
+    legend.appendChild(btn);
+  });
+  const resetBtn = createElement(
+    "button",
+    { style: "margin-top:10px" },
+    ["🔄 Show All"]
+  );
+  legend.appendChild(resetBtn);
+  contentContainer.appendChild(legend);
+
+  // Zoom controls
+  const zoomControls = createElement("div", { id: "zoom-controls" }, [
+    createElement("button", {}, ["+"]),
+    createElement("button", {}, ["−"]),
+  ]);
+  contentContainer.appendChild(zoomControls);
+
+  // Minimap using the dynamic map image. Make sure CSS sets #minimap to overflow:hidden.
+  const minimapImage = createElement("img", { src: mapImage });
+  const minimapViewport = createElement("div", { id: "minimap-viewport" });
+  const minimap = createElement("div", { id: "minimap" }, [
+    minimapImage,
+    minimapViewport,
+  ]);
+  contentContainer.appendChild(minimap);
+
+  // Info panel for marker details
+  const infoTitle = createElement("h2", { id: "info-title" }, ["Info"]);
+  const infoContent = createElement("p", { id: "info-content" }, [
+    "Details will go here",
+  ]);
+  const closeBtn = createElement("button", { id: "close-info-panel" }, [
+    "Close",
+  ]);
+  const infoPanel = createElement("div", { id: "marker-info-panel" }, [
+    closeBtn,
+    infoTitle,
+    infoContent,
+  ]);
+  contentContainer.appendChild(infoPanel);
+
+  // Render markers from backend data
+  const markerElements = [];
+  markers.forEach((marker) => {
+    const label = createElement("div", { class: "marker-label" }, [
+      marker.name,
+    ]);
+    const el = createElement(
+      "div",
+      {
+        class: "marker",
+        id: marker.id,
+        title: marker.name,
+        "data-type": marker.type,
+        style: `
+          left:${marker.x}px;
+          top:${marker.y}px;
+          background-position:${spritePositions[marker.type] || "0px 0px"};
+        `,
+      },
+      [label]
+    );
+    markerLayer.appendChild(el);
+    markerElements.push(el);
+  });
+
+  // Map panning and zooming logic
+  let isDragging = false;
+  let startX = 0;
+  let startY = 0;
+  let mapX = 0;
+  let mapY = 0;
+  let zoom = 1;
+  const zoomStep = 0.1;
+
+  function applyZoom() {
+    mapWrapper.style.transform = `translate(${mapX}px, ${mapY}px) scale(${zoom})`;
+    updateMinimapViewport();
+  }
+
+  /**
+   * Recalculates the minimap viewport and shifts the minimap image if needed.
+   */
+  function updateMinimapViewport() {
+    const mapImgWidth = mapInner.naturalWidth || 2000;
+    // Calculate minimap scale based on the minimap container width vs. full map image width.
+    const minimapScale = minimap.offsetWidth / mapImgWidth;
+    // The visible dimensions of the main map container, adjusted by the current zoom.
+    const visibleWidth = mapContainer.offsetWidth / zoom;
+    const visibleHeight = mapContainer.offsetHeight / zoom;
+
+    // Set the viewport that highlights the currently visible area.
+    minimapViewport.style.width = `${visibleWidth * minimapScale}px`;
+    minimapViewport.style.height = `${visibleHeight * minimapScale}px`;
+    minimapViewport.style.left = `${-mapX * minimapScale}px`;
+    minimapViewport.style.top = `${-mapY * minimapScale}px`;
+
+    // Shift the minimap image accordingly if it's larger than the minimap container.
+    minimapImage.style.transform = `translate(${-mapX * minimapScale}px, ${-mapY * minimapScale}px)`;
+  }
+
+  mapContainer.addEventListener("mousedown", (e) => {
+    isDragging = true;
+    startX = e.clientX;
+    startY = e.clientY;
+    mapContainer.style.cursor = "grabbing";
+  });
+
+  document.addEventListener("mousemove", (e) => {
+    if (!isDragging) return;
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+    mapX += dx;
+    mapY += dy;
+    applyZoom();
+    startX = e.clientX;
+    startY = e.clientY;
+  });
+
+  document.addEventListener("mouseup", () => {
+    isDragging = false;
+    mapContainer.style.cursor = "grab";
+  });
+
+  const [zoomInBtn, zoomOutBtn] = zoomControls.querySelectorAll("button");
+  zoomInBtn.addEventListener("click", () => {
+    zoom += zoomStep;
+    applyZoom();
+  });
+
+  zoomOutBtn.addEventListener("click", () => {
+    zoom = Math.max(0.5, zoom - zoomStep);
+    applyZoom();
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key.toLowerCase() === "l") {
+      legend.classList.toggle("hidden");
+    }
+  });
+
+  // Legend filtering for marker types
+  legend.querySelectorAll("button[data-type]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const type = btn.getAttribute("data-type");
+      markerElements.forEach((el) => {
+        el.style.display = el.dataset.type === type ? "block" : "none";
+      });
+    });
+  });
+
+  resetBtn.addEventListener("click", () => {
+    markerElements.forEach((el) => {
+      el.style.display = "block";
+    });
+  });
+
+  // Load place details on marker click.
+  markerElements.forEach((el) => {
+    el.addEventListener("click", async (e) => {
+      e.stopPropagation();
+      const placeName = el.title;
+      infoTitle.textContent = placeName;
+      infoContent.textContent = "Loading...";
+      try {
+        displayPlace(isLoggedIn, el.id, infoContent);
+      } catch (error) {
+        console.error(error);
+        infoContent.textContent = "Error loading details.";
+      }
+      infoPanel.classList.add("active");
+    });
+  });
+
+  // Allow clicking on the minimap to recenter the main map.
+  minimap.addEventListener("click", (e) => {
+    const rect = minimap.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const clickY = e.clientY - rect.top;
+    const mapImgWidth = mapInner.naturalWidth || 2000;
+    const minimapScale = minimap.offsetWidth / mapImgWidth;
+    const targetX = clickX / minimapScale;
+    const targetY = clickY / minimapScale;
+    const containerCenterX = mapContainer.offsetWidth / 2;
+    const containerCenterY = mapContainer.offsetHeight / 2;
+    mapX = containerCenterX - targetX * zoom;
+    mapY = containerCenterY - targetY * zoom;
+    applyZoom();
+  });
+
+  closeBtn.addEventListener("click", () => {
+    infoPanel.classList.remove("active");
+  });
+
+  // Perform initial transform based on default pan/zoom values.
+  applyZoom();
+}

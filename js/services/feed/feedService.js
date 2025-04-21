@@ -56,20 +56,6 @@ function generateFeedHTML() {
     postHeader.appendChild(postTypeLabel);
     postHeader.appendChild(postTypeSelector);
 
-    // const postTypeSelector = document.createElement('select');
-    // postTypeSelector.id = 'postType';
-    // postTypeSelector.className = 'post-type-selector';
-
-    // const defaultOption = new Option('Select Post Type', 'text');
-    // const imageOption = new Option('Image Post', 'image');
-    // const videoOption = new Option('Video Post', 'video');
-
-    // postTypeSelector.add(defaultOption);
-    // postTypeSelector.add(imageOption);
-    // postTypeSelector.add(videoOption);
-
-    // postHeader.appendChild(postTypeSelector);
-
     // Create the media upload section
     const mediaUpload = document.createElement('div');
     mediaUpload.id = 'mediaUpload';

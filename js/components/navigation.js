@@ -4,8 +4,10 @@ import { navigate } from "../routes/index.js";
 import { logout } from "../services/auth/authService.js";
 
 /** Utility Functions */
-const toggleElement = (selector, className) => document.querySelector(selector)?.classList.toggle(className);
-const closeElement = (selector, className) => document.querySelector(selector)?.classList.remove(className);
+const toggleElement = (selector, className) =>
+    document.querySelector(selector)?.classList.toggle(className);
+const closeElement = (selector, className) =>
+    document.querySelector(selector)?.classList.remove(className);
 
 const handleNavigation = (event, href) => {
     event.preventDefault();
@@ -22,8 +24,6 @@ const createDropdown = (id, label, links) => {
     const button = document.createElement("div");
     button.className = "dropdown-toggle";
     button.id = id;
-    // button.setAttribute("aria-haspopup", "true");
-    // button.setAttribute("aria-expanded", "false");
     button.textContent = label;
 
     const menu = document.createElement("div");
@@ -47,9 +47,10 @@ const createDropdown = (id, label, links) => {
 /** Navigation Item */
 const createNavItem = (href, label) => {
     const li = document.createElement("li");
+    li.className = "navigation__item";
     const anchor = document.createElement("a");
     anchor.href = href;
-    anchor.className = "nav-link";
+    anchor.className = "nav-link navigation__link";
     anchor.textContent = label;
     anchor.addEventListener("click", (e) => handleNavigation(e, href));
     li.appendChild(anchor);
@@ -113,11 +114,15 @@ const createNav = () => {
         { href: "/events", label: "Events" },
         { href: "/places", label: "Places" },
         { href: "/itinerary", label: "Itinerary" },
+        { href: "/chat", label: "Chat" },
+        // { href: "/map", label: "Map" },
+        { href: "/artists", label: "Artists" },
+        // { href: "/cartoons", label: "Cartoons" },
         { href: "/feed", label: "Feed" },
         { href: "/search", label: "Search" },
     ];
 
-    // Create Elements
+    // Create Header (with logo and profile or login button)
     const header = document.createElement("header");
     header.className = "navbar hflex-sb";
 
@@ -130,50 +135,83 @@ const createNav = () => {
     logoLink.textContent = "Zincate";
     logoDiv.appendChild(logoLink);
 
+    header.appendChild(logoDiv);
+
+    // Add Profile Dropdown or Login Button
+    const profileOrLogin = (node) => {
+        if (isLoggedIn) {
+            node.appendChild(createProfileDropdown(state.user));
+        } else {
+            const loginButton = document.createElement("a");
+            loginButton.className = "btn auth-btn";
+            loginButton.textContent = "Login";
+            loginButton.addEventListener("click", () => navigate("/login"));
+            node.appendChild(loginButton);
+        }
+    };
+    profileOrLogin(header);
+
+    // Create Navigation Menu (as a sibling to header)
     const nav = document.createElement("nav");
-    nav.className = "nav-menu hflex";
+    // nav.className = "nav-menu hflex";
+    nav.className = "navigation hflex";
 
     const ul = document.createElement("ul");
-    ul.className = "nav-list hflex";
+    // ul.className = "nav-list hflex";
+    ul.className = "navigation__list";
 
     // Append Navigation Items
     const fragment = document.createDocumentFragment();
     navItems.forEach((item) => fragment.appendChild(createNavItem(item.href, item.label)));
 
-    // Create Dropdown
-    fragment.appendChild(createDropdown("create-menu", "Create", [
-        { href: "/create-event", text: "Eva" },
-        { href: "/create-place", text: "Loca" },
-    ]));
+    // // Create Dropdown for Create Options
+    // fragment.appendChild(
+    //     createDropdown("create-menu", "Create", [
+    //         { href: "/create-event", text: "Eva" },
+    //         { href: "/create-place", text: "Loca" },
+    //         { href: "/create-artist", text: "Artist" },
+    //         // { href: "/create-cartoon", text: "Cartoon" },
+    //     ])
+    // );
 
-    function profileOrLogin(node) {
-        // Add Profile Dropdown or Login Button
-        if (isLoggedIn) {
-            node.appendChild(createProfileDropdown(state.user));
-        } else {
-            // const loginLi = document.createElement("li");
-            const loginButton = document.createElement("a");
-            loginButton.className = "btn auth-btn";
-            loginButton.textContent = "Login";
-            loginButton.addEventListener("click", () => navigate("/login"));
-            // loginLi.appendChild(loginButton);
-            node.appendChild(loginButton);
-        }
-    }
+
+    const ulx = document.createElement("div");
+    ulx.className = "navigation__inner";
+
+    const ipt = document.createElement("input");
+    ipt.className = "toggle";
+    ipt.type = "checkbox";
+    ipt.id="more";
+    ipt.setAttribute("aria-hidden","true"); 
+    ipt.setAttribute("tabindex","-1");
+
+
+    const nin = document.createElement("div");
+    nin.className = "navigation__inner";
+   nin.innerHTML = `<div class="navigation__toggle">
+        <label class="navigation__link" for="more" aria-hidden="true">More</label>
+    </div>`;
+
 
     ul.appendChild(fragment);
-    nav.appendChild(ul);
+    nav.appendChild(ipt);
+    ulx.appendChild(ul);
+    ulx.appendChild(nin);
+    nav.appendChild(ulx);
 
-    header.appendChild(logoDiv);
-    header.appendChild(nav);
-    profileOrLogin(header);
+    // Wrap header and nav in a container so that they are siblings
+    const container = document.createElement("div");
+    container.className = "navigation-container";
 
-    return header;
+    container.appendChild(header);
+    container.appendChild(nav);
+
+    return container;
 };
 
 /** Attach Navigation Event Listeners */
 const attachNavEventListeners = () => {
-    // Create Dropdown Toggle
+    // Create Dropdown Toggle for "Create" menu
     document.getElementById("create-menu")?.addEventListener("click", (e) => {
         e.preventDefault();
         toggleElement(".dropdown-menu", "show");
@@ -199,4 +237,3 @@ const attachNavEventListeners = () => {
 };
 
 export { createNav, attachNavEventListeners, createDropdown, createNavItem, createProfileDropdown };
-

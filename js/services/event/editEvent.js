@@ -3,6 +3,7 @@ import { navigate, renderPage } from "../../routes/index.js";
 import SnackBar from '../../components/ui/Snackbar.mjs';
 import { createFormGroup } from "../../components/createFormGroup.js";
 import Button from "../../components/base/Button.js";
+import { addAutoConListeners } from "./createEventHelpers.js";
 
 
 async function updateEvent(isLoggedIn, eventId) {
@@ -15,7 +16,10 @@ async function updateEvent(isLoggedIn, eventId) {
   const title = document.getElementById("event-title").value.trim();
   const date = document.getElementById("event-date").value; // Expected format: "YYYY-MM-DD"
   let time = document.getElementById("event-time").value;      // Expected format: "HH:MM" or "HH:MM:SS"
-  const place = document.getElementById("event-place").value.trim();
+  // const place = document.getElementById("event-place").value.trim();
+  const place = document.getElementById("event-place");
+  const placeid = place.dataset.id || ""; // Get stored placeID
+  const placename = place.value; // Get place name (displayed to user)
   const location = document.getElementById("event-location").value.trim();
   const description = document.getElementById("event-description").value.trim();
   const bannerFile = document.getElementById("event-banner").files[0];
@@ -42,7 +46,9 @@ async function updateEvent(isLoggedIn, eventId) {
     title,
     date: eventDate.toISOString(), // Ensure proper formatting
     location,
-    place,
+    // place,
+    placeid,
+    placename,
     description
     // If you want to update category as well, add: category
   };
@@ -69,6 +75,101 @@ async function updateEvent(isLoggedIn, eventId) {
 }
 
 
+// async function editEventForm(isLoggedIn, eventId) {
+//   const createSection = document.getElementById("editevent");
+
+//   if (!isLoggedIn) {
+//     navigate("/login");
+//     return;
+//   }
+
+//   try {
+//     // Fetch event data
+//     const eventx = await apiFetch(`/events/event/${eventId}`);
+//     console.log(eventx);
+
+
+//     // Convert UTC date string to a Date object
+//     const eventDateTime = new Date(eventx.date);
+
+//     // Convert to local date in YYYY-MM-DD format
+//     const eventDate = eventDateTime.toISOString().split("T")[0];
+
+//     // Convert to local time in HH:MM:SS format
+//     const eventTime = eventDateTime.toLocaleTimeString([], {
+//       hour: "2-digit",
+//       minute: "2-digit",
+//       second: "2-digit",
+//       hour12: false, // Use 24-hour format
+//     });
+
+//     // alert(eventTime);
+
+
+//     // Clear existing content
+//     createSection.innerHTML = "";
+
+//     // Create form container
+//     const formContainer = document.createElement("div");
+//     formContainer.classList.add("form-container");
+
+//     const formHeading = document.createElement("h2");
+//     formHeading.textContent = "Edit Event";
+
+//     // Create the form
+//     const form = document.createElement("form");
+//     form.id = "edit-event-form";
+//     form.classList.add("edit-event-form");
+
+//     // Define form fields
+//     const formGroups = [
+//       { label: "Event Title", inputType: "text", inputId: "event-title", inputValue: eventx.title, placeholder: "Event Title", isRequired: true },
+//       { label: "Event Date", inputType: "date", inputId: "event-date", inputValue: eventDate, isRequired: true },
+//       { label: "Event Time", inputType: "time", inputId: "event-time", inputValue: eventTime, isRequired: true },
+//       { label: "Event Location", inputType: "text", inputId: "event-location", inputValue: eventx.location, placeholder: "Location", isRequired: true },
+//       { label: "Event Place", inputType: "text", inputId: "event-place", inputValue: eventx.placename, placeholder: "Place", isRequired: true },
+//       { label: "Event Description", inputType: "textarea", inputId: "event-description", inputValue: eventx.description, placeholder: "Description", isRequired: true },
+//       { label: "Event Banner", inputType: "file", inputId: "event-banner", additionalProps: { accept: "image/*" } },
+//       { label: "Seating Plan Map", inputType: "file", inputId: "event-seating", additionalProps: { accept: "image/*" } },
+//     ];
+
+//     // Generate form fields
+//     formGroups.forEach(group => form.appendChild(createFormGroup(group)));
+
+//     // Create buttons
+//     const updateButton = document.createElement("button");
+//     updateButton.type = "submit";
+//     updateButton.classList.add("button", "update-btn");
+//     updateButton.textContent = "Update Event";
+
+//     const cancelButton = Button("Cancel", "cancel-btn", {
+//       click: () => (createSection.innerHTML = ""),
+//     });
+//     cancelButton.type = "button";
+
+//     // Append buttons to form
+//     form.appendChild(updateButton);
+//     form.appendChild(cancelButton);
+
+//     // Append form to container
+//     formContainer.appendChild(formHeading);
+//     formContainer.appendChild(form);
+
+//     // Append container to section
+//     createSection.appendChild(formContainer);
+
+//     // Handle form submission
+//     form.addEventListener("submit", async (event) => {
+//       event.preventDefault();
+//       await updateEvent(isLoggedIn, eventId);
+//     });
+
+//   } catch (error) {
+//     console.error("Edit Event Form Error:", error);
+//     SnackBar(`Error loading event: ${error.message}`, 3000);
+//   }
+// }
+
 async function editEventForm(isLoggedIn, eventId) {
   const createSection = document.getElementById("editevent");
 
@@ -78,44 +179,30 @@ async function editEventForm(isLoggedIn, eventId) {
   }
 
   try {
-    // Fetch event data
     const eventx = await apiFetch(`/events/event/${eventId}`);
     console.log(eventx);
 
-
-    // Convert UTC date string to a Date object
     const eventDateTime = new Date(eventx.date);
-
-    // Convert to local date in YYYY-MM-DD format
     const eventDate = eventDateTime.toISOString().split("T")[0];
-
-    // Convert to local time in HH:MM:SS format
     const eventTime = eventDateTime.toLocaleTimeString([], {
       hour: "2-digit",
       minute: "2-digit",
       second: "2-digit",
-      hour12: false, // Use 24-hour format
+      hour12: false,
     });
 
-    // alert(eventTime);
-
-
-    // Clear existing content
     createSection.innerHTML = "";
 
-    // Create form container
     const formContainer = document.createElement("div");
     formContainer.classList.add("form-container");
 
     const formHeading = document.createElement("h2");
     formHeading.textContent = "Edit Event";
 
-    // Create the form
     const form = document.createElement("form");
     form.id = "edit-event-form";
     form.classList.add("edit-event-form");
 
-    // Define form fields
     const formGroups = [
       { label: "Event Title", inputType: "text", inputId: "event-title", inputValue: eventx.title, placeholder: "Event Title", isRequired: true },
       { label: "Event Date", inputType: "date", inputId: "event-date", inputValue: eventDate, isRequired: true },
@@ -127,42 +214,59 @@ async function editEventForm(isLoggedIn, eventId) {
       { label: "Seating Plan Map", inputType: "file", inputId: "event-seating", additionalProps: { accept: "image/*" } },
     ];
 
-    // Generate form fields
-    formGroups.forEach(group => form.appendChild(createFormGroup(group)));
+    formGroups.forEach(field => {
+      if (field.inputId === "event-place") {
+        const wrapper = document.createElement("div");
+        wrapper.className = "suggestions-container";
 
-    // Create buttons
+        const input = createFormGroup(field); // Make sure this returns the actual input element
+        wrapper.appendChild(input);
+
+        const autocompleteList = document.createElement("ul");
+        autocompleteList.id = "ac-list";
+        autocompleteList.classList.add("ac-list");
+
+        wrapper.appendChild(autocompleteList);
+
+        form.appendChild(wrapper);
+      } else {
+        form.appendChild(createFormGroup(field));
+      }
+    });
+
     const updateButton = document.createElement("button");
     updateButton.type = "submit";
     updateButton.classList.add("button", "update-btn");
     updateButton.textContent = "Update Event";
+    updateButton.addEventListener("click", () => {updateEvent(isLoggedIn, eventId)});
 
     const cancelButton = Button("Cancel", "cancel-btn", {
       click: () => (createSection.innerHTML = ""),
     });
     cancelButton.type = "button";
 
-    // Append buttons to form
     form.appendChild(updateButton);
     form.appendChild(cancelButton);
 
-    // Append form to container
     formContainer.appendChild(formHeading);
     formContainer.appendChild(form);
 
-    // Append container to section
     createSection.appendChild(formContainer);
 
-    // Handle form submission
-    form.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      await updateEvent(isLoggedIn, eventId);
-    });
+    // form.addEventListener("submit", async (event) => {
+    //   event.preventDefault();
+    //   await updateEvent(isLoggedIn, eventId);
+    // });
+
+    const eventPlaceInput = form.querySelector("#event-place");
+
+    // ✅ Fix: Use the correct autocomplete listeners
+    addAutoConListeners(eventPlaceInput);
 
   } catch (error) {
     console.error("Edit Event Form Error:", error);
     SnackBar(`Error loading event: ${error.message}`, 3000);
   }
 }
-
 
 export { updateEvent, editEventForm };

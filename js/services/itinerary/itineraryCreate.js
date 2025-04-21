@@ -1,7 +1,50 @@
 import { apiFetch } from "../../api/api.js";
 
+function createInputField({ name, type, placeholder, required, id, label }) {
+    const formGroup = document.createElement("div");
+    formGroup.className = "form-group";
+
+    if (label) {
+        const labelElem = document.createElement("label");
+        labelElem.setAttribute("for", id);
+        labelElem.textContent = label;
+        formGroup.appendChild(labelElem);
+    }
+
+    const input = type === 'textarea' ? document.createElement('textarea') : document.createElement('input');
+    if (type !== 'textarea') input.type = type;
+
+    Object.assign(input, { name, id, placeholder, required });
+    formGroup.appendChild(input);
+
+    return formGroup;
+}
+
+function createStatusDropdown() {
+    const group = document.createElement("div");
+    group.className = "form-group";
+
+    const label = document.createElement("label");
+    label.setAttribute("for", "status");
+    label.textContent = "Status";
+
+    const select = document.createElement("select");
+    select.name = "status";
+    select.id = "status";
+
+    ['Draft', 'Confirmed'].forEach(status => {
+        const option = document.createElement('option');
+        option.value = status;
+        option.textContent = status;
+        select.appendChild(option);
+    });
+
+    group.appendChild(label);
+    group.appendChild(select);
+    return group;
+}
+
 function createItinerary(isLoggedIn, divContainerNode) {
-    // Clear previous content
     divContainerNode.textContent = '';
 
     if (!isLoggedIn) {
@@ -27,45 +70,13 @@ function createItinerary(isLoggedIn, divContainerNode) {
     ];
 
     fields.forEach(field => {
-        const formGroup = document.createElement("div");
-        formGroup.className = "form-group";
-        let input;
-        if (field.type === 'textarea') {
-            input = document.createElement('textarea');
-        } else {
-            input = document.createElement('input');
-            input.type = field.type;
-        }
-        input.name = field.name;
-        if (field.placeholder) input.placeholder = field.placeholder;
-        if (field.required) input.required = true;
-
-        // Create label if applicable
-        if (field.label) {
-            const label = document.createElement("label");
-            label.setAttribute("for", field.id);
-            label.textContent = field.label;
-            formGroup.appendChild(label);
-        }
-
-        formGroup.appendChild(input);
-        form.appendChild(formGroup);
+        form.appendChild(createInputField(field));
         form.appendChild(document.createElement('br'));
     });
 
-    // Status dropdown
-    const statusSelect = document.createElement('select');
-    statusSelect.name = 'status';
-    ['Draft', 'Confirmed'].forEach(status => {
-        const option = document.createElement('option');
-        option.value = status;
-        option.textContent = status;
-        statusSelect.appendChild(option);
-    });
-    form.appendChild(statusSelect);
+    form.appendChild(createStatusDropdown());
     form.appendChild(document.createElement('br'));
 
-    // Submit button
     const submitButton = document.createElement('button');
     submitButton.type = 'submit';
     submitButton.textContent = 'Create';
@@ -76,26 +87,66 @@ function createItinerary(isLoggedIn, divContainerNode) {
 
     form.addEventListener('submit', async function (e) {
         e.preventDefault();
+
+        submitButton.disabled = true;
+        submitButton.textContent = 'Creating...';
+        message.textContent = '';
+        message.className = '';
+
         const formData = new FormData(this);
+
+        const locations = formData.get('locations')
+            .split(',')
+            .map(loc => loc.trim())
+            .filter(loc => loc.length > 0);
 
         const itineraryData = {
             name: formData.get('name'),
             description: formData.get('description'),
             start_date: formData.get('start_date'),
             end_date: formData.get('end_date'),
-            locations: formData.get('locations').split(',').map(loc => loc.trim()),
+            locations,
             status: formData.get('status')
         };
+
+        if (new Date(itineraryData.end_date) < new Date(itineraryData.start_date)) {
+            message.textContent = 'End date cannot be earlier than start date.';
+            message.className = 'message error';
+            submitButton.disabled = false;
+            submitButton.textContent = 'Create';
+            return;
+        }
+
+        if (locations.length === 0) {
+            message.textContent = 'Please enter at least one valid location.';
+            message.className = 'message error';
+            submitButton.disabled = false;
+            submitButton.textContent = 'Create';
+            return;
+        }
 
         try {
             const response = await apiFetch('/itineraries', 'POST', JSON.stringify(itineraryData));
             if (!response.ok) throw new Error('Failed to create itinerary');
 
             message.textContent = 'Itinerary created successfully!';
-            setTimeout(() => window.location.href = '/itinerary', 1000);
+            message.className = 'message success';
+
+            // SPA redirect or fallback
+            setTimeout(() => {
+                if (window.dispatchEvent) {
+                    window.dispatchEvent(new CustomEvent("navigate", { detail: "/itinerary" }));
+                } else {
+                    window.location.href = '/itinerary';
+                }
+            }, 1000);
         } catch (error) {
             console.error(error);
             message.textContent = 'Error creating itinerary.';
+            message.className = 'message error';
+        } finally {
+            submitButton.disabled = false;
+            submitButton.textContent = 'Create';
         }
     });
 

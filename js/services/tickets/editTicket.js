@@ -47,6 +47,14 @@ async function editTicket(ticketId, eventId) {
                 <label for="ticket-color">Color Code:</label>
                 <input type="color" id="ticket-color" value="${ticketData.color || '#ffffff'}" required />
                 </div>
+                <div class="form-group">
+                <label for="seat-start">Start Seat Number: </label>
+                <input type="number" id="seat-start" value="${ticketData.seatstart || '0'}" required />
+                </div>
+                <div class="form-group">
+                <label for="seat-end">End Seat Number:</label>
+                <input type="number" id="seat-end" value="${ticketData.seatend || ticketData.quantity}" required />
+                </div>
 
                 <button type="submit" class="button">Update Ticket</button>
             </form>
@@ -74,12 +82,20 @@ async function updateTicket(ticketId, eventId) {
     const quantity = parseInt(document.getElementById('ticket-quantity').value);
     const color = document.getElementById('ticket-color').value; // Corrected: Retrieve hex color as a string
 
+    const seatStart = parseInt(document.getElementById('seat-start').value);
+    const seatEnd = parseInt(document.getElementById('seat-end').value);
+    
+    if (isNaN(seatStart) || isNaN(seatEnd) || seatStart > seatEnd) {
+        alert("Please enter a valid seat number range.");
+        return;
+    }
+    
     if (!name || isNaN(price) || isNaN(quantity) || !currency) {
         alert("Please fill in all fields correctly.");
         return;
     }
 
-    const updatedTicket = { name, price, currency, quantity, color };
+    const updatedTicket = { name, price, currency, quantity, color,seatStart, seatEnd };
 
     try {
         const response = await apiFetch(`/ticket/event/${eventId}/${ticketId}`, 'PUT', JSON.stringify(updatedTicket), {

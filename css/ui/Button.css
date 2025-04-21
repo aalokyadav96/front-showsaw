@@ -4,6 +4,7 @@ button {
     border-radius: 5px;
     background-color: #028907;
     color: white;
+    width: fit-content;
     cursor: pointer;
     transition: background-color 0.3s ease-in-out;
 }

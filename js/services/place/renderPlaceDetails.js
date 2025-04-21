@@ -19,19 +19,19 @@ function renderPlaceDetails(isLoggedIn, content, place, isCreator) {
     //     // ]),
     // ])
 
-    const detailsSection = createElement('section', { id: 'placedetails', class: 'placedetails' }, [
-        createElement('h1', {}, [place.name]),
-        createElement('p', {}, [createElement('strong', {}, ["Description: "]), place.description || "N/A"]),
-        createElement('p', {}, [createElement('strong', {}, ["Address: "]), place.address || "N/A"]),
-        createElement('p', {}, [createElement('strong', {}, ["Created On: "]), createdDate]),
-        createElement('p', {}, [createElement('strong', {}, ["Last Updated: "]), updatedDate]),
-        // createElement('p', {}, [createElement('strong', {}, ["Coordinates: "]), `Lat: ${latitude}, Lng: ${longitude}`]),
-        createElement('p', {}, [createElement('strong', {}, ["Category: "]), place.category || "N/A"]),
-    ]);
+    // const detailsSection = createElement('section', { id: 'placedetails', class: 'placedetails' }, [
+    //     createElement('h1', {}, [place.name]),
+    //     createElement('p', {}, [createElement('strong', {}, ["Description: "]), place.description || "N/A"]),
+    //     createElement('p', {}, [createElement('strong', {}, ["Address: "]), place.address || "N/A"]),
+    //     createElement('p', {}, [createElement('strong', {}, ["Coordinates: "]), `Lat: ${latitude}, Lng: ${longitude}`]),
+    //     createElement('p', {}, [createElement('strong', {}, ["Category: "]), place.category || "N/A"]),
+    // ]);
 
-    let contenty = createElement('div', { 'class': 'hvflex' }, []);
-    detailsSection.appendChild(contenty);
     if (isCreator) {
+        const detailsSection = createElement('section', { class: 'placedetails' }, []);
+
+        let contenty = createElement('div', { 'class': 'hvflex' }, []);
+        detailsSection.appendChild(contenty);
         contenty.appendChild(
             Button("Edit Place", "edit-place-btn", {
                 click: () => editPlaceForm(isLoggedIn, place.placeid, contentx),
@@ -53,9 +53,9 @@ function renderPlaceDetails(isLoggedIn, content, place, isCreator) {
 
         let contentx = createElement('div', { 'id': 'editplace' }, []);
         detailsSection.appendChild(contentx);
+        // detailsSection.appendChild(detailsS);
+        content.appendChild(detailsSection);
     }
-    // detailsSection.appendChild(detailsS);
-    content.appendChild(detailsSection);
 }
 
 

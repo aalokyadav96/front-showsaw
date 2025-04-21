@@ -1,9 +1,11 @@
 // import { Button } from "../../components/base/Button.js";
-import { API_URL } from "../../api/api.js";
+import { Imagex } from "../../components/base/Imagex.js";
+import { API_URL, SRC_URL } from "../../api/api.js";
 import { createElement } from "../../components/createElement.js";
 import { displayReviews } from "../reviews/displayReviews.js";
 import { displayEventFAQs } from "./eventFAQHelper.js";
 // import { displaySeatingMap } from "./seatingMap.js";
+// import { loadMap } from "../map/mapUI.js";
 import EventTimeline from "../../components/ui/EventTimeline.mjs";
 
 
@@ -11,24 +13,11 @@ async function displayEventReviews(reviewsContainer, eventId, isCreator, isLogge
     displayReviews(reviewsContainer, isCreator, isLoggedIn, "event", eventId);
 }
 
-async function displayEventVenue(venueList, eventid, isLoggedIn) {
+async function displayEventVenue(venueList, isLoggedIn, eventID) {
     // displaySeatingMap(venueList, place, eventid, isLoggedIn);
-
-    // const venueList = document.getElementById("venue-details");
-    venueList.innerHTML = ''; // Clear existing content
-
-    const listItem = createElement('div');
-    listItem.className = "event-card";
-    // listItem.innerHTML = `<p>Place: ${place}</p><br>`;
-
-    // const itemimg = createElement('img');
-    // itemimg.src = `${SRC_URL}/eventpic/${eventid}seating.jpg`;
-    // const itemplace = createElement('p');
-    // itemplace.innerHTML = `<p>Place: ${place}</p><br>`;
-
-    // listItem.append(itemimg);
-
-    venueList.appendChild(listItem);
+    // loadMap(venueList, isLoggedIn, { type: "event", id: eventID });
+    // venueList.appendChild(createElement('img',{src:`${SRC_URL}/eventpic/seating/${eventID}seating.jpg`},[]));
+    venueList.appendChild(Imagex(`${SRC_URL}/eventpic/seating/${eventID}seating.jpg`));
 }
 
 async function displayEventFAQ(faqContainer, isCreator, eventId, faqs) {
@@ -36,14 +25,16 @@ async function displayEventFAQ(faqContainer, isCreator, eventId, faqs) {
 }
 
 async function displayLostAndFound(lnfContainer, isCreator, eventId, lnfs) {
-    lnfContainer.innerHTML="Did anyone lost anything?";
+    lnfContainer.appendChild(createElement('h2', "", ["LostAndFound"]));
+    lnfContainer.appendChild(createElement('p', "", ["Did anyone lost anything?"]));
 }
 
 async function displayContactDetails(container, isCreator, contacts) {
-    container.innerHTML="Does anybody need anything?";
+    container.appendChild(createElement('h2', "", ["ContactDetails"]));
+    container.appendChild(createElement('p', "", ["Does anybody need anything?"]));
 }
 
-async function displayEventSchedule(faqContainer, isCreator, eventId, faqs) {
+async function displayEventSchedule(schContainer, isCreator, eventId, faqs) {
     const events = [
         { time: '09:00 AM', description: 'Doors Open & Registration' },
         { time: '10:00 AM', description: 'Opening Ceremony' },
@@ -56,7 +47,8 @@ async function displayEventSchedule(faqContainer, isCreator, eventId, faqs) {
         { time: '05:00 PM', description: 'After-Party & Networking' }
     ];
 
-    faqContainer.appendChild(EventTimeline(events));
+    schContainer.appendChild(createElement('h2', "", ["Schedule"]));
+    schContainer.appendChild(EventTimeline(events));
 }
 
 
@@ -70,11 +62,12 @@ async function displayEventLiveStream(divcontainer, eventId, isLoggedIn) {
         return;
     }
 
+    divcontainer.appendChild(createElement('h2', "", ["Livestream"]));
     // Fetch available angles
     const response = await fetch(`${API_URL}/livestream/${eventId}`);
 
     if (response.status === 404) {
-        divcontainer.innerHTML = "<p>No livestream available.</p>";
+        divcontainer.appendChild(createElement("p", "", ["No livestream available."]));
         return;
     }
 

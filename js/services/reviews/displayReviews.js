@@ -1,12 +1,13 @@
 import { Button } from "../../components/base/Button.js";
 import { createElement } from "../../components/createElement.js";
 import { apiFetch } from "../../api/api.js";
-import { handleAddReview, handleEditReview, handleDeleteReview} from "./createReview.js";
+import { handleAddReview, handleEditReview, handleDeleteReview } from "./createReview.js";
 
 // Create a review item component
 function ReviewItem(isCreator, { reviewerName, rating, comment, onEdit, onDelete }) {
     let actions;
-    if (!isCreator) {
+    let authorOfReview = `"${reviewerName}"` == localStorage.getItem("user");
+    if (!isCreator && !!authorOfReview) {
         actions = createElement("div", { class: "review-actions" }, [
             Button("Edit", "edit-review-btn", { click: onEdit }),
             Button("Delete", "delete-review-btn", { click: onDelete }),
@@ -27,6 +28,7 @@ function ReviewItem(isCreator, { reviewerName, rating, comment, onEdit, onDelete
 // Display reviews for the given entity
 async function displayReviews(reviewsContainer, isCreator, isLoggedIn, entityType, entityId) {
     reviewsContainer.innerHTML = ""; // Clear existing reviews
+    reviewsContainer.appendChild(createElement('h2', "", ["Reviews"]));
     const newcon = document.createElement('div');
 
     if (!isCreator && isLoggedIn) {

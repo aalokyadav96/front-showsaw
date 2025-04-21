@@ -3,7 +3,8 @@ import { Button } from "../../components/base/Button.js";
 import { createElement } from "../../components/createElement.js";
 import { deleteTicket, editTicket } from "./editTicket.js";
 import { showBuyTicketModal } from "./showBuy.js";
-import { displayEventVenue } from "../event/eventTabs.js";
+// import { showBuyTicketModal } from "./showBuyModal.js";
+import { verifyTicketAndShowModal } from "./verifyTicket.js";
 import { createButton } from "../../components/eventHelper.js";
 import { addTicketForm } from './ticketService.js';
 
@@ -38,6 +39,8 @@ async function displayTickets(ticketLixt, ticketData, eventId, isCreator, isLogg
 
     ticketLixt.innerHTML = ""; // Clear existing content
 
+    ticketLixt.appendChild(createElement('h2',"",["Tickets"]));
+    
     // if (ticketData && !isCreator) {
     //     ticketLixt.appendChild(createButton({
     //         text: "Verify Your Ticket", classes: ["button"], events: {
@@ -51,7 +54,8 @@ async function displayTickets(ticketLixt, ticketData, eventId, isCreator, isLogg
         ticketLixt.appendChild(createButton({
             text: "Verify Your Ticket", classes: ["button"], events: {
                 click: () => {
-                    alert("Ticket verification logic here!");
+                    // alert("Ticket verification logic here!");
+                    verifyTicketAndShowModal();
                 }
             }
         }));
@@ -111,6 +115,8 @@ async function displayTickets(ticketLixt, ticketData, eventId, isCreator, isLogg
             ticketData.forEach((ticket) => {
                 const card = TicketCard({
                     isl: isLoggedIn,
+                    seatstart: ticket.seatstart,
+                    seatend: ticket.seatend,
                     creator: isCreator,
                     name: ticket.name,
                     price: `${ticket.currency} ${ticket.price}`,
@@ -143,7 +149,6 @@ async function displayTickets(ticketLixt, ticketData, eventId, isCreator, isLogg
             ticketList.appendChild(createElement("p", {}, ["No tickets available for this event."]));
 
             let seatcon = createElement("p", {}, []);
-            displayEventVenue(seatcon, eventId, isLoggedIn);
 
             ticketList.appendChild(seatcon);
         }
