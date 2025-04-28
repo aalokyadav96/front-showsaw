@@ -40,7 +40,7 @@ const Modal = ({ title, content, onClose }) => {
   modal.appendChild(dialog);
 
   // Prevent background scroll
-  document.body.style.overflow = 'hidden';
+  // document.body.style.overflow = 'hidden';
 
   // Focus trap support
   const focusableSelectors = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';

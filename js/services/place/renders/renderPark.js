@@ -1,47 +1,33 @@
 function renderPark(data, container, isCreator) {
   const section = document.createElement("section");
-  section.classList.add("park");
-
-  const media = (data.gallery || []).map(url => `<img class="park-img" src="/media/${url}" />`).join("");
-  const tags = (data.tags || []).map(tag => `<span class="tag">${tag}</span>`).join(" ");
+  section.classList.add("default-place");
 
   section.innerHTML = `
-    <h2>🏞️ Welcome to ${data.name}</h2>
+    <div class="default-header">
+      <h2>${data.name || "Unnamed Place"}</h2>
+    </div>
 
-    ${isCreator ? `
-      <div class="creator-tools">
-        <button>Edit Park Info</button>
-        <button>Upload Gallery</button>
-        <button>Add Park Event</button>
+    <div class="default-overview">
+      <p><strong>Description:</strong> ${data.description || "No description available."}</p>
+      <p><strong>Category:</strong> ${data.category || "N/A"}</p>
+      <p><strong>Address:</strong> ${data.address || "Unknown"}</p>
+    </div>
+
+    ${data.tags?.length ? `
+      <div class="default-tags">
+        ${data.tags.map(tag => `<span class="tag">${tag}</span>`).join(" ")}
       </div>` : ""
     }
 
-    <p><strong>Description:</strong> ${data.description || "No description provided."}</p>
-    <p><strong>Location:</strong> ${data.address || "Unknown"}</p>
-    <p><strong>Tags:</strong> ${tags || "None"}</p>
-    <p><strong>Accessibility:</strong> ${data.accessibility_info || "Not specified"}</p>
-
-    ${media ? `
-      <div class="park-gallery">
-        <h3>📸 Gallery</h3>
-        ${media}
-      </div>` : ""
-    }
-
-    ${(data.tickets && data.tickets.length > 0) ? `
-      <div class="park-events">
-        <h3>🌳 Park Events</h3>
-        ${data.tickets.map(e => `
-          <div class="event">
-            <h4>${e.title}</h4>
-            <p>${new Date(e.date).toLocaleString()}</p>
-            <button>Join Event</button>
-          </div>
-        `).join("")}
-      </div>` : "<p>No upcoming events.</p>"
+    ${data.custom_fields ? `
+      <div class="custom-fields">
+        <h3>Custom Information</h3>
+        ${Object.entries(data.custom_fields).map(([key, value]) => `<p><strong>${key}:</strong> ${value}</p>`).join("")}
+      </div>` : "<p>No additional details provided.</p>"
     }
   `;
 
   container.appendChild(section);
 }
+
 export { renderPark };

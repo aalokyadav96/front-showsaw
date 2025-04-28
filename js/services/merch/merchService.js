@@ -8,7 +8,7 @@ import { handlePurchase } from '../payment/paymentService.js';
 import SnackBar from "../../components/ui/Snackbar.mjs";
 
 // Add merchandise to the event
-async function addMerchandise(eventId, merchList) {
+async function addMerchandise(entityType, eventId, merchList) {
     const merchName = document.getElementById('merch-name').value.trim();
     const merchPrice = parseFloat(document.getElementById('merch-price').value);
     const merchStock = parseInt(document.getElementById('merch-stock').value);
@@ -40,7 +40,7 @@ async function addMerchandise(eventId, merchList) {
     }
 
     try {
-        const response = await apiFetch(`/merch/event/${eventId}`, 'POST', formData);
+        const response = await apiFetch(`/merch/${entityType}/${eventId}`, 'POST', formData);
 
         if (response && response.data.merchid) {
             SnackBar("Merchandise added successfully!");
@@ -56,13 +56,14 @@ async function addMerchandise(eventId, merchList) {
 
 // Clear the merchandise form
 function clearMerchForm() {
-    document.getElementById('editevent').innerHTML = '';
+    // document.getElementById('editevent').innerHTML = '';
+    document.getElementById('edittabs').innerHTML = '';
 }
 
-async function deleteMerch(merchId, eventId) {
+async function deleteMerch(entityType, merchId, eventId) {
     if (confirm('Are you sure you want to delete this merchandise?')) {
         try {
-            const response = await apiFetch(`/merch/event/${eventId}/${merchId}`, 'DELETE');
+            const response = await apiFetch(`/merch/${entityType}/${eventId}/${merchId}`, 'DELETE');
 
             if (response.success) {
                 alert('Merchandise deleted successfully!');
@@ -80,11 +81,12 @@ async function deleteMerch(merchId, eventId) {
     }
 }
 
-async function editMerchForm(merchId, eventId) {
+async function editMerchForm(entityType, merchId, eventId) {
     try {
-        const response = await apiFetch(`/merch/event/${eventId}/${merchId}`, 'GET');
+        const response = await apiFetch(`/merch/${entityType}/${eventId}/${merchId}`, 'GET');
 
-        const editDiv = document.getElementById('editevent');
+        // const editDiv = document.getElementById('editevent');
+        const editDiv = document.getElementById('edittabs');
         editDiv.textContent = ""; // Clear existing content
 
         const heading = document.createElement("h3");
@@ -162,7 +164,7 @@ async function editMerchForm(merchId, eventId) {
 
             try {
                 // Send a PUT request with JSON data
-                const updateResponse = await apiFetch(`/merch/event/${eventId}/${merchId}`, 'PUT', JSON.stringify(merchData), { 'Content-Type': 'application/json' });
+                const updateResponse = await apiFetch(`/merch/${entityType}/${eventId}/${merchId}`, 'PUT', JSON.stringify(merchData), { 'Content-Type': 'application/json' });
 
                 if (updateResponse.success) {
                     alert('Merchandise updated successfully!');
@@ -180,8 +182,9 @@ async function editMerchForm(merchId, eventId) {
     }
 }
 
-function addMerchForm(eventId, merchList) {
-    const editEventDiv = document.getElementById('editevent');
+function addMerchForm(entityType, eventId, merchList) {
+    // const editEventDiv = document.getElementById('editevent');
+    const editEventDiv = document.getElementById('edittabs');
     editEventDiv.textContent = ""; // Clear existing content
 
     const heading = document.createElement("h3");
@@ -213,7 +216,7 @@ function addMerchForm(eventId, merchList) {
     const addButton = document.createElement("button");
     addButton.id = "add-merch-btn";
     addButton.textContent = "Add Merchandise";
-    addButton.addEventListener("click", () => addMerchandise(eventId, merchList));
+    addButton.addEventListener("click", () => addMerchandise(entityType, eventId, merchList));
 
     const cancelButton = document.createElement("button");
     cancelButton.id = "cancel-merch-btn";
@@ -253,14 +256,14 @@ function displayNewMerchandise(merchData, merchList) {
 }
 
 // Update the usage of MerchCard in displayMerchandise
-async function displayMerchandise(merchcon, merchData, eventId, isCreator, isLoggedIn) {
-    merchcon.appendChild(createElement('h2',"",["Merchandise"]));
+async function displayMerchandise(merchcon, merchData, entityType, eventId, isCreator, isLoggedIn) {
+    merchcon.appendChild(createElement('h2', "", ["Merchandise"]));
     var merchList = document.createElement('div');
     merchList.className = "merchcon hvflex";
 
     if (isCreator) {
         const button = Button("Add Merchandise", "add-merch", {
-            click: () => addMerchForm(eventId, merchList),
+            click: () => addMerchForm(entityType, eventId, merchList),
             mouseenter: () => console.log("Button hovered"),
         });
 
@@ -288,9 +291,9 @@ async function displayMerchandise(merchcon, merchData, eventId, isCreator, isLog
             stock: merch.stock,
             isCreator,
             isLoggedIn,
-            onBuy: () => buyMerch(merch.merchid, eventId),
-            onEdit: () => editMerchForm(merch.merchid, eventId),
-            onDelete: () => deleteMerch(merch.merchid, eventId),
+            onBuy: () => buyMerch(entityType, merch.merchid, eventId),
+            onEdit: () => editMerchForm(entityType, merch.merchid, eventId),
+            onDelete: () => deleteMerch(entityType, merch.merchid, eventId),
         });
 
         merchList.appendChild(card);
@@ -298,8 +301,8 @@ async function displayMerchandise(merchcon, merchData, eventId, isCreator, isLog
 }
 
 // Wrappers for buying merch and tickets
-function buyMerch(merchId, eventId, maxStock = 6) {
-    handlePurchase("merch", merchId, eventId, maxStock);
+function buyMerch(entityType, merchId, eventId, maxStock = 6) {
+    handlePurchase(entityType, "merch", merchId, eventId, maxStock);
 }
 
 export { addMerchForm, addMerchandise, displayNewMerchandise, clearMerchForm, displayMerchandise, deleteMerch, editMerchForm };

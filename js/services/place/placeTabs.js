@@ -82,7 +82,7 @@ function displayPlaceInfo(container, placeData, isCreator) {
 
         // Create the info display
         const infoDisplay = createElement("div", { class: "place-info" }, [
-            createElement("h2", {}, [placeData.name || "Unknown Place"]),
+            // createElement("h2", {}, [placeData.name || "Unknown Place"]),
             createElement("p", {}, [createElement("strong", {}, ["Description: "]),createElement("span", {}, [`${info.description}`])]),
             createElement("p", {}, [createElement("strong", {}, ["Category: "]),createElement("span", {}, [`${info.category}`])]),
             createElement("p", {}, [createElement("strong", {}, ["Capacity: "]),createElement("span", {}, [`${info.capacity}`])]),

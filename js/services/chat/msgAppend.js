@@ -33,7 +33,7 @@ export function appendMessage(msg) {
         const extn = Array.isArray(msg.filetype) ? msg.filetype[0] : msg.filetype;
         const post = { type: isFileType(extn) };
 
-        const media = msg.filename.map(filename => `${CHAT_URL}/uploads/${filename}.${msg.filetype}`);
+        const media = msg.filename.map(filename => `${CHAT_URL}/static/chatpic/${filename}.${msg.filetype}`);
         const mediaContent = createChatContent(post, media);
         msgDiv.appendChild(mediaContent);
     }

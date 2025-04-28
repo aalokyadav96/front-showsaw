@@ -1,50 +1,33 @@
 function renderBusiness(data, container, isCreator) {
   const section = document.createElement("section");
-  section.classList.add("business");
-
-  const tags = (data.tags || []).map(tag => `<span class="tag">${tag}</span>`).join(" ");
-  const socialLinks = (data.social_links || []).map(link => `
-    <a href="${link.url}" target="_blank">${link.platform}</a>
-  `).join(" ");
+  section.classList.add("default-place");
 
   section.innerHTML = `
-    <h2>🏢 ${data.name}</h2>
+    <div class="default-header">
+      <h2>${data.name || "Unnamed Place"}</h2>
+    </div>
 
-    ${isCreator ? `
-      <!--div class="creator-tools">
-        <button>Manage Promotions</button>
-        <button>Edit Business Info</button>
-        <button>Upload Offers</button>
-      </div-->` : ""
-    }
+    <div class="default-overview">
+      <p><strong>Description:</strong> ${data.description || "No description available."}</p>
+      <p><strong>Category:</strong> ${data.category || "N/A"}</p>
+      <p><strong>Address:</strong> ${data.address || "Unknown"}</p>
+    </div>
 
-    <p><strong>Description:</strong> ${data.description || "No description available."}</p>
-    <p><strong>Address:</strong> ${data.address || "N/A"}</p>
-    <p><strong>Tags:</strong> ${tags || "None"}</p>
-    <p><strong>Website:</strong> ${data.website_url ? `<a href="${data.website_url}" target="_blank">Visit</a>` : "N/A"}</p>
-
-    ${data.custom_fields ? `
-      <div class="business-custom">
-        ${Object.entries(data.custom_fields).map(([key, value]) => `<p><strong>${key}:</strong> ${value}</p>`).join("")}
+    ${data.tags?.length ? `
+      <div class="default-tags">
+        ${data.tags.map(tag => `<span class="tag">${tag}</span>`).join(" ")}
       </div>` : ""
     }
 
-    ${data.promotions?.length ? `
-      <div class="business-promos">
-        <h3>🎉 Current Promotions</h3>
-        ${data.promotions.map(promo => `
-          <div class="promo-card">
-            <h4>${promo.title}</h4>
-            <p>${promo.description}</p>
-            <p><strong>Valid till:</strong> ${new Date(promo.expires_at).toLocaleDateString()}</p>
-          </div>
-        `).join("")}
-      </div>` : "<p>No active promotions.</p>"
+    ${data.custom_fields ? `
+      <div class="custom-fields">
+        <h3>Custom Information</h3>
+        ${Object.entries(data.custom_fields).map(([key, value]) => `<p><strong>${key}:</strong> ${value}</p>`).join("")}
+      </div>` : "<p>No additional details provided.</p>"
     }
-
-    ${socialLinks ? `<div class="social-links"><h3>🔗 Follow Us</h3>${socialLinks}</div>` : ""}
   `;
 
   container.appendChild(section);
 }
+
 export { renderBusiness };

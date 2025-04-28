@@ -60,15 +60,15 @@ export async function displayArtists(container, isLoggedIn) {
             });
             artistCard.appendChild(viewDetailsBtn);
 
-            // Add an edit button if the user is logged in
-            if (isLoggedIn) {
-                const editBtn = document.createElement("button");
-                editBtn.textContent = "Edit Artist";
-                editBtn.addEventListener("click", () => {
-                    navigate(`/artist/edit/${artist.id}`); // Navigate to edit page
-                });
-                artistCard.appendChild(editBtn);
-            }
+            // // Add an edit button if the user is logged in
+            // if (isLoggedIn) {
+            //     const editBtn = document.createElement("button");
+            //     editBtn.textContent = "Edit Artist";
+            //     editBtn.addEventListener("click", () => {
+            //         navigate(`/artist/edit/${artist.id}`); // Navigate to edit page
+            //     });
+            //     artistCard.appendChild(editBtn);
+            // }
 
             artistsGrid.appendChild(artistCard);
         });

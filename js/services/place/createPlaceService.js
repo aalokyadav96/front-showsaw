@@ -80,6 +80,8 @@ async function createPlaceForm(isLoggedIn, createSection) {
                     { value: "Hotel", label: "Hotel" },
                     { value: "Park", label: "Park" },
                     { value: "Museum", label: "Museum" },
+                    { value: "Business", label: "Business" },
+                    { value: "Shop", label: "Shop" },
                     { value: "Gym", label: "Gym" },
                     { value: "Theater", label: "Theater" },
                     { value: "Arena", label: "Arena" },

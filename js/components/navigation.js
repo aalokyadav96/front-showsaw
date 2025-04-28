@@ -67,7 +67,7 @@ const createProfileDropdown = (user) => {
     toggle.tabIndex = 0;
 
     // Use user's profile picture if available; otherwise, use default "thumb.jpg"
-    const profilePic = user 
+    const profilePic = user
         ? `${SRC_URL}/userpic/thumb/${user}.jpg`
         : `${SRC_URL}/userpic/thumb/thumb.jpg`;
 
@@ -111,14 +111,15 @@ const createProfileDropdown = (user) => {
 const createNav = () => {
     const isLoggedIn = Boolean(state.token);
     const navItems = [
+        { href: "/feed", label: "Feed" },
         { href: "/events", label: "Events" },
         { href: "/places", label: "Places" },
-        { href: "/itinerary", label: "Itinerary" },
-        { href: "/chat", label: "Chat" },
-        // { href: "/map", label: "Map" },
         { href: "/artists", label: "Artists" },
+        { href: "/bookings", label: "Bookings" },
+        { href: "/itinerary", label: "Itinerary" },
+        { href: "/chat", label: "Forums" },
+        // { href: "/map", label: "Map" },
         // { href: "/cartoons", label: "Cartoons" },
-        { href: "/feed", label: "Feed" },
         { href: "/search", label: "Search" },
     ];
 
@@ -151,6 +152,8 @@ const createNav = () => {
     };
     profileOrLogin(header);
 
+    /*************************** */
+
     // Create Navigation Menu (as a sibling to header)
     const nav = document.createElement("nav");
     // nav.className = "nav-menu hflex";
@@ -181,16 +184,22 @@ const createNav = () => {
     const ipt = document.createElement("input");
     ipt.className = "toggle";
     ipt.type = "checkbox";
-    ipt.id="more";
-    ipt.setAttribute("aria-hidden","true"); 
-    ipt.setAttribute("tabindex","-1");
+    ipt.id = "more";
+    ipt.setAttribute("aria-hidden", "true");
+    ipt.setAttribute("tabindex", "-1");
 
+
+    // const nin = document.createElement("div");
+    // nin.className = "hflex";
+    // nin.style.borderLeft = "1px solid #ccc";
+    // nin.innerHTML = `<div class="navigation__toggle">
+    //     <label class="navigation__link" for="more" aria-hidden="true">More</label>
+    // </div>`;
 
     const nin = document.createElement("div");
-    nin.className = "navigation__inner";
-   nin.innerHTML = `<div class="navigation__toggle">
-        <label class="navigation__link" for="more" aria-hidden="true">More</label>
-    </div>`;
+    nin.className = "navigation__toggle";
+    nin.style.borderLeft = "1px solid #ccc";
+    nin.innerHTML = `<label class="navigation__link" for="more" aria-hidden="true">More</label>`;
 
 
     ul.appendChild(fragment);
@@ -202,6 +211,8 @@ const createNav = () => {
     // Wrap header and nav in a container so that they are siblings
     const container = document.createElement("div");
     container.className = "navigation-container";
+
+    /*********************** */
 
     container.appendChild(header);
     container.appendChild(nav);

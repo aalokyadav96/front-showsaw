@@ -1,5 +1,5 @@
 import { SRC_URL } from "../../state/state.js";
-import VideoPlayer from '../../components/ui/VideoPlayer.mjs';
+import VideoPlayer from '../../../components/ui/VideoPlayer.mjs';
 
 async function RenderVideoPost(mediaContainer, media, media_url="", resolution) {
     console.log(media_url);

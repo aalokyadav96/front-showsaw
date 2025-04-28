@@ -14,32 +14,6 @@
     gap: 5px;
 }
 
-/* Tabs Container */
-
-/* .tab-buttons {
-    display: flex;
-    border-bottom: 1px solid #ddd;
-}
-.tab-button {
-    flex: 1;
-    padding: 6px;
-    background: #eee;
-    cursor: pointer;
-    text-align: center;
-    border: none;
-    transition: background 0.3s;
-} */
-
-/* .tab-contents {
-    padding: 15px;
-} */
-.tab-content {
-    display: none;
-}
-.tab-content.active {
-    display: block;
-}
-
 /* Card Styles */
 .card {
     background: #fff;

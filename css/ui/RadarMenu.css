@@ -43,7 +43,7 @@
   box-shadow: 2px 2px 10px rgba(220, 220, 220, 0.2);
   transition: transform 0.2s;
   position: fixed;
-  bottom: 0;
+  bottom: 10px;
   /* left: 0; */
   /* left: calc(50vw - 60px); */
   left: 50%;

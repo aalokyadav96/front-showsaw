@@ -78,7 +78,6 @@ async function login(event) {
             } else {
                 navigate(redirectUrl);
             }
-            renderPage();
             Snackbar("Login successful!", 2000);
         } else {
             Snackbar(res.message || "Invalid credentials.", 3000);

@@ -108,7 +108,7 @@ async function displayTickets(ticketLixt, ticketData, eventId, isCreator, isLogg
                 mouseenter: () => console.log("Button hovered"),
             });
 
-            ticketLixt.prepend(button);
+            ticketLixt.appendChild(button);
         }
 
         if (ticketData.length > 0) {

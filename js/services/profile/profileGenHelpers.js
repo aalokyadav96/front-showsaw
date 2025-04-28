@@ -187,8 +187,8 @@ function createProfileInfo(profile) {
 
     const infoItems = [
         { label: "Last Login", value: formatDate(profile.last_login) || "Never logged in" },
-        { label: "Account Status", value: profile.is_active ? "Active" : "Inactive" },
-        { label: "Verification Status", value: profile.is_verified ? "Verified" : "Not Verified" },
+        { label: "Status", value: profile.online ? "Active" : "Inactive" },
+        // { label: "Verification Status", value: profile.is_verified ? "Verified" : "Not Verified" },
     ];
 
     infoItems.forEach(({ label, value }) => {

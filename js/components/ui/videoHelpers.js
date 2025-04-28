@@ -34,7 +34,9 @@ export const createVideoElement = (src, resolutions) => {
     if (!stored) return fallback;
  
     const cleaned = stored.replace("p", "");
-    const selected = cleaned === "original" ? `${baseSrc}.mp4` : `${baseSrc}-${cleaned}p.mp4`;
+    console.log("cleaned",cleaned);
+    const selected = cleaned === "Original" ? `${baseSrc}.mp4` : `${baseSrc}-${cleaned}p.mp4`;
+    console.log("selected",selected);
     return selected;
   };
   

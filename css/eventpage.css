@@ -89,3 +89,41 @@
     background-color: #056a4e;
   }
    */
+
+
+   /*************/
+   /* --- Event Type Colors --- */
+.color-concert {
+  background: linear-gradient(135deg, #7f00ff, #e100ff); /* purple neon */
+}
+.color-workshop {
+  background: linear-gradient(135deg, #00c853, #b2ff59); /* green fresh */
+}
+.color-sports {
+  background: linear-gradient(135deg, #2196f3, #21cbf3); /* blue sporty */
+}
+.color-meetup {
+  background: linear-gradient(135deg, #ff6f00, #ff8f00); /* warm orange */
+}
+.color-festival {
+  background: linear-gradient(135deg, #ff5f6d, #ffc371); /* rainbow-ish */
+}
+.color-default {
+  background: linear-gradient(135deg, #e0e0e0, #eeeeee); /* neutral */
+}
+
+/* --- Optional: Make buttons rounded and colorful --- */
+.action-btn {
+  border-radius: 30px;
+  padding: 10px 20px;
+  font-weight: bold;
+  transition: background 0.3s, transform 0.2s;
+}
+.action-btn:hover {
+  transform: scale(1.05);
+}
+
+.analytics-btn {
+  background-color: #00b0ff;
+  color: white;
+}

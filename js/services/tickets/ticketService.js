@@ -48,7 +48,8 @@ async function addTicket(eventId, ticketList) {
 }
 
 function addTicketForm(eventId, ticketList) {
-    const editEventDiv = document.getElementById('editevent');
+    // const editEventDiv = document.getElementById('editevent');
+    const editEventDiv = document.getElementById('edittabs');
 
     const heading = document.createElement('h3');
     heading.textContent = 'Add Ticket';

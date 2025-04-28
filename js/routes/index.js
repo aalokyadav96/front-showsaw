@@ -1,10 +1,10 @@
 import { createNav, attachNavEventListeners } from "../components/navigation.js";
 import { renderPageContent } from "./render.js";
 import { state } from "../state/state.js";
+import { profileSVG, searchSVG, settingsSVG, placesSVG, coffeeSVG, calendarSVG, locaSVG, evaSVG, chatSVG, filterSVG, plusCircleSVG, liveStreamSVG } from "../components/svgs.js";
 import RadarMenu from "../components/ui/RadarMenu.js";
-// import { profileSVG, searchSVG, liveStreamSVG, chatSVG, heartSVG, moonSVG, settingsSVG, downloadSVG, playSVG, PauseSVG, playCropSVG, headphonesSVG, imageSVG, filterSVG } from "../components/svgs.js";
-import { profileSVG, searchSVG, settingsSVG, placesSVG, coffeeSVG, calendarSVG, locaSVG, evaSVG, chatSVG, filterSVG } from "../components/svgs.js";
-// import { createProfileDropdown } from "../components/navigation.js";
+import { createElement } from "../components/createElement.js";
+
 
 async function loadContent(url) {
     const app = document.getElementById("app");
@@ -20,13 +20,22 @@ async function loadContent(url) {
     app.appendChild(createNav());
     app.appendChild(main);
 
-    const menuItems = [];
+
+    const menuItems = [
+        { text: "Events", action: () => navigate("/events"), svg: calendarSVG },
+        { text: "Places", action: () => navigate("/places"), svg: placesSVG },
+        { text: "Search", action: () => navigate("/search"), svg: searchSVG },
+    ];
 
     if (isLoggedIn) {
         menuItems.push(
+            { text: "Feed", action: () => navigate("/feed"), svg: coffeeSVG },
+            { text: "Chat", action: () => navigate("/chat"), svg: chatSVG },
+            { text: "Settings", action: () => navigate("/settings"), svg: settingsSVG },
+            { text: "Profile", action: () => navigate("/profile"), svg: profileSVG },
             { text: "Eva", action: () => navigate("/create-event"), svg: evaSVG },
             { text: "Loca", action: () => navigate("/create-place"), svg: locaSVG },
-            { text: "Artist", action: () => navigate("/create-artist"), svg: filterSVG },
+            { text: "Artist", action: () => navigate("/create-artist"), svg: liveStreamSVG },
         );
     } else {
         menuItems.push(
@@ -34,13 +43,16 @@ async function loadContent(url) {
         );
     }
 
+
     const radarMenuElement = RadarMenu(menuItems, {
         buttonText: "+",
         menuSize: 320,
         radius: 120,
-        baseAngle: 0,
-        startAngle: 0
+        baseAngle: 60,
+        startAngle: 180
     });
+
+    // xul.appendChild(createElement('li', {rel: `vtab${count}`, class:""}));
 
     app.appendChild(radarMenuElement);
 

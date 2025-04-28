@@ -29,18 +29,22 @@ async function displayPlaces(isLoggedIn, content) {
 
 // Function to create a card for each place
 function createPlaceCard(place) {
-    return createElement('div', { class: 'place' }, [
-        createElement('a', { href: `/place/${place.placeid}` }, [
+    return createElement('div', { class: 'place-card' }, [
+        createElement('a', { href: `/place/${place.placeid}`, class: 'place-link' }, [
             createElement('img', {
+                class: "place-img",
                 src: `${SRC_URL}/placepic/thumb/${place.banner}`,
                 alt: `${place.name} Banner`,
                 loading: "lazy",
-                style: "width: 100%; aspect-ratio:3/2; object-fit: cover;"
             }),
-            createElement('h1', {}, [place.name]),
-            createElement('p', {}, [createElement('strong', {}, ["Address: "]), place.address]),
-            createElement('p', {}, [createElement('strong', {}, ["Description: "]), place.description])]),
+            createElement('div', { class: 'place-info' }, [
+                createElement('h2', { class: 'place-title' }, [place.name]),
+                createElement('p', {}, [createElement('strong', {}, ["Address: "]), place.address]),
+                createElement('p', {}, [createElement('strong', {}, ["Description: "]), place.description]),
+            ]),
+        ]),
     ]);
 }
+
 
 export { displayPlaces, createPlaceCard };

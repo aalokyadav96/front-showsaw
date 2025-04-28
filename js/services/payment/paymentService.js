@@ -5,10 +5,10 @@ import Modal from "../../components/ui/Modal.mjs";
 import { logActivity } from "../activity/activity.js";
 
 // Unified function for merchandise or ticket purchase
-async function handlePurchase(type = "merch", itemId, eventId, maxQuantity, totalQuantity) {
-    let entityType = "event";
+async function handlePurchase(entityType, type = "merch", itemId, eventId, maxQuantity, totalQuantity) {
+    // let entityType = "event";
     if (type === "merch") {
-        entityType = "event";
+        // entityType = "event";
         const modal = createQuantityModal(type, maxQuantity, async (quantity) => {
             try {
                 const paymentSession = await createPaymentSession(entityType, type, itemId, eventId, quantity);
@@ -24,7 +24,7 @@ async function handlePurchase(type = "merch", itemId, eventId, maxQuantity, tota
 
         document.body.appendChild(modal);
     } else if (type === "ticket") {
-        entityType = "event";
+        // entityType = "event";
         const modal = createQuantityModal(type, maxQuantity, async (quantity) => {
             try {
                 const paymentSession = await createPaymentSession(entityType, type, itemId, eventId, quantity);
@@ -38,7 +38,7 @@ async function handlePurchase(type = "merch", itemId, eventId, maxQuantity, tota
             modal.remove(); // Close modal after action
         });
     } else if (type === "menu") {
-        entityType = "place";
+        // entityType = "place";
         try {
             const paymentSession = await createPaymentSession(entityType, type, itemId, eventId, maxQuantity);
             if (paymentSession) {

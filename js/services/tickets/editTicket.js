@@ -23,7 +23,8 @@ async function editTicket(ticketId, eventId) {
         currencySelectHTML += `</select>`;
 
         // Show the edit form with the ticket data populated
-        const editEventDiv = document.getElementById('editevent');
+        // const editEventDiv = document.getElementById('editevent');
+        const editEventDiv = document.getElementById('edittabs');
         editEventDiv.innerHTML = `
             <br><h3>Edit Ticket</h3>
             <form id="edit-ticket-form">
@@ -118,7 +119,8 @@ async function updateTicket(ticketId, eventId) {
 
 // Clear ticket form
 function clearTicketForm() {
-    const editEventDiv = document.getElementById('editevent');
+    // const editEventDiv = document.getElementById('editevent');
+    const editEventDiv = document.getElementById('edittabs');
     editEventDiv.innerHTML = ""; // Clear the form content
 }
 

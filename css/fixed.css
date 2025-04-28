@@ -1,5 +1,6 @@
 .navbar {
   height: 2rem;
+  padding: 6px 8px;
   border-bottom: 1px solid #444;
 }
 
@@ -14,11 +15,11 @@
   font-weight: 700;
 }
 
-.nav-link {
+/* .nav-link {
   padding: 5px 10px;
   border-radius: 4px;
   transition: background-color .3s;
-}
+} */
 
 .nav-list {
   gap: 20px;
@@ -313,8 +314,8 @@
 .event-wrapper {
   max-width: 800px;
   margin: 0 auto;
-  /* background: var(--card-bg);
-  padding: 6px;
+  background: var(--card-bg);
+  /* padding: 6px;
   border-radius: 10px;
   border: 1px solid var(--card-border);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); */
@@ -369,7 +370,18 @@
 .event-actions {
   margin-top: 16px;
   display: flex;
+  padding: 0 1rem;
   gap: 12px;
+  flex-wrap: wrap;
+}
+
+.evtype {
+  padding: 1rem;
+  background: white;
+}
+
+.eventedit {
+  padding: 1rem;
 }
 
 .action-btn {
@@ -394,18 +406,17 @@
 
 /* Tabs */
 .tabs-container {
-  padding: 4px;
   max-width: 800px;
   margin: 24px auto;
   /* border: 1px solid #eeeeee; */
-  box-shadow: 1px 1px 6px #d0cfcf;
+  /* box-shadow: 1px 1px 6px #d0cfcf; */
 }
 
 .tab-buttons {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  border-bottom: 2px solid var(--card-border);
+  /* border-bottom: 2px solid var(--card-border); */
   padding-bottom: 8px;
 }
 
@@ -434,7 +445,8 @@
 .tab-content {
   display: none;
   padding: 8px;
-  /* background: var(--card-bg); */
+  background: var(--card-bg);
+  min-height: 250px;
   border-radius: 0 0 10px 10px;
 }
 
@@ -601,7 +613,7 @@
 }
 
 /* 🗑️ Delete Button */
-.delete-btn {
+/* .delete-btn {
   background: transparent;
   border: 1px solid var(--border-color);
   color: var(--text-color);
@@ -612,7 +624,7 @@
 
 .delete-btn:hover {
   background: var(--hover-bg);
-}
+} */
 
 /* 📱 Responsive Design */
 @media (max-width: 768px) {
@@ -667,11 +679,11 @@ h2 {
   margin-top: 15px;
 }
 
-label {
+/* label {
   font-weight: bold;
   font-size: 0.9rem;
   margin-bottom: 5px;
-}
+} */
 
 input,
 select,
@@ -774,7 +786,7 @@ input[type="file"] {
 /* Profile Page Layout */
 .profilepage {
   max-width: 800px;
-  margin: 20px auto;
+  margin: 0 auto;
   padding: 10px;
   background: var(--input-bg);
   /* border: 1px solid var(--border-color); */
@@ -804,7 +816,7 @@ input[type="file"] {
 /* Profile Banner */
 .bg_img {
   width: 100%;
-  aspect-ratio: 4 / 1;
+  aspect-ratio: 25 / 7;
   display: block;
   background-size: cover;
   background-position: center;
@@ -1094,6 +1106,7 @@ input[type="file"] {
   padding: 1rem;
   border-radius: 1rem;
   flex: 2;
+  width: 100%;
 }
 
 .postsContainer {
@@ -1101,6 +1114,11 @@ input[type="file"] {
   flex-direction: column;
   align-items: center;
   gap: 3rem;
+}
+
+.videocon {
+  display: flex;
+  justify-content: center;
 }
 
 .placedetails, .default-place {
@@ -1126,7 +1144,6 @@ input[type="file"] {
   border-radius: 5px;
   fill: none;
   stroke: #4f4f4f;
-  padding: 3px;
   box-shadow: none;
   display: block;
   stroke-linecap: round;
@@ -1137,10 +1154,11 @@ input[type="file"] {
 .nearby-item {
   display: flex;
   flex-direction: column;
-  max-width: 100%;
+  width: 30%;
   flex-grow: 1;
   border: 1px solid var(--card-border);
   padding: 1rem;
+  max-width: 250px;
 }
 
 .suggestions-container {
@@ -1208,7 +1226,7 @@ input[type="file"] {
   border-radius: 8px;
   padding: 1em;
   margin: 1em 0;
-  max-width: 400px;
+  max-width: 220px;
 }
 
 .artist-image {
@@ -1312,7 +1330,6 @@ input[type="color" i] {
   background-color: #fff;
   border-radius: 12px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-  font-family: 'Segoe UI', sans-serif;
 }
 
 .artist-container h2 {
@@ -1328,23 +1345,28 @@ input[type="color" i] {
 }
 
 .artist-photo {
-  width: 8rem;
-  height: 8rem;
+  max-width: 100%;
+  max-height: 14rem;
   object-fit: cover;
   border-radius: 50%;
-  /* margin-right: 1rem; */
-  border: 3px solid #ddd;
-  position: absolute;
-  bottom: 0;
+  border: 1px solid #eee;
+  aspect-ratio: 1 / 1;
+  margin: 0 auto;
 }
 
 .artist-banner {
   max-width: 100%;
-  max-height: 10rem;
+  max-height: 14rem;
   object-fit: cover;
+  border: 1px solid #eee;
   border-radius: 8px;
-  aspect-ratio: 3 / 1;
+  aspect-ratio: 5 / 2;
   margin: 0 auto;
+}
+
+.photocon {
+  margin: 0 auto;
+  justify-content: center;
 }
 
 .socials {
@@ -1440,4 +1462,125 @@ input[type="color" i] {
 
 .artist-card button:hover {
   background-color: #218838;
+}
+
+.detail-section {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.tab-contents {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Artist Section */
+.artist-container {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  margin-bottom: 30px;
+}
+
+.artist-container h2 {
+  margin-top: 0;
+  color: #222;
+}
+
+.artist-container p {
+  margin: 5px 0;
+}
+
+.socials a {
+  display: inline-block;
+  margin-top: 5px;
+  color: #1da1f2;
+  text-decoration: none;
+}
+
+button.edit-artist-btn,
+button.del-artist-btn {
+  margin-right: 10px;
+  margin-top: 10px;
+  padding: 8px 14px;
+  border: none;
+  background-color: #007BFF;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button.del-artist-btn {
+  background-color: #dc3545;
+}
+
+/* Songs Section */
+#songs li {
+  margin: 10px 0;
+  list-style: none;
+  padding: 10px;
+  background-color: #fff;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+/* Albums Section */
+.album-block {
+  background-color: #fff;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-left: 4px solid #6c63ff;
+  border-radius: 5px;
+}
+
+/* Posts Section */
+.post-block {
+  background-color: #fff;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-left: 4px solid #17a2b8;
+  border-radius: 5px;
+}
+
+/* Merch Section */
+.merch-item {
+  background-color: #fff;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-left: 4px solid #28a745;
+  border-radius: 5px;
+}
+
+.merch-item img {
+  max-width: 100%;
+  height: auto;
+  margin-top: 10px;
+}
+
+/* Events Section */
+#events li {
+  background-color: #fff;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-left: 4px solid #ffc107;
+  border-radius: 5px;
+  list-style: none;
+}
+
+#events a {
+  display: inline-block;
+  margin-top: 5px;
+  color: #007BFF;
+  text-decoration: none;
+}
+
+.media-item {
+  max-width: 250px;
+  background-color: beige;
+  padding: 6px;
+}
+
+.media-item img {
+  max-width: 250px;
 }

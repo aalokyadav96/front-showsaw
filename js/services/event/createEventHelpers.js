@@ -2,7 +2,6 @@ import { state } from "../../state/state.js";
 import { apiFetch } from "../../api/api.js";
 import { navigate } from "../../routes/index.js";
 import SnackBar from '../../components/ui/Snackbar.mjs';
-
 // Function to create form fields
 function createFormField(field) {
     const formGroup = document.createElement("div");
@@ -19,8 +18,13 @@ function createFormField(field) {
     let inputElement;
     if (field.type === "textarea") {
         inputElement = document.createElement("textarea");
-    } else if (field.type === "select") {
+    } else if (field.type === "select" || field.type === "multiselect") {
         inputElement = document.createElement("select");
+
+        if (field.type === "multiselect") {
+            inputElement.multiple = true; // ➡️ Allow multiple selection
+        }
+
         field.options.forEach(option => {
             const optionElement = document.createElement("option");
             optionElement.value = option.value;
@@ -39,6 +43,43 @@ function createFormField(field) {
     formGroup.appendChild(inputElement);
     return formGroup;
 }
+
+// // Function to create form fields
+// function createFormField(field) {
+//     const formGroup = document.createElement("div");
+//     formGroup.className = "form-group";
+
+//     // Create label if applicable
+//     if (field.label) {
+//         const label = document.createElement("label");
+//         label.setAttribute("for", field.id);
+//         label.textContent = field.label;
+//         formGroup.appendChild(label);
+//     }
+
+//     let inputElement;
+//     if (field.type === "textarea") {
+//         inputElement = document.createElement("textarea");
+//     } else if (field.type === "select") {
+//         inputElement = document.createElement("select");
+//         field.options.forEach(option => {
+//             const optionElement = document.createElement("option");
+//             optionElement.value = option.value;
+//             optionElement.textContent = option.label;
+//             inputElement.appendChild(optionElement);
+//         });
+//     } else {
+//         inputElement = document.createElement("input");
+//         inputElement.type = field.type;
+//     }
+
+//     inputElement.id = field.id;
+//     if (field.required) inputElement.required = true;
+//     if (field.accept) inputElement.accept = field.accept;
+
+//     formGroup.appendChild(inputElement);
+//     return formGroup;
+// }
 
 function debounce(func, delay) {
     let timeout;
@@ -139,42 +180,106 @@ function handleKeyboardNav(event, eventPlaceInput) {
 }
 
 
+// async function createEvent(isLoggedIn) {
+//     if (isLoggedIn && state.user) {
+//         const title = document.getElementById("event-title").value.trim();
+//         const date = document.getElementById("event-date").value;
+//         const time = document.getElementById("event-time").value;
+//         // const place = document.getElementById("event-place").value.trim();
+//         const location = document.getElementById("event-location").value.trim();
+//         const description = document.getElementById("event-description").value.trim();
+//         const category = document.getElementById("category").value;
+//         const bannerFile = document.getElementById("event-banner").files[0];
+//         const seatingPlanFile = document.getElementById("event-seating").files[0];
+//         const place = document.getElementById("event-place");
+//         const placeID = place.dataset.id || ""; // Get stored placeID
+//         const placeName = place.value; // Get place name (displayed to user)
+
+//         if (!title || !date || !time || !place || !location || !description || !category) {
+//             SnackBar("Please fill in all required fields.", 3000);
+//             return;
+//         }
+
+//         // Properly format date as an ISO string
+//         const eventDate = new Date(`${date}T${time}:00`); // Browser automatically adjusts for local time
+//         console.log("Event Date (Local Time):", eventDate.toString());
+//         console.log("Event Date (UTC Format):", eventDate.toISOString());
+
+//         const formData = new FormData();
+//         formData.append('event', JSON.stringify({
+//             title,
+//             date: eventDate.toISOString(), // Ensure proper formatting
+//             location,
+//             // place,
+//             placeID,
+//             placeName,
+//             description,
+//             category
+//         }));
+//         if (bannerFile) {
+//             formData.append('banner', bannerFile);
+//         }
+//         if (seatingPlanFile) {
+//             formData.append('event-seating', seatingPlanFile);
+//         }
+
+//         try {
+//             const result = await apiFetch('/events/event', 'POST', formData);
+
+//             // if (success) {
+//             //     logActivity("event_created", { eventId: eventData.id, category: eventData.category });
+//             // }
+//             SnackBar(`Event created successfully: ${result.title}`, 3000);
+//             navigate('/event/' + result.eventid);
+//         } catch (error) {
+//             SnackBar(`Error creating event: ${error.message}`, 3000);
+//         }
+//     } else {
+//         navigate('/login');
+//     }
+// }
+
 async function createEvent(isLoggedIn) {
     if (isLoggedIn && state.user) {
         const title = document.getElementById("event-title").value.trim();
         const date = document.getElementById("event-date").value;
         const time = document.getElementById("event-time").value;
-        // const place = document.getElementById("event-place").value.trim();
         const location = document.getElementById("event-location").value.trim();
         const description = document.getElementById("event-description").value.trim();
         const category = document.getElementById("category").value;
         const bannerFile = document.getElementById("event-banner").files[0];
         const seatingPlanFile = document.getElementById("event-seating").files[0];
         const place = document.getElementById("event-place");
-        const placeID = place.dataset.id || ""; // Get stored placeID
-        const placeName = place.value; // Get place name (displayed to user)
+        const placeID = place.dataset.id || "";
+        const placeName = place.value;
+        
+        // Get selected artists
+        const artistSelect = document.getElementById("artist-select");
+        const selectedArtists = Array.from(artistSelect.selectedOptions).map(option => option.value);
 
         if (!title || !date || !time || !place || !location || !description || !category) {
             SnackBar("Please fill in all required fields.", 3000);
             return;
         }
 
-        // Properly format date as an ISO string
-        const eventDate = new Date(`${date}T${time}:00`); // Browser automatically adjusts for local time
-        console.log("Event Date (Local Time):", eventDate.toString());
-        console.log("Event Date (UTC Format):", eventDate.toISOString());
+        const eventDate = new Date(`${date}T${time}:00`);
 
         const formData = new FormData();
         formData.append('event', JSON.stringify({
             title,
-            date: eventDate.toISOString(), // Ensure proper formatting
+            date: eventDate.toISOString(),
             location,
-            // place,
             placeID,
             placeName,
             description,
             category
         }));
+
+        // ➡️ Attach artists JSON if any selected
+        if (selectedArtists.length > 0) {
+            formData.append('artists', JSON.stringify(selectedArtists));
+        }
+
         if (bannerFile) {
             formData.append('banner', bannerFile);
         }
@@ -184,10 +289,6 @@ async function createEvent(isLoggedIn) {
 
         try {
             const result = await apiFetch('/events/event', 'POST', formData);
-
-            // if (success) {
-            //     logActivity("event_created", { eventId: eventData.id, category: eventData.category });
-            // }
             SnackBar(`Event created successfully: ${result.title}`, 3000);
             navigate('/event/' + result.eventid);
         } catch (error) {

@@ -51,6 +51,8 @@ async function displaySearchForm(container) {
     { title: "All", id: "all" },
     { title: "Events", id: "events" },
     { title: "Places", id: "places" },
+    { title: "Social", id: "social" },
+    { title: "Merch", id: "merch" },
   ];
 
   tabs.forEach((tab, index) => {

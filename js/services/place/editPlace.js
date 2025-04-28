@@ -93,6 +93,8 @@ async function editPlaceForm(isLoggedIn, placeId, content) {
                         { value: "Cafe", label: "Café" },
                         { value: "Hotel", label: "Hotel" },
                         { value: "Park", label: "Park" },
+                        { value: "Business", label: "Business" },
+                        { value: "Shop", label: "Shop" },
                         { value: "Museum", label: "Museum" },
                         { value: "Gym", label: "Gym" },
                         { value: "Theater", label: "Theater" },

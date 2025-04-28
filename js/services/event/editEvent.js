@@ -13,6 +13,7 @@ async function updateEvent(isLoggedIn, eventId) {
   }
 
   // Fetch input values
+  const category = document.getElementById("event-category").value.trim();
   const title = document.getElementById("event-title").value.trim();
   const date = document.getElementById("event-date").value; // Expected format: "YYYY-MM-DD"
   let time = document.getElementById("event-time").value;      // Expected format: "HH:MM" or "HH:MM:SS"
@@ -26,7 +27,7 @@ async function updateEvent(isLoggedIn, eventId) {
   const seatingPlanFile = document.getElementById("event-seating").files[0];
 
   // Validate required fields
-  if (!title || !date || !time || !place || !location || !description) {
+  if (!category || !title || !date || !time || !place || !location || !description) {
     SnackBar("Please fill in all required fields.", 3000);
     return;
   }
@@ -43,6 +44,7 @@ async function updateEvent(isLoggedIn, eventId) {
 
   // Construct the event payload (like in createEvent)
   const eventPayload = {
+    category,
     title,
     date: eventDate.toISOString(), // Ensure proper formatting
     location,
@@ -204,6 +206,20 @@ async function editEventForm(isLoggedIn, eventId) {
     form.classList.add("edit-event-form");
 
     const formGroups = [
+      {
+        inputType: "select", inputId: "event-category", label: "Event Type", isRequired: true,
+        options: [
+          { value: eventx.category, label: eventx.category },
+          { value: "Conference", label: "Conference" },
+          { value: "Concert", label: "Concert" },
+          { value: "Sports", label: "Sports" },
+          { value: "Festival", label: "Festival" },
+          { value: "Meetup", label: "Meetup" },
+          { value: "Workshop", label: "Workshop" },
+          { value: "Theater", label: "Theater" },
+          { value: "Other", label: "Other" }
+        ]
+      },
       { label: "Event Title", inputType: "text", inputId: "event-title", inputValue: eventx.title, placeholder: "Event Title", isRequired: true },
       { label: "Event Date", inputType: "date", inputId: "event-date", inputValue: eventDate, isRequired: true },
       { label: "Event Time", inputType: "time", inputId: "event-time", inputValue: eventTime, isRequired: true },
@@ -238,7 +254,7 @@ async function editEventForm(isLoggedIn, eventId) {
     updateButton.type = "submit";
     updateButton.classList.add("button", "update-btn");
     updateButton.textContent = "Update Event";
-    updateButton.addEventListener("click", () => {updateEvent(isLoggedIn, eventId)});
+    updateButton.addEventListener("click", () => { updateEvent(isLoggedIn, eventId) });
 
     const cancelButton = Button("Cancel", "cancel-btn", {
       click: () => (createSection.innerHTML = ""),
