@@ -327,13 +327,14 @@ function createItinerary(isLoggedIn, divContainerNode) {
 
       message.textContent = "Itinerary created successfully!";
       message.className = "message success";
-      setTimeout(() => {
-        if (window.dispatchEvent) {
-          window.dispatchEvent(new CustomEvent("navigate", { detail: "/itinerary" }));
-        } else {
-          window.location.href = "/itinerary";
-        }
-      }, 1000);
+      navigate("/itinerary");
+      // setTimeout(() => {
+      //   if (window.dispatchEvent) {
+      //     window.dispatchEvent(new CustomEvent("navigate", { detail: "/itinerary" }));
+      //   } else {
+      //     window.location.href = "/itinerary";
+      //   }
+      // }, 1000);
     } catch (err) {
       console.error(err);
       message.textContent = "Error creating itinerary.";

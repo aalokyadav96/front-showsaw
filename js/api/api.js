@@ -1,93 +1,16 @@
 import { API_URL, SRC_URL, state, setState } from "../state/state.js";
-// Replace this with your actual API base URL
+// // Replace this with your actual API base URL
 
-// let state = {
-//     token: "",           // Set on login
-//     refreshToken: "",    // Set on login
-// };
-
-async function apiFetch(endpoint, method = "GET", body = null, options = {}) {
-    const controller = options.controller || new AbortController();
-    const signal = controller.signal;
-    const fullUrl = `${API_URL}${endpoint}`;
-
-    return apixFetch(fullUrl, method, body, { ...options, signal });
-}
-
-async function apixFetch(endpoint, method = "GET", body = null, options = {}) {
-    const fetchOptions = {
-        method,
-        headers: {
-            "Authorization": state.token ? `Bearer ${state.token}` : "",
-        },
-        signal: options.signal,
-    };
-
-    if (body) {
-        if (body instanceof FormData) {
-            fetchOptions.body = body;
-        } else {
-            fetchOptions.headers["Content-Type"] = "application/json";
-            fetchOptions.body = JSON.stringify(body);
-        }
-    }
-
-    try {
-        const response = await fetch(endpoint, fetchOptions);
-
-        if (response.status === 429) {
-            console.warn("Too many requests");
-            return;
-        }
-
-        if (response.status === 401 && state.refreshToken) {
-            console.warn("Token expired, attempting to refresh...");
-            const refreshed = await refreshToken();
-            if (refreshed) {
-                return apixFetch(endpoint, method, body, options); // use apixFetch to avoid infinite loop
-            } else {
-                throw new Error("Session expired. Please log in again.");
-            }
-        }
-
-        if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(errorText || `HTTP ${response.status}`);
-        }
-
-        switch (options.responseType) {
-            case "blob": return response;
-            case "arrayBuffer": return await response.arrayBuffer();
-            case "text": return await response.text();
-            case "stream": return response.body;
-            default:
-                const text = await response.text();
-                return text ? JSON.parse(text) : null;
-        }
-
-    } catch (error) {
-        if (error.name === "AbortError") {
-            console.warn("Fetch aborted:", endpoint);
-            return;
-        }
-        console.error(`Error fetching ${endpoint}:`, error);
-        throw error;
-    }
-}
-
-// Dummy refresh function (replace with actual logic)
-async function refreshToken() {
-    // Perform refresh token request
-    console.log("Refreshing token...");
-    return false; // Simulate failed refresh
-}
-
+// // let state = {
+// //     token: "",           // Set on login
+// //     refreshToken: "",    // Set on login
+// // };
 
 // async function apiFetch(endpoint, method = "GET", body = null, options = {}) {
 //     const controller = options.controller || new AbortController();
 //     const signal = controller.signal;
-
 //     const fullUrl = `${API_URL}${endpoint}`;
+
 //     return apixFetch(fullUrl, method, body, { ...options, signal });
 // }
 
@@ -103,12 +26,9 @@ async function refreshToken() {
 //     if (body) {
 //         if (body instanceof FormData) {
 //             fetchOptions.body = body;
-//         } else if (typeof body === "object") {
-//             fetchOptions.headers["Content-Type"] = "application/json";
-//             fetchOptions.body = JSON.stringify(body);
 //         } else {
 //             fetchOptions.headers["Content-Type"] = "application/json";
-//             fetchOptions.body = body;
+//             fetchOptions.body = JSON.stringify(body);
 //         }
 //     }
 
@@ -124,7 +44,7 @@ async function refreshToken() {
 //             console.warn("Token expired, attempting to refresh...");
 //             const refreshed = await refreshToken();
 //             if (refreshed) {
-//                 return apiFetch(endpoint, method, body, options);
+//                 return apixFetch(endpoint, method, body, options); // use apixFetch to avoid infinite loop
 //             } else {
 //                 throw new Error("Session expired. Please log in again.");
 //             }
@@ -135,18 +55,12 @@ async function refreshToken() {
 //             throw new Error(errorText || `HTTP ${response.status}`);
 //         }
 
-//         // Handle supported response types
 //         switch (options.responseType) {
-//             case 'blob':
-//                 return response; // caller handles .blob()
-//             case 'arrayBuffer':
-//                 return await response.arrayBuffer();
-//             case 'text':
-//                 return await response.text();
-//             case 'stream':
-//                 return response.body; // caller must handle ReadableStream
+//             case "blob": return response;
+//             case "arrayBuffer": return await response.arrayBuffer();
+//             case "text": return await response.text();
+//             case "stream": return response.body;
 //             default:
-//                 // default to JSON
 //                 const text = await response.text();
 //                 return text ? JSON.parse(text) : null;
 //         }
@@ -156,11 +70,97 @@ async function refreshToken() {
 //             console.warn("Fetch aborted:", endpoint);
 //             return;
 //         }
-
 //         console.error(`Error fetching ${endpoint}:`, error);
 //         throw error;
 //     }
 // }
+
+// // Dummy refresh function (replace with actual logic)
+// async function refreshToken() {
+//     // Perform refresh token request
+//     console.log("Refreshing token...");
+//     return false; // Simulate failed refresh
+// }
+
+
+// // async function apiFetch(endpoint, method = "GET", body = null, options = {}) {
+// //     const controller = options.controller || new AbortController();
+// //     const signal = controller.signal;
+
+// //     const fullUrl = `${API_URL}${endpoint}`;
+// //     return apixFetch(fullUrl, method, body, { ...options, signal });
+// // }
+
+// // async function apixFetch(endpoint, method = "GET", body = null, options = {}) {
+// //     const fetchOptions = {
+// //         method,
+// //         headers: {
+// //             "Authorization": state.token ? `Bearer ${state.token}` : "",
+// //         },
+// //         signal: options.signal,
+// //     };
+
+// //     if (body) {
+// //         if (body instanceof FormData) {
+// //             fetchOptions.body = body;
+// //         } else if (typeof body === "object") {
+// //             fetchOptions.headers["Content-Type"] = "application/json";
+// //             fetchOptions.body = JSON.stringify(body);
+// //         } else {
+// //             fetchOptions.headers["Content-Type"] = "application/json";
+// //             fetchOptions.body = body;
+// //         }
+// //     }
+
+// //     try {
+// //         const response = await fetch(endpoint, fetchOptions);
+
+// //         if (response.status === 429) {
+// //             console.warn("Too many requests");
+// //             return;
+// //         }
+
+// //         if (response.status === 401 && state.refreshToken) {
+// //             console.warn("Token expired, attempting to refresh...");
+// //             const refreshed = await refreshToken();
+// //             if (refreshed) {
+// //                 return apiFetch(endpoint, method, body, options);
+// //             } else {
+// //                 throw new Error("Session expired. Please log in again.");
+// //             }
+// //         }
+
+// //         if (!response.ok) {
+// //             const errorText = await response.text();
+// //             throw new Error(errorText || `HTTP ${response.status}`);
+// //         }
+
+// //         // Handle supported response types
+// //         switch (options.responseType) {
+// //             case 'blob':
+// //                 return response; // caller handles .blob()
+// //             case 'arrayBuffer':
+// //                 return await response.arrayBuffer();
+// //             case 'text':
+// //                 return await response.text();
+// //             case 'stream':
+// //                 return response.body; // caller must handle ReadableStream
+// //             default:
+// //                 // default to JSON
+// //                 const text = await response.text();
+// //                 return text ? JSON.parse(text) : null;
+// //         }
+
+// //     } catch (error) {
+// //         if (error.name === "AbortError") {
+// //             console.warn("Fetch aborted:", endpoint);
+// //             return;
+// //         }
+
+// //         console.error(`Error fetching ${endpoint}:`, error);
+// //         throw error;
+// //     }
+// // }
 
 
 /**********Usage Examples***********/
@@ -180,85 +180,85 @@ async function refreshToken() {
 
 // import { API_URL, state } from "../state/state.js";
 
-// async function apiFetch(endpoint, method = "GET", body = null, options = {}) {
-//     const controller = options.controller || new AbortController();
-//     const signal = controller.signal;
+async function apiFetch(endpoint, method = "GET", body = null, options = {}) {
+    const controller = options.controller || new AbortController();
+    const signal = controller.signal;
 
-//     const fullUrl = `${API_URL}${endpoint}`;
-//     return apixFetch(fullUrl, method, body, { ...options, signal });
-// }
+    const fullUrl = `${API_URL}${endpoint}`;
+    return apixFetch(fullUrl, method, body, { ...options, signal });
+}
 
-// async function apixFetch(endpoint, method = "GET", body = null, options = {}) {
-//     const fetchOptions = {
-//         method,
-//         headers: {
-//             "Authorization": state.token ? `Bearer ${state.token}` : "",
-//         },
-//         signal: options.signal,
-//     };
+async function apixFetch(endpoint, method = "GET", body = null, options = {}) {
+    const fetchOptions = {
+        method,
+        headers: {
+            "Authorization": state.token ? `Bearer ${state.token}` : "",
+        },
+        signal: options.signal,
+    };
 
-//     // Handle request body
-//     if (body) {
-//         if (body instanceof FormData) {
-//             fetchOptions.body = body;
-//         } else if (typeof body === "object") {
-//             fetchOptions.headers["Content-Type"] = "application/json";
-//             fetchOptions.body = JSON.stringify(body);
-//         } else {
-//             fetchOptions.headers["Content-Type"] = "application/json";
-//             fetchOptions.body = body;
-//         }
-//     }
+    // Handle request body
+    if (body) {
+        if (body instanceof FormData) {
+            fetchOptions.body = body;
+        } else if (typeof body === "object") {
+            fetchOptions.headers["Content-Type"] = "application/json";
+            fetchOptions.body = JSON.stringify(body);
+        } else {
+            fetchOptions.headers["Content-Type"] = "application/json";
+            fetchOptions.body = body;
+        }
+    }
 
-//     try {
-//         const response = await fetch(endpoint, fetchOptions);
+    try {
+        const response = await fetch(endpoint, fetchOptions);
 
-//         // Handle rate limit
-//         if (response.status === 429) {
-//             console.warn("Too many requests");
-//             return;
-//         }
+        // Handle rate limit
+        if (response.status === 429) {
+            console.warn("Too many requests");
+            return;
+        }
 
-//         // Handle token refresh
-//         if (response.status === 401 && state.refreshToken) {
-//             console.warn("Token expired, attempting to refresh...");
-//             const refreshed = await refreshToken();
-//             if (refreshed) {
-//                 return apiFetch(endpoint, method, body, options);
-//             } else {
-//                 throw new Error("Session expired. Please log in again.");
-//             }
-//         }
+        // Handle token refresh
+        if (response.status === 401 && state.refreshToken) {
+            console.warn("Token expired, attempting to refresh...");
+            const refreshed = await refreshToken();
+            if (refreshed) {
+                return apiFetch(endpoint, method, body, options);
+            } else {
+                throw new Error("Session expired. Please log in again.");
+            }
+        }
 
-//         // Throw if response is not OK
-//         if (!response.ok) {
-//             const errorText = await response.text();
-//             throw new Error(errorText || `HTTP ${response.status}`);
-//         }
+        // Throw if response is not OK
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(errorText || `HTTP ${response.status}`);
+        }
 
-//         // --- Response type handling ---
-//         if (options.responseType === 'blob') {
-//             return response; // Caller must handle response.blob()
-//         }
+        // --- Response type handling ---
+        if (options.responseType === 'blob') {
+            return response; // Caller must handle response.blob()
+        }
 
-//         if (options.responseType === 'arrayBuffer') {
-//             return await response.arrayBuffer();
-//         }
+        if (options.responseType === 'arrayBuffer') {
+            return await response.arrayBuffer();
+        }
 
-//         // Default: assume JSON/text
-//         const text = await response.text();
-//         return text ? JSON.parse(text) : null;
+        // Default: assume JSON/text
+        const text = await response.text();
+        return text ? JSON.parse(text) : null;
 
-//     } catch (error) {
-//         if (error.name === "AbortError") {
-//             console.warn("Fetch aborted:", endpoint);
-//             return;
-//         }
+    } catch (error) {
+        if (error.name === "AbortError") {
+            console.warn("Fetch aborted:", endpoint);
+            return;
+        }
 
-//         console.error(`Error fetching ${endpoint}:`, error);
-//         throw error;
-//     }
-// }
+        console.error(`Error fetching ${endpoint}:`, error);
+        throw error;
+    }
+}
 
 // export { apiFetch };
 
