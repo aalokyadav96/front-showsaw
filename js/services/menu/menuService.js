@@ -259,7 +259,7 @@ async function displayMenu(menuList, placeId, isCreator, isLoggedIn) {
     const menuData = await apiFetch(`/places/menu/${placeId}`);
 
     if (isCreator) {
-        const button = Button("Add Menux", "add-menu-btn", {
+        const button = Button("Add Menu", "add-menu-btn", {
             click: () => addMenuForm(placeId, menuList),
             mouseenter: () => console.log("Button hovered"),
         });

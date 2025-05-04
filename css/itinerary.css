@@ -1,141 +1,120 @@
-/* Container for the right pane */
-.itinerary-right {
+/* Base styles */
+  .itinerary-layout {
+    display: flex;
+    gap: 20px;
     padding: 20px;
-    background-color: #fafafa;
-    border-left: 1px solid #ccc;
-    overflow-y: auto;
+    flex-wrap: wrap;
   }
   
-  /* Day block */
+  .itinerary-left,
+  .itinerary-right {
+    background: var(--card-bg);
+    padding: 15px;
+    border-radius: 8px;
+    flex: 1 1 300px;
+  }
+  
+  /* Form styles */
+  #searchForm {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+  
+  #searchForm input {
+    padding: 8px;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  #searchForm button {
+    padding: 10px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  /* Create button */
+  .itinerary-create-btn {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    margin-bottom: 20px;
+    cursor: pointer;
+  }
+  
+  /* Itinerary list */
+  #itineraryList ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  #itineraryList li {
+    padding: 10px;
+    background: var(--card-bg);
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  
+  #itineraryList li strong {
+    flex: 1 1 100%;
+    margin-bottom: 5px;
+  }
+  
+  #itineraryList button {
+    margin: 2px 4px;
+    padding: 6px 10px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  
+  /* Right side */
+  .itinerary-right h2 {
+    margin-top: 0;
+  }
+  
   .itinerary-day {
     margin-top: 20px;
-    padding: 15px;
-    background: #fff;
+    background: var(--card-bg);
     border: 1px solid #ddd;
-    border-radius: 8px;
+    border-radius: 6px;
+    padding: 10px;
   }
   
-  /* Day heading */
-  .itinerary-day h3 {
-    margin-top: 0;
-    font-size: 1.3em;
-    color: #333;
-  }
-  
-  /* Each visit inside a day */
   .itinerary-visit {
-    margin-top: 15px;
-    padding-left: 15px;
-    border-left: 3px solid #4caf50;
+    margin-bottom: 15px;
+    padding: 8px;
+    border-left: 3px solid #007BFF;
+    background: var(--card-bg);
   }
   
-  /* Paragraphs inside visits */
-  .itinerary-visit p {
-    margin: 5px 0;
-    font-size: 0.95em;
+  /* Responsive styles */
+  @media (max-width: 768px) {
+    .itinerary-layout {
+      flex-direction: column;
+    }
+  
+    #itineraryList li {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  
+    #itineraryList button {
+      width: 100%;
+      margin-top: 5px;
+    }
+  
+    .itinerary-create-btn {
+      font-size: 14px;
+    }
+  
+    #searchForm input,
+    #searchForm button {
+      font-size: 14px;
+    }
   }
   
-  /* Transport paragraph */
-  .itinerary-visit p:nth-child(3) {
-    font-style: italic;
-    color: #555;
-  }
-  
-
-  /***********/
-  /* Container layout */
-.itinerary-layout {
-  display: flex;
-  gap: 20px;
-  margin-top: 20px;
-}
-
-/* Left pane (list, search, create) */
-.itinerary-left {
-  flex: 1;
-}
-
-/* Right pane (details) */
-.itinerary-right {
-  flex: 1;
-  border-left: 1px solid #ccc;
-  padding-left: 20px;
-}
-
-/* Search form styling */
-#searchForm {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-bottom: 15px;
-}
-
-#searchForm input {
-  padding: 8px;
-  font-size: 14px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-#searchForm button {
-  padding: 8px;
-  background-color: #0066cc;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-#searchForm button:hover {
-  background-color: #004d99;
-}
-
-/* Create button */
-.itinerary-create-btn {
-  padding: 10px;
-  background-color: #28a745;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  margin-bottom: 15px;
-  cursor: pointer;
-}
-
-.itinerary-create-btn:hover {
-  background-color: #218838;
-}
-
-/* Itinerary list */
-#itineraryList ul {
-  list-style: none;
-  padding: 0;
-}
-
-#itineraryList li {
-  margin-bottom: 15px;
-  background-color: #f9f9f9;
-  padding: 12px;
-  border-radius: 6px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-}
-
-/* Action buttons */
-#itineraryList button {
-  margin-left: 5px;
-  padding: 6px 10px;
-  font-size: 13px;
-  border: none;
-  border-radius: 3px;
-  cursor: pointer;
-  background-color: #007bff;
-  color: white;
-}
-
-#itineraryList button:hover {
-  background-color: #0056b3;
-}
-
-/* Detail pane */
-.itinerary-right h2 {
-  margin-top: 0;
-}

@@ -9,7 +9,7 @@ const TicketCard = ({ isl, seatstart, seatend, creator, name, price, quantity, c
   // card.style.borderColor = (color == "#ffffff") ? '#c4c4c4' : color ;
 
   card.style.borderColor = color;
-  card.style.boxShadow = "inset 3px 3px 3px #f3f3f3, 3px 3px 3px #f3f3f3";
+  // card.style.boxShadow = "inset 3px 3px 3px #f3f3f3, 3px 3px 3px #f3f3f3";
 
   // Add attributes dynamically
   Object.entries(attributes).forEach(([key, value]) => {

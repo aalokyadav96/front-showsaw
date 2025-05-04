@@ -103,7 +103,7 @@ async function handleAutocomplete(event) {
   }
 
   try {
-    const response = await fetch(`http://localhost:7000/ac?prefix=${encodeURIComponent(query)}`);
+    const response = await fetch(`${SEARCH_URL}/ac?prefix=${encodeURIComponent(query)}`);
     const suggestions = await response.json();
 
     autocompleteList.innerHTML = "";

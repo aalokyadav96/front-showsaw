@@ -39,7 +39,8 @@ async function editProfile(content) {
     document.getElementById("cancel-profile-btn").addEventListener("click", () => {
         Snackbar("Profile editing canceled.", 2000);
         navigate("/profile"); // Assuming a function to navigate back to the profile view
-        renderPage();
+        window.location.pathname = window.location.pathname;
+        // renderPage();
     });
 
     const deleteProfileButton = document.createElement("button");

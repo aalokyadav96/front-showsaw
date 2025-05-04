@@ -20,12 +20,12 @@ const renderers = {
 };
 
 // Main render function
-export function renderPlace(data, container, isCreator) {
+export function renderPlace(data, container, isCreator, isLgIn, placeId) {
   const category = (data.category || "").toLowerCase();
 
   // If a specific renderer exists for the place category, use it
   const renderFunction = renderers[category] || renderers.default;
 
   // Call the appropriate render function
-  renderFunction(data, container, isCreator);
+  renderFunction(data, container, isCreator, isLgIn, placeId);
 }

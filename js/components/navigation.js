@@ -2,6 +2,7 @@
 import { SRC_URL, state } from "../state/state.js";
 import { navigate } from "../routes/index.js";
 import { logout } from "../services/auth/authService.js";
+import { moreSVG } from "./svgs.js";
 
 /** Utility Functions */
 const toggleElement = (selector, className) =>
@@ -111,11 +112,12 @@ const createProfileDropdown = (user) => {
 const createNav = () => {
     const isLoggedIn = Boolean(state.token);
     const navItems = [
+        { href: "/", label: "Home" },
         { href: "/feed", label: "Feed" },
         { href: "/events", label: "Events" },
         { href: "/places", label: "Places" },
         { href: "/artists", label: "Artists" },
-        { href: "/bookings", label: "Bookings" },
+        // { href: "/bookings", label: "Bookings" },
         { href: "/itinerary", label: "Itinerary" },
         { href: "/chat", label: "Forums" },
         // { href: "/map", label: "Map" },
@@ -199,7 +201,8 @@ const createNav = () => {
     const nin = document.createElement("div");
     nin.className = "navigation__toggle";
     nin.style.borderLeft = "1px solid #ccc";
-    nin.innerHTML = `<label class="navigation__link" for="more" aria-hidden="true">More</label>`;
+    // nin.innerHTML = `<label class="navigation__link" for="more" aria-hidden="true">${downloadSVG}</label>`;
+    nin.innerHTML = `<label class="morecon" for="more" aria-hidden="true">${moreSVG}</label>`;
 
 
     ul.appendChild(fragment);

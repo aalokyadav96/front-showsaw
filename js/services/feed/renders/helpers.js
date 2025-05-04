@@ -3,6 +3,8 @@ import Snackbar from "../../../components/ui/Snackbar.mjs";
 import { apiFetch } from "../../../api/api.js";
 import { fetchFeed } from "../fetchFeed.js";
 
+import { createCommentsSection } from "../../comments/comments.js";
+
 export function createPostHeader(post) {
     return `
         <div class="post-header hflex">
@@ -29,6 +31,14 @@ export function createActions(post, isLoggedIn, isCreator) {
         const commentButton = document.createElement("span");
         commentButton.className = "comment";
         commentButton.textContent = "Comment";
+        commentButton.addEventListener("click", () => {
+            if (!post._commentSectionVisible) {
+                const commentsEl = createCommentsSection(post.postid, post.comments || []);
+                actionsContainer.parentElement.appendChild(commentsEl);
+                post._commentSectionVisible = true;
+            }
+        });
+        
 
         actionsContainer.appendChild(likeButton);
         actionsContainer.appendChild(commentButton);

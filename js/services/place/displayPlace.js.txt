@@ -1,0 +1,144 @@
+import { state } from "../../state/state.js";
+import { SRC_URL, apiFetch } from "../../api/api.js";
+import { createElement } from "../../components/createElement.js";
+import { renderPlaceDetails } from "./renderPlaceDetails.js";
+import { displayMedia } from "../media/mediaService.js";
+import BookingForm from "../../components/ui/BookingForm.mjs";
+// import BookingManagerUI from "../../components/ui/BookingManagerUI.mjs";
+import Snackbar from "../../components/ui/Snackbar.mjs";
+import RenderMenu from "../../components/ui/MenuRender.mjs";
+import { displayReviews } from "../reviews/displayReviews.js";
+import { createTabs } from "../../components/ui/createTabs.js";
+import { displayPlaceNearby, displayPlaceInfo } from "./placeTabs.js";
+// import { BookingAPI, SlotAPI } from "../booking/slots.js";
+
+// Importing the renderPlace function from the grouped render file
+import { renderPlace } from "./renders/renderPlace.js";
+
+export default async function displayPlace(isLoggedIn, placeId, contentContainer) {
+  try {
+    const placeData = await apiFetch(`/places/place/${placeId}`);
+    const isCreator = isLoggedIn && state.user === placeData.createdBy;
+
+    // Clear container
+    contentContainer.innerHTML = "";
+
+    // Banner
+    const banner = createElement("div", { id: "place-banner" }, [
+      createElement("img", {
+        src: placeData.banner
+          ? `${SRC_URL}/placepic/${placeData.banner}`
+          : "default-banner.jpg",
+        alt: placeData.name,
+        loading: "lazy",
+      }),
+    ]);
+    contentContainer.appendChild(banner);
+
+    // Details container
+    const details = createElement("div", { class: "detail-section hvflex" });
+    contentContainer.appendChild(details);
+
+    // If creator, show editable details
+    if (isCreator) {
+      const editableDetails = createElement("div", { class: "detail-section hvflex" });
+      renderPlaceDetails(isLoggedIn, editableDetails, placeData, isCreator);
+      contentContainer.appendChild(editableDetails);
+    }
+
+    // Render category-specific info using the updated renderPlace function
+    renderPlace(placeData, details, isCreator, isLoggedIn, placeId);
+
+    // If logged in & not creator → booking form
+    if (isLoggedIn && !isCreator) {
+      const bookingForm = BookingForm(() => Snackbar("Booking Confirmed!", 3000));
+      details.appendChild(bookingForm);
+    }
+
+    // // If creator → booking slot manager form
+    // if (isCreator) {
+    //   const bookingManager = BookingManagerUI(() => Snackbar("Booking Confirmed!", 3000));
+    //   details.appendChild(bookingManager);
+    // }
+    /************** */
+    // if (isCreator) {
+    //   const bookingManager = BookingManagerUI(SlotAPI, BookingAPI.getByDate);
+    //   details.appendChild(bookingManager);
+    // }
+    /*********** */
+
+    // // --- In-memory store for demonstration ---
+    // const slotStore = {};         // { "2025-05-01": [{ time: "18:00", capacity: 4 }] }
+    // const bookingStore = {};      // { "2025-05-01": [{ time: "18:00", name: "Alice", seats: 2 }] }
+
+    // // --- Slot actions ---
+    // const onSlotActions = {
+    //   add: (date, time, capacity) => {
+    //     if (!slotStore[date]) slotStore[date] = [];
+    //     const exists = slotStore[date].some(s => s.time === time);
+    //     if (exists) return false;
+
+    //     slotStore[date].push({ time, capacity });
+    //     return true;
+    //   },
+    //   delete: (date, time) => {
+    //     if (!slotStore[date]) return;
+    //     slotStore[date] = slotStore[date].filter(s => s.time !== time);
+    //   },
+    //   get: (date) => {
+    //     return slotStore[date] || [];
+    //   }
+    // };
+
+    // // --- Fetch bookings ---
+    // const fetchBookingsByDate = (date) => {
+    //   return bookingStore[date] || [];
+    // };
+
+    // // --- Render BookingManagerUI ---
+    // if (isCreator) {
+    //   const bookingManager = BookingManagerUI(onSlotActions, fetchBookingsByDate);
+    //   details.appendChild(bookingManager);
+    // }
+
+
+    /************* */
+    // Tabs: Menu, Gallery, Reviews, Nearby, Info
+    const tabs = [
+      {
+        title: "Info",
+        id: "info-tab",
+        render: (c) => displayPlaceInfo(c, placeData, isCreator),
+      },
+      {
+        title: "Menu",
+        id: "menu-tab",
+        render: (c) => RenderMenu(c, isCreator, placeId, isLoggedIn),
+      },
+      {
+        title: "Nearby",
+        id: "nearby-tab",
+        render: (c) => displayPlaceNearby(c, placeId),
+      },
+      {
+        title: "Gallery",
+        id: "gallery-tab",
+        render: (c) => displayMedia(c, "place", placeId, isLoggedIn),
+      },
+      {
+        title: "Reviews",
+        id: "reviews-tab",
+        render: (c) => displayReviews(c, isCreator, isLoggedIn, "place", placeId),
+      },
+    ];
+    const tabContainer = createTabs(tabs);
+    contentContainer.appendChild(tabContainer);
+  } catch (error) {
+    contentContainer.innerHTML = "";
+    console.error(error);
+    contentContainer.appendChild(
+      createElement("h1", {}, [`Error loading place details: ${error.message}`])
+    );
+    Snackbar("Failed to load place details. Please try again later.", 3000);
+  }
+}

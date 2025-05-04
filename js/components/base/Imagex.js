@@ -1,4 +1,5 @@
 import "../../../css/ui/Image.css";
+import { SRC_URL } from "../../state/state";
 
 // Image component with enhanced functionality
 const Imagex = (
@@ -36,7 +37,7 @@ const Imagex = (
 
   // Add fallback for broken image links
   image.onerror = () => {
-    image.src = "../../../assets/images/fallback.png"; // Replace with your fallback image path
+    image.src = `/images/fallback.png`; // Replace with your fallback image path
     image.alt = "Fallback image"; // Ensure fallback accessibility
   };
 

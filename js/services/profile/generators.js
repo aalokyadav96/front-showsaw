@@ -64,7 +64,7 @@ async function updatePicture(type) {
         localStorage.setItem("userProfile", JSON.stringify(state.userProfile));
 
         Snackbar(`${capitalize(type)} picture updated successfully.`, 3000);
-        renderPage();
+        window.location.pathname = window.location.pathname;
     } catch (error) {
         console.error(`Error updating ${type} picture:`, error);
         handleError(`Error updating ${type} picture. Please try again.`);

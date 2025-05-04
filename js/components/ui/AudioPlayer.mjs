@@ -17,6 +17,7 @@ function AudioPlayer(audioSrc) {
   const audio = document.createElement("audio");
   audio.src = audioSrc.src;
   audio.controls = false;
+  audio.preload = "metadata";
 
   // === CONTROLS CONTAINER ===
   const controlsContainer = document.createElement("div");
@@ -109,27 +110,27 @@ function AudioPlayer(audioSrc) {
       : "🌙 Dark Mode";
   };
 
-  // === MINI / FULL-PLAYER TOGGLE ===
-  const miniToggle = document.createElement("button");
-  // since we're *in* mini-mode by default, offer the "expand" action
-  miniToggle.textContent = "🔼 Full View";
-  miniToggle.className = "mini-toggle";
-  miniToggle.onclick = () => {
-    const isMini = player.classList.toggle("mini-mode");
-    miniToggle.textContent = isMini ? "🔼 Full View" : "🔽 Mini Player";
-  };
+  // // === MINI / FULL-PLAYER TOGGLE ===
+  // const miniToggle = document.createElement("button");
+  // // since we're *in* mini-mode by default, offer the "expand" action
+  // miniToggle.textContent = "🔼 Full View";
+  // miniToggle.className = "mini-toggle";
+  // miniToggle.onclick = () => {
+  //   const isMini = player.classList.toggle("mini-mode");
+  //   miniToggle.textContent = isMini ? "🔼 Full View" : "🔽 Mini Player";
+  // };
 
-  const toggleControls = document.createElement("div");
-  toggleControls.className = "toggle-controls";
-  toggleControls.appendChild(themeToggle);
-  toggleControls.appendChild(miniToggle);
+  // const toggleControls = document.createElement("div");
+  // toggleControls.className = "toggle-controls";
+  // toggleControls.appendChild(themeToggle);
+  // toggleControls.appendChild(miniToggle);
 
   // === APPEND ALL ===
   player.appendChild(img);
   player.appendChild(audio);
   player.appendChild(controlsContainer);
   player.appendChild(lyricsContainer);
-  player.appendChild(toggleControls);
+  // player.appendChild(toggleControls);
 
   return player;
 }

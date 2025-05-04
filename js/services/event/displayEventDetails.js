@@ -10,7 +10,7 @@ import {
 import { createElement } from "../../components/createElement.js";
 import { editEventForm } from "./editEvent.js";
 import { deleteEvent, viewEventAnalytics } from "./eventService.js";
-import {renderEventByType} from "./renders/renderEvents.js";
+import { renderEventByType } from "./renders/renderEvents.js";
 
 // --- Config for Display Fields ---
 const fieldConfig = [
@@ -79,13 +79,15 @@ const createActionButtons = (actions) => {
 
 async function displayEventDetails(content, eventData, isCreator, isLoggedIn) {
     content.innerHTML = '';
+    // content.setAttribute("class", getEventColorClass(eventData.category));
 
     // Main Wrapper
     // const eventWrapper = createContainer(['event-wrapper']);
     // const eventCard = createContainer(['event-card', 'hvflex']);
-    const eventWrapper = createContainer(['event-wrapper', getEventColorClass(eventData.category)]); // ✨ Added auto-color class
+    // const eventWrapper = createContainer(['event-wrapper', getEventColorClass(eventData.category)]); // ✨ Added auto-color class
+    const eventWrapper = createContainer(['event-wrapper']); // ✨ Added auto-color class
     const eventCard = createContainer(['event-card', 'hvflex']);
-    
+
     // Banner
     const bannerSection = createContainer(['banner-section']);
     const bannerImage = createImage({

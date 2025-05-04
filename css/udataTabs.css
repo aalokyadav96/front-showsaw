@@ -116,9 +116,9 @@
     .subcontent-tab-buttons {
       flex-direction: column;
     }
-  
-    .main-tab-button,
-    .tab-button {
+
+    /* .tab-button, */
+    .main-tab-button {
       text-align: left;
     }
   }

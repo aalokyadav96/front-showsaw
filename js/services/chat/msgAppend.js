@@ -1,8 +1,7 @@
-import { CHAT_URL } from './chatAPI.js';
 import { createElement } from "./helpers.js";
 import { handleEditMessage, handleDeleteMessage } from "./messages.js";
 import { createChatContent } from "./mediaRender.js";
-import { state } from '../../state/state.js';
+import { state, SRC_URL } from '../../state/state.js';
 
 export function appendMessage(msg) {
     let isCreator = false;
@@ -33,7 +32,7 @@ export function appendMessage(msg) {
         const extn = Array.isArray(msg.filetype) ? msg.filetype[0] : msg.filetype;
         const post = { type: isFileType(extn) };
 
-        const media = msg.filename.map(filename => `${CHAT_URL}/static/chatpic/${filename}.${msg.filetype}`);
+        const media = msg.filename.map(filename => `${SRC_URL}/chatpic/${filename}.${msg.filetype}`);
         const mediaContent = createChatContent(post, media);
         msgDiv.appendChild(mediaContent);
     }
@@ -70,6 +69,7 @@ function isFileType(extn) {
     const map = {
         "mp4": "video",
         "mp3": "audio",
+        "m4a": "audio",
         "webm": "video",
         "png": "image",
         "jpg": "image",

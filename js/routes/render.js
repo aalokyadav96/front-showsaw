@@ -11,6 +11,11 @@ async function renderPageContent(isLoggedIn, path, contentContainer) {
     // Route Handlers (Static Routes)
     const routeHandlers = {
         "/": async () => {
+            const { Entry } = await import("../pages/entry/entry.js");
+            contentContainer.innerHTML = ""; // Clear previous page content
+            Entry(isLoggedIn, contentContainer);
+        },
+        "/home": async () => {
             const { Home } = await import("../pages/home.js");
             contentContainer.innerHTML = ""; // Clear previous page content
             Home(isLoggedIn, contentContainer);
@@ -128,6 +133,19 @@ async function renderPageContent(isLoggedIn, path, contentContainer) {
                 }
             },
         },
+        {
+            pattern: /^\/event\/([\w-]+)\/tickets$/,
+            handler: async (matches) => {
+                const { EventTickets } = await import("../pages/events/eventTicketsPage.js");
+                try {
+                    contentContainer.innerHTML = "";
+                    EventTickets(isLoggedIn, matches[1], contentContainer);
+                } catch {
+                    contentContainer.innerHTML = `<h1>Tickets Not Found</h1>`;
+                }
+            },
+        },
+        
         {
             pattern: /^\/artist\/([\w-]+)$/,
             handler: async (matches) => {

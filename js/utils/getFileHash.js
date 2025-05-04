@@ -88,7 +88,7 @@ export async function CheckFile(file) {
         console.log("File Hash:", fileHash);
 
         // Check with the server if the file already exists
-        const response = await apiFetch("/check-file", "POST", JSON.stringify({ hash: fileHash }));
+        const response = await apiFetch(`/check-file/${fileHash}`);
 
         // data = await response.json();
         data = response;

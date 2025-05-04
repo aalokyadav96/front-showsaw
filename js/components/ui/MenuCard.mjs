@@ -25,10 +25,12 @@ const MenuCard = ({ name, price, image, stock, onBuy, onEdit, onDelete, isCreato
         const editButton = document.createElement('button');
         editButton.textContent = 'Edit';
         editButton.addEventListener('click', onEdit);
+        editButton.className = "buttonx";
 
         const deleteButton = document.createElement('button');
         deleteButton.textContent = 'Delete';
         deleteButton.addEventListener('click', onDelete);
+        deleteButton.className = "buttonx";
 
         actions.appendChild(editButton);
         actions.appendChild(deleteButton);

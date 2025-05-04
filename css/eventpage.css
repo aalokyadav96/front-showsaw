@@ -1,7 +1,11 @@
+#events {
+  padding: 0.6rem;
+}
+
 .event-section {
     padding: 1rem;
     border-top: 1px solid #ddd;
-    background: #fff;
+    background-color: var(--card-bg);
     border-radius: 8px;
     margin-bottom: 2rem;
   }
@@ -13,6 +17,10 @@
     font-weight: 600;
   }
   
+  .buttonx {
+    margin-right: 4px;
+  }
+
   /* .hvflex {
     display: flex;
     flex-wrap: wrap;
@@ -21,7 +29,7 @@
     justify-content: flex-start;
   }
    */
-  .ticket-card {
+  /* .ticket-card {
     flex: 1 1 250px;
     max-width: 320px;
     background: #fafafa;
@@ -33,8 +41,8 @@
     flex-direction: column;
     align-items: flex-start;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
-  
+  } 
+   
   .ticket-card:hover {
     transform: translateY(-3px);
     box-shadow: 0 5px 15px rgba(2, 61, 100, 0.15);
@@ -71,7 +79,7 @@
   
   .ticket-card button:hover {
     background-color: #03558d;
-  }
+  } */
 /*   
   .button {
     margin-bottom: 1rem;

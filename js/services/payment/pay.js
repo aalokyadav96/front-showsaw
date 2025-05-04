@@ -4,6 +4,7 @@
 import { apiFetch } from "../../api/api.js";
 import { Button } from "../../components/base/Button.js";
 import Modal from "../../components/ui/Modal.mjs";
+import { navigate } from "../../routes/index.js";
 import { logActivity } from "../activity/activity.js";
 
 // --- Configuration for Entity Types ---

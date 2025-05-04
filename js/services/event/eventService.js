@@ -1,144 +1,3 @@
-// // --- Imports ---
-// import { state } from "../../state/state.js";
-// import { apiFetch } from "../../api/api.js";
-// import { navigate } from "../../routes/index.js";
-// import SnackBar from "../../components/ui/Snackbar.mjs";
-// import { createElement } from "../../components/createElement.js";
-// import { createTabs } from "../../components/ui/createTabs.js";
-
-// import { displayEventDetails } from "./displayEventDetails.js";
-// import { displayEventVenue, displayEventFAQ, displayEventReviews, displayLostAndFound, displayContactDetails } from "./eventTabs.js";
-// import { updateEvent, editEventForm } from "./editEvent.js";
-// import { displayTickets } from "../tickets/ticketService.js";
-// import { displayMerchandise } from "../merch/merchService.js";
-// import { displayMedia } from "../media/mediaService.js";
-
-// // --- Utility Functions ---
-
-// const confirmAction = (message) => new Promise((resolve) => resolve(confirm(message)));
-
-// const notify = (message, duration = 3000) => SnackBar(message, duration);
-
-// const withLoading = (container, asyncFn) => async (...args) => {
-//     container.innerHTML = '';
-//     try {
-//         await asyncFn(...args);
-//     } catch (error) {
-//         container.innerHTML = '';
-//         container.appendChild(
-//             createElement('h1', { textContent: `Error: ${error.message}` })
-//         );
-//         notify('Something went wrong. Please try again.', 3000);
-//     }
-// };
-
-// const getEventStatus = (date) => new Date(date) <= new Date() ? "ongoing" : "active";
-
-// const createSection = (parent, cls = "event-section") => {
-//     const section = createElement("section", { class: cls });
-//     parent.appendChild(section);
-//     return section;
-// };
-
-// const buildTabs = (status, { eventData, eventId, isCreator, isLoggedIn }) => {
-//     const tabs = {
-//         active: [
-//             { title: "Tickets", id: "tickets-tab", render: (c) => displayTickets(c, eventData.tickets, eventId, isCreator, isLoggedIn) },
-//             { title: "Merchandise", id: "merch-tab", render: (c) => displayMerchandise(c, eventData.merch, "event", eventId, isCreator, isLoggedIn) },
-//             { title: "FAQ", id: "faq-tab", render: (c) => displayEventFAQ(c, isCreator, eventId, eventData.faqs) }
-//         ],
-//         ongoing: [
-//             { title: "Reviews", id: "reviews-tab", render: (c) => displayEventReviews(c, eventId, isCreator, isLoggedIn) },
-//             { title: "Media", id: "media-tab", render: (c) => displayMedia(c, "event", eventId, isLoggedIn) },
-//             { title: "Lost & Found", id: "lnf-tab", render: (c) => displayLostAndFound(c, eventData.lostandfound) },
-//             { title: "Contact", id: "contact-tab", render: (c) => displayContactDetails(c, eventData.contactInfo) }
-//         ]
-//     };
-//     return tabs[status] || [];
-// };
-
-// // --- Core Functions ---
-
-// // Delete Event
-// const deleteEvent = async (isLoggedIn, eventId) => {
-//     if (!isLoggedIn) return notify("Please log in to delete your event.");
-//     if (await confirmAction("Are you sure you want to delete this event?")) {
-//         try {
-//             await apiFetch(`/events/event/${eventId}`, "DELETE");
-//             notify("Event deleted successfully.");
-//             navigate("/events");
-//         } catch (error) {
-//             notify(`Error deleting event: ${error.message}`);
-//         }
-//     }
-// };
-
-// // View Analytics
-// const viewEventAnalytics = async (isLoggedIn) => {
-//     if (!isLoggedIn) return notify("Please log in to view analytics.");
-//     await confirmAction("Do you want to view event analytics?");
-// };
-
-// // Fetch Event Data
-// const fetchEventData = async (eventId) => {
-//     const event = await apiFetch(`/events/event/${eventId}`);
-//     if (!event || !Array.isArray(event.tickets)) {
-//         throw new Error("Invalid event data received.");
-//     }
-//     return event;
-// };
-
-// // Display Event
-// const displayEvent = withLoading(document.body, async (isLoggedIn, eventId, container) => {
-//     const eventData = await fetchEventData(eventId);
-//     const isCreator = isLoggedIn && state.user === eventData.creatorid;
-//     const status = getEventStatus(eventData.date);
-
-//     container.innerHTML = '';
-//     await displayEventDetails(container, eventData, isCreator, isLoggedIn);
-
-//     const tabs = buildTabs(status, { eventData, eventId, isCreator, isLoggedIn });
-//     container.appendChild(createTabs(tabs));
-
-//     if (eventData.seatingplan) {
-//         const venue = createElement('div', { id: 'event-venue', class: 'tabs-container' });
-//         await displayEventVenue(venue, isLoggedIn, eventData.eventid);
-//         container.appendChild(venue);
-//     }
-// });
-
-// // Display Event Sections
-// const displayEventSections = async (wrapper, eventData, isCreator, isLoggedIn) => {
-//     wrapper.innerHTML = '';
-//     await displayEventDetails(wrapper, eventData, isCreator, isLoggedIn);
-
-//     const container = createElement("div", { class: "tabs-container" });
-//     wrapper.appendChild(container);
-
-//     const sections = [
-//         { condition: eventData.tickets?.length, render: () => displayTickets(createSection(container), eventData.tickets, eventData.eventid, isCreator, isLoggedIn) },
-//         { condition: eventData.faqs?.length, render: () => displayEventFAQ(createSection(container), isCreator, eventData.eventid, eventData.faqs) },
-//         { condition: eventData.merch?.length, render: () => displayMerchandise(createSection(container), eventData.merch, eventData.eventid, isCreator, isLoggedIn) },
-//         { condition: eventData.reviews?.length, render: () => displayEventReviews(createSection(container), eventData.eventid, isCreator, isLoggedIn) },
-//         { condition: eventData.media?.length, render: () => displayMedia(createSection(container), "event", eventData.eventid, isLoggedIn) },
-//         { condition: eventData.lostandfound?.length, render: () => displayLostAndFound(createSection(container), eventData.lostandfound) },
-//         { condition: eventData.contactInfo, render: () => displayContactDetails(createSection(container), eventData.contactInfo) }
-//     ];
-
-//     sections.forEach(({ condition, render }) => condition && render());
-// };
-
-// // --- Exports ---
-// export {
-//     updateEvent,
-//     editEventForm,
-//     fetchEventData,
-//     displayEvent,
-//     displayEventSections,
-//     deleteEvent,
-//     viewEventAnalytics
-// };
-
 // --- Imports ---
 import { state } from "../../state/state.js";
 import { apiFetch } from "../../api/api.js";
@@ -177,7 +36,7 @@ const createSection = (parent) => {
 };
 
 const createVenue = async (container, eventId, isLoggedIn) => {
-    const venueContainer = createElement('div', { id: 'event-venue', class: 'tabs-container' });
+    const venueContainer = createElement('div', { id: 'event-venue', class: 'venue-container' });
     await displayEventVenue(venueContainer, isLoggedIn, eventId);
     container.appendChild(venueContainer);
 };
@@ -218,9 +77,9 @@ const setupTabs = (eventData, eventId, isCreator, isLoggedIn) => {
 
     if (status === "active") {
         tabs.push(
+            { title: "FAQ", id: "faq-tab", render: (c) => displayEventFAQ(c, isCreator, eventId, eventData.faqs) },
             { title: "Tickets", id: "tickets-tab", render: (c) => displayTickets(c, eventData.tickets, eventId, isCreator, isLoggedIn) },
             { title: "Merchandise", id: "merch-tab", render: (c) => displayMerchandise(c, eventData.merch, "event", eventId, isCreator, isLoggedIn) },
-            { title: "FAQ", id: "faq-tab", render: (c) => displayEventFAQ(c, isCreator, eventId, eventData.faqs) }
         );
     } else {
         tabs.push(

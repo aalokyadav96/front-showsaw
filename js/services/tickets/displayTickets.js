@@ -7,6 +7,7 @@ import { showBuyTicketModal } from "./showBuy.js";
 import { verifyTicketAndShowModal } from "./verifyTicket.js";
 import { createButton } from "../../components/eventHelper.js";
 import { addTicketForm } from './ticketService.js';
+import { printTicket } from './printTicket.js';
 
 function displayNewTicket(ticketData, ticketList) {
     const ticketItem = document.createElement("li");
@@ -52,13 +53,34 @@ async function displayTickets(ticketLixt, ticketData, eventId, isCreator, isLogg
     // };
     if (ticketData && !isCreator) {
         ticketLixt.appendChild(createButton({
-            text: "Verify Your Ticket", classes: ["button"], events: {
-                click: () => {
-                    // alert("Ticket verification logic here!");
-                    verifyTicketAndShowModal();
-                }
-            }
-        }));
+            text: "Verify Your Ticket",
+            classes: ["buttonx"],
+            events: {
+              click: () => {
+                verifyTicketAndShowModal(eventId);
+              },
+            },
+          }));
+          
+
+          ticketLixt.appendChild(createButton({
+            text: "Print Your Ticket",
+            classes: ["buttonx"],
+            events: {
+              click: () => {
+                printTicket(eventId);
+              },
+            },
+          }));
+          
+        // ticketLixt.appendChild(createButton({
+        //     text: "Verify Your Ticket", classes: ["button"], events: {
+        //         click: (eventId) => {
+        //             // alert("Ticket verification logic here!");
+        //             verifyTicketAndShowModal(eventId);
+        //         }
+        //     }
+        // }));
     
         // Check if user owns the ticket and has not already listed it for resale
         if (ticketData.isOwned && !ticketData.isResold) {

@@ -50,10 +50,10 @@ li {
     padding: 8px;
 }
 
-svg {
+/* svg {
     max-width: 2.2rem;
     max-height: 2.2rem;
-}
+} */
 
 video {
     max-width: 100%;
@@ -68,8 +68,8 @@ p span {
 }
 
 #app {
-    max-width: 800px;
+    /* max-width: 800px; */
     margin: 0 auto;
-    border: 1px solid #ccc;
-    border-top: 0;
+    /* border: 1px solid #ccc; */
+    /* border-top: 0; */
 }

@@ -1,22 +1,26 @@
-import { renderPage } from "../routes/index.js";
+// import { renderPage } from "../routes/index.js";
 
 /******* */
 
 const API_URL = "http://localhost:4000/api";
 const SRC_URL = "http://localhost:4000/static";
-const SEARCH_URL = "http://localhost:7000/api";
+const SEARCH_URL = "http://localhost:4000/api";
 const AGI_URL = "http://localhost:4000/agi";
+const CHAT_URL = "http://localhost:4000/api/chat";
 
-// const SRC_URL       = "https://zincate.onrender.com/static";
-// const API_URL       = "https://zincate.onrender.com/api";
-// const SEARCH_URL    = "https://silicate.onrender.com/api";
-// const AGI_URL       = "https://zincate.onrender.com/agi";
+// const SRC_URL       = "https://gallium.onrender.com/static";
+// const API_URL       = "https://gallium.onrender.com/api";
+// const SEARCH_URL    = "https://gallium.onrender.com/api";
+// const AGI_URL       = "https://gallium.onrender.com/agi";
+// const CHAT_URL       = "https://gallium.onrender.com/api/chat";
+
 // const AGI_URL       = "https://minihomepy.onrender.com/api";
 
 // const API_URL = "/api"; // Adjust the URL as needed
 // const AGI_URL = "/agi"; // Adjust the URL as needed
 // const SRC_URL = "/static"; // Adjust the URL as needed
 // const SEARCH_URL = "/api"; // Adjust the URL as needed
+// const CHAT_URL = "/api/chat"; // Adjust the URL as needed
 
 
 /*********** */
@@ -72,7 +76,7 @@ function clearState() {
     state.userProfile = null;
     state.user = null;
 
-    renderPage(); // Ensure the UI updates after logout
+    // renderPage(); // Ensure the UI updates after logout
 }
 
 /**
@@ -82,7 +86,7 @@ window.addEventListener("popstate", () => {
     if (window.location.pathname !== state.lastPath) {
         console.log("🔄 Back/Forward navigation detected, updating content...");
         state.lastPath = window.location.pathname;
-        renderPage(); // Load the new content only if the path changes
+        // renderPage(); // Load the new content only if the path changes
     }
 });
 
@@ -98,11 +102,11 @@ window.addEventListener("pageshow", (event) => {
 
         if (window.location.pathname !== state.lastPath) {
             state.lastPath = window.location.pathname;
-            renderPage(); // Ensure content updates properly
+            // renderPage(); // Ensure content updates properly
         }
     }
 });
 
 const DEFAULT_IMAGE = `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/wcAAwAB/hsbRWkAAAAASUVORK5CYII=`;
 
-export { API_URL, AGI_URL, SRC_URL, SEARCH_URL, DEFAULT_IMAGE, state, setState, clearState, getState };
+export { API_URL, AGI_URL, SRC_URL, CHAT_URL, SEARCH_URL, DEFAULT_IMAGE, state, setState, clearState, getState };

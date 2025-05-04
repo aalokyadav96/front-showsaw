@@ -122,7 +122,7 @@
   flex-direction: column;
   align-items: center;
   padding: 0 0.2rem 0.6rem 0.2rem;
-  background-color: #fff;
+  background-color: var(--card-bg);
   animation: fadeIn .3s ease-in-out;
 }
 
@@ -188,13 +188,13 @@
   height: 2.6rem;
   width: 6rem;
   padding: 0rem 0.5rem;
-  background-color: #fff0;
+  background-color: var(--card-bg);
+  color: var(--primary-color);
   border: none;
-  color: black;
   outline: none;
   border-radius: 0 6px 6px 0;
   display: flex;
-  border-left: 1px solid #b1b1b1;
+  border-left: 1px solid var(--accent-color);
   align-items: center;
 }
 
@@ -204,7 +204,8 @@
   padding: 0rem 0.8rem;
   background: transparent;
   height: 2.6rem;
-  color: #000;
+  background-color: var(--card-bg);
+  color: var(--primary-color);
   font-size: 1rem;
   width: 100%;
 }
@@ -215,7 +216,7 @@
   width: 3rem;
   height: 2.5rem;
   fill: none;
-  stroke: #000000;
+  stroke: var(--primary-color);
   box-shadow: none;
   display: block;
   stroke-linecap: round;
@@ -314,9 +315,9 @@
 .event-wrapper {
   max-width: 800px;
   margin: 0 auto;
-  background: var(--card-bg);
-  /* padding: 6px;
-  border-radius: 10px;
+  /* background: var(--card-bg); */
+  padding: 6px;
+  /* border-radius: 10px;
   border: 1px solid var(--card-border);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); */
 }
@@ -337,11 +338,12 @@
 
 .event-banner-image,
 #place-banner img {
-  width: 100%;
+  /* width: 100%; */
   border-radius: 10px;
   transition: transform 0.3s ease-in-out;
   max-height: 200px;
   object-fit: cover;
+  aspect-ratio: 11/6;
 }
 
 
@@ -376,8 +378,10 @@
 }
 
 .evtype {
-  padding: 1rem;
-  background: white;
+  padding: 0.6rem;
+  border-radius: 8px;
+  margin-top: 0.4rem;
+  background: var(--card-bg);
 }
 
 .eventedit {
@@ -407,6 +411,7 @@
 /* Tabs */
 .tabs-container {
   max-width: 800px;
+  padding: 0.6rem;
   margin: 24px auto;
   /* border: 1px solid #eeeeee; */
   /* box-shadow: 1px 1px 6px #d0cfcf; */
@@ -429,6 +434,7 @@
   border-radius: 5px 5px 0 0;
   border: 0;
   background: var(--card-bg);
+  color: var(--text-color);
   transition: background 0.2s;
 }
 
@@ -439,7 +445,7 @@
 
 .tab-button:hover {
   background: var(--accent-hover);
-  color: #fff;
+  color: var(--text-color);
 }
 
 .tab-content {
@@ -829,7 +835,7 @@ input[type="file"] {
   position: absolute;
   right: 5px;
   background: rgba(0, 0, 0, 0.6);
-  color: white;
+  color: var(--text-color);
   border: none;
   border-radius: 50%;
   width: 24px;
@@ -867,7 +873,7 @@ input[type="file"] {
   bottom: 5px;
   right: 5px;
   background: rgba(0, 0, 0, 0.6);
-  color: white;
+  color: var(--text-color);
   border: none;
   border-radius: 50%;
   width: 24px;
@@ -890,14 +896,14 @@ input[type="file"] {
 
 .bio {
   font-size: 0.9rem;
-  color: #666;
+  color: var(--text-color);
 }
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   .bio {
     color: #aaa;
   }
-}
+} */
 
 /* Profile Actions */
 .profile-actions {
@@ -946,18 +952,18 @@ input[type="file"] {
 
 .statistics p {
   font-size: 0.9rem;
-  color: #555;
+  color: var(--text-color);
 }
 
 .statistics strong {
   font-size: 1rem;
 }
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   .statistics p {
     color: #ccc;
   }
-}
+} */
 
 /* Load User Data Button */
 #load-user-data {
@@ -991,7 +997,8 @@ input[type="file"] {
 
 /* General styles for result cards */
 .result-card {
-  background: #fff;
+  background-color: var(--card-bg);
+  color: var(--primary-color);
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
@@ -1014,7 +1021,8 @@ input[type="file"] {
   align-items: center;
   padding: 10px;
   border-bottom: 1px solid #eee;
-  background: #f8f8f8;
+  background-color: var(--card-bg);
+  color: var(--primary-color);
 }
 
 /* Image styling */
@@ -1036,13 +1044,15 @@ input[type="file"] {
 .result-info h3 {
   margin: 0;
   font-size: 18px;
-  color: #333;
+  background-color: var(--card-bg);
+  color: var(--primary-color);
 }
 
 /* Category */
 .category {
   font-size: 14px;
-  color: #666;
+  background-color: var(--card-bg);
+  color: var(--primary-color);
 }
 
 /* Result details */
@@ -1050,14 +1060,16 @@ input[type="file"] {
   padding: 10px;
   font-size: 14px;
   line-height: 1.6;
-  color: #444;
+  background-color: var(--card-bg);
+  color: var(--primary-color);
 }
 
 /* Footer (buttons, links, etc.) */
 .result-footer {
   padding: 10px;
   text-align: center;
-  background: #f8f8f8;
+  background-color: var(--card-bg);
+  color: var(--primary-color);
 }
 
 /* Button styles */
@@ -1098,6 +1110,7 @@ input[type="file"] {
 
 .selected {
   background: aliceblue;
+  color: var(--primary-color);
 }
 
 .feed-item {
@@ -1143,7 +1156,7 @@ input[type="file"] {
   stroke-width: 1.8;
   border-radius: 5px;
   fill: none;
-  stroke: #4f4f4f;
+  stroke: var(--text-color);
   box-shadow: none;
   display: block;
   stroke-linecap: round;
@@ -1258,114 +1271,10 @@ input[type="color" i] {
 }
 
 /******************************/
-/* .artist-container {
-  width: 80%;
-  margin: 20px auto;
-  padding: 20px;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  background-color: #f9f9f9;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.artist-container h2 {
-  font-size: 24px;
-  color: #333;
-  margin-bottom: 10px;
-}
-
-.artist-container p {
-  margin: 5px 0;
-  font-size: 14px;
-  color: #666;
-}
-
-.artist-container strong {
-  color: #444;
-}
-
-.artist-photo, .artist-banner {
-  display: block;
-  margin: 15px auto;
-  max-width: 100%;
-  border-radius: 8px;
-}
-
-.artist-container .socials {
-  margin-top: 15px;
-  text-align: center;
-}
-
-.edit-artist-btn, .del-artist-btn {
-  margin: 10px 5px;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.edit-artist-btn {
-  background-color: #4CAF50;
-  color: #fff;
-}
-
-.del-artist-btn {
-  background-color: #f44336;
-  color: #fff;
-}
-
-.edit-artist-btn:hover {
-  background-color: #45a049;
-}
-
-.del-artist-btn:hover {
-  background-color: #e53935;
-} */
-
-/* Container for artist details */
-.artist-container {
-  max-width: 900px;
-  margin: 0.5rem auto;
-  padding: 0.5rem;
-  background-color: #fff;
-  border-radius: 12px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-}
-
-.artist-container h2 {
-  font-size: 2rem;
-  margin-bottom: 1rem;
-  color: #222;
-}
-
-.artist-container p {
-  font-size: 1rem;
-  line-height: 1.6;
-  margin: 0.5rem 0;
-}
-
-.artist-photo {
-  max-width: 100%;
-  max-height: 14rem;
-  object-fit: cover;
-  border-radius: 50%;
-  border: 1px solid #eee;
-  aspect-ratio: 1 / 1;
-  margin: 0 auto;
-}
-
-.artist-banner {
-  max-width: 100%;
-  max-height: 14rem;
-  object-fit: cover;
-  border: 1px solid #eee;
-  border-radius: 8px;
-  aspect-ratio: 5 / 2;
-  margin: 0 auto;
-}
-
 .photocon {
   margin: 0 auto;
+  gap: 0.5rem;
+  padding: 0.6rem;
   justify-content: center;
 }
 
@@ -1413,7 +1322,7 @@ input[type="color" i] {
 
 /* Individual artist card */
 .artist-card {
-  background-color: #fff;
+  /* background-color: #fff; */
   border-radius: 10px;
   padding: 1.2rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
@@ -1430,12 +1339,12 @@ input[type="color" i] {
 .artist-card h3 {
   margin: 0 0 0.5rem 0;
   font-size: 1.2rem;
-  color: #333;
+  /* color: #333; */
 }
 
 .artist-card p {
   font-size: 0.95rem;
-  color: #666;
+  /* color: #666; */
   margin: 0.25rem 0;
 }
 
@@ -1467,6 +1376,7 @@ input[type="color" i] {
 .detail-section {
   max-width: 800px;
   margin: 0 auto;
+  padding: 0.6rem;
 }
 
 .tab-contents {
@@ -1476,7 +1386,7 @@ input[type="color" i] {
 
 /* Artist Section */
 .artist-container {
-  background-color: #fff;
+  /* background-color: #fff; */
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
@@ -1520,14 +1430,15 @@ button.del-artist-btn {
   margin: 10px 0;
   list-style: none;
   padding: 10px;
-  background-color: #fff;
+  /* background-color: #fff; */
   border-radius: 6px;
   box-shadow: 0 1px 4px rgba(0,0,0,0.08);
 }
 
 /* Albums Section */
+/* Albums Section */
 .album-block {
-  background-color: #fff;
+  /* background-color: #fff; */
   padding: 15px;
   margin-bottom: 15px;
   border-left: 4px solid #6c63ff;
@@ -1560,7 +1471,7 @@ button.del-artist-btn {
 
 /* Events Section */
 #events li {
-  background-color: #fff;
+  /* background-color: #fff; */
   padding: 15px;
   margin-bottom: 10px;
   border-left: 4px solid #ffc107;
@@ -1577,10 +1488,32 @@ button.del-artist-btn {
 
 .media-item {
   max-width: 250px;
-  background-color: beige;
+  /* background-color: beige; */
   padding: 6px;
 }
 
 .media-item img {
   max-width: 250px;
+}
+
+.arena-section, .restaurant-section {
+  flex:2;
+}
+.artist-banner {
+  max-width: 100%;
+  max-height: 14rem;
+  object-fit: cover;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  aspect-ratio: 5 / 2;
+  margin: 0 auto;
+}
+.artist-photo {
+  max-width: 100%;
+  max-height: 14rem;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 1px solid #eee;
+  aspect-ratio: 1 / 1;
+  margin: 0 auto;
 }

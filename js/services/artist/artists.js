@@ -10,7 +10,7 @@ export async function displayArtists(container, isLoggedIn) {
 
     try {
         // Fetch all artists from the server
-        const response = await apiFetch("/artists");
+        const response = await apiFetch(`/artists`);
         // if (!response.ok) {
         //     throw new Error("Failed to fetch artists");
         // }
@@ -56,7 +56,7 @@ export async function displayArtists(container, isLoggedIn) {
             const viewDetailsBtn = document.createElement("button");
             viewDetailsBtn.textContent = "View Details";
             viewDetailsBtn.addEventListener("click", () => {
-                navigate(`/artist/${artist.id}`); // Navigate to artist details page
+                navigate(`/artist/${artist.artistid}`); // Navigate to artist details page
             });
             artistCard.appendChild(viewDetailsBtn);
 

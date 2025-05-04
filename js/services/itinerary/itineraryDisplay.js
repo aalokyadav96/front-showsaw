@@ -1,5 +1,6 @@
 import { apiFetch } from "../../api/api.js";
 import { navigate } from "../../routes/index.js";
+import { state } from "../../state/state.js";
 import { editItinerary } from "./itineraryEdit.js";
 
 function displayItinerary(isLoggedIn, divContainerNode) {
@@ -9,6 +10,9 @@ function displayItinerary(isLoggedIn, divContainerNode) {
     divContainerNode.innerHTML = '<p>Please log in to view and manage your itineraries.</p>';
     return;
   }
+
+  // const isCreator = state.user?.userid === it.user_id;
+  let isCreator = false;
 
   // Main container layout: list on the left, details on the right
   const layout = document.createElement('div');
@@ -91,19 +95,26 @@ function displayItinerary(isLoggedIn, divContainerNode) {
   }
 
   function createItineraryListItem(it) {
+    // isCreator = state.user?.userid === it.user_id;
+    isCreator = state.user === it.user_id;
+    console.log(isCreator);
     const li = document.createElement('li');
     li.style.marginBottom = '10px';
     li.innerHTML = `<strong>${it.name}</strong> (${it.status}) `;
-
     const buttons = [
-      { label: 'View',    fn: () => viewItinerary(it.itineraryid) },
-      { label: 'Edit',    fn: () => editItinerary(isLoggedIn, rightPane, it.itineraryid) },
-      { label: 'Delete',  fn: () => deleteItinerary(it.itineraryid) },
-      { label: 'Fork',    fn: () => forkItinerary(it.itineraryid) },
-      // only show Publish if not already published
-      ...(it.published ? [] : [{ label: 'Publish', fn: () => publishItinerary(it.itineraryid) }])
+      { label: 'View', fn: () => viewItinerary(it.itineraryid) },
+      { label: 'Fork', fn: () => forkItinerary(it.itineraryid) },
     ];
-
+    
+    if (isCreator) {
+      buttons.push(
+        { label: 'Edit', fn: () => editItinerary(isLoggedIn, rightPane, it.itineraryid) },
+        { label: 'Delete', fn: () => deleteItinerary(it.itineraryid) },
+        // Only show Publish if not already published
+        ...(!it.published ? [{ label: 'Publish', fn: () => publishItinerary(it.itineraryid) }] : [])
+      );
+    }
+    
     buttons.forEach(({ label, fn }) => {
       const btn = document.createElement('button');
       btn.textContent = label;
@@ -111,7 +122,7 @@ function displayItinerary(isLoggedIn, divContainerNode) {
       btn.addEventListener('click', fn);
       li.appendChild(btn);
     });
-
+    
     return li;
   }
 
@@ -125,7 +136,7 @@ function displayItinerary(isLoggedIn, divContainerNode) {
     }
   }
 
-  function renderItineraryDetails(it) {
+  function renderItineraryDetails(it) { 
     // Clear and build header
     rightPane.innerHTML = '';
     const h2 = document.createElement('h2');

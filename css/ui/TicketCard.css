@@ -1,6 +1,6 @@
 .ticket-card {
-  border-top-width: 0;
-  border-right-width: 0;
+  border-top-width: 1px;
+  border-right-width: 1px;
   border-bottom-width: 0;
   /* border-left-width: 6px;  */
   border-style: solid;
@@ -10,7 +10,9 @@
   margin-top: 10px;
   max-width: 200px;
   width: 100%;
-  box-shadow: 0 0 1px #ccc;
+  display: flex;
+  flex-direction: column;
+  /* box-shadow: 0 0 1px #ccc; */
 }
 
 .ticket-card h3 {
@@ -29,6 +31,7 @@
   border-radius: 4px;
   cursor: pointer;
   margin: 0 4px;
+  align-self: flex-end;
 }
 
 .ticket-card button:hover {

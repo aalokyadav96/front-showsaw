@@ -33,14 +33,15 @@
   }
   
   /* Controls */
-  .controls {
+
+  #video-player  .controlcon {
     display: flex;
     flex-direction: column;
     position: absolute;
     bottom: 0;
     width: 100%;
     background: linear-gradient(0deg, black, transparent);
-    padding: 10px;
+    /* padding: 10px; */
     color: #fff;
     opacity: 0;
     transform: translateY(100%);
@@ -48,7 +49,7 @@
   }
   
   /* Show Controls on Hover*/
-  #video-player:hover .controls {
+  #video-player:hover .controlcon {
     opacity: 1;
     transform: translateY(0);
   } 

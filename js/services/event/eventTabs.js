@@ -16,8 +16,8 @@ async function displayEventReviews(reviewsContainer, eventId, isCreator, isLogge
 async function displayEventVenue(venueList, isLoggedIn, eventID) {
     // displaySeatingMap(venueList, place, eventid, isLoggedIn);
     // loadMap(venueList, isLoggedIn, { type: "event", id: eventID });
-    // venueList.appendChild(createElement('img',{src:`${SRC_URL}/eventpic/seating/${eventID}seating.jpg`},[]));
-    venueList.appendChild(Imagex(`${SRC_URL}/eventpic/seating/${eventID}seating.jpg`));
+    venueList.appendChild(createElement('img',{src:`${SRC_URL}/eventpic/seating/${eventID}seating.jpg`},[]));
+    // venueList.appendChild(Imagex(`${SRC_URL}/eventpic/seating/${eventID}seating.jpg`));
 }
 
 async function displayEventFAQ(faqContainer, isCreator, eventId, faqs) {

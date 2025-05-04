@@ -1,3 +1,4 @@
+import { navigate } from "../../../routes/index.js";
 import {renderCommonContent} from "./esrger.js";
 
 export function renderConcert(data, container, isCreator) {
@@ -12,7 +13,8 @@ export function renderConcert(data, container, isCreator) {
             title: 'Buy Tickets',
             description: 'Grab your tickets before they sell out!',
             ctaText: 'Get Tickets',
-            ctaAction: buyTickets
+            ctaAction: buyTickets,
+            ctaArgs: [data] // Pass additional arguments here
         },
         venue: {
             title: 'Venue Info',
@@ -27,8 +29,8 @@ export function renderConcert(data, container, isCreator) {
 function viewLineup() {
     console.log('Viewing artist lineup...');
 }
-function buyTickets() {
-    console.log('Buying concert tickets...');
+function buyTickets(eventdata) {
+    navigate(`/event/${eventdata.eventid}/tickets`);
 }
 function viewVenue() {
     console.log('Viewing concert venue...');

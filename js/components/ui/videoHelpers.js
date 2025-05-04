@@ -1,4 +1,4 @@
-export const createVideoElement = (src, resolutions) => {
+export const createVideoElement = (src, resolutions, poster) => {
     const video = document.createElement("video");
     video.className = "video-player";
     video.crossOrigin = "anonymous";
@@ -10,7 +10,7 @@ export const createVideoElement = (src, resolutions) => {
       : src;
   
     video.src = defaultSrc;
-    const poster = src.replace(/-\d{3,4}p.mp4/, ".jpg");
+    // const poster = src.replace(/-\d{3,4}p.mp4/, ".jpg");
     video.poster = poster;
   
     return video;
@@ -35,7 +35,7 @@ export const createVideoElement = (src, resolutions) => {
  
     const cleaned = stored.replace("p", "");
     console.log("cleaned",cleaned);
-    const selected = cleaned === "Original" ? `${baseSrc}.mp4` : `${baseSrc}-${cleaned}p.mp4`;
+    const selected = cleaned === "original" ? `${baseSrc}.mp4` : `${baseSrc}-${cleaned}p.mp4`;
     console.log("selected",selected);
     return selected;
   };

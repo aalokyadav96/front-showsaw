@@ -13,6 +13,8 @@ export function setupHandlers(fileInputs, mediaPreview, postButton, postTypeSele
 
   postTypeSelector.addEventListener("change", handlePostTypeChange);
   postButton.addEventListener("click", handlePostButtonClick);
+  postButton.disabled = true;
+  postButton.style.display = "none";
 
   Object.entries(fileInputs).forEach(([type, input]) => {
     input.addEventListener("change", (e) => {
@@ -43,11 +45,16 @@ export function setupHandlers(fileInputs, mediaPreview, postButton, postTypeSele
 
     if (files.length > 0 || content) {
       await addPost(selectedType, content, files);
+      postButton.disabled = true;
+      postButton.style.display = "none";
     }
   }
 
   async function handleMediaFileChange(event, inputElement, type) {
     const config = postTypeConfig[type];
+
+    postButton.disabled = false;
+    postButton.style.display = "block";
 
     Array.from(event.target.files).forEach(async (file) => {
       if (!config.validateFile(file)) {
@@ -55,12 +62,18 @@ export function setupHandlers(fileInputs, mediaPreview, postButton, postTypeSele
         return;
       }
 
+      // const res = await CheckFile(file);
+      // if (res.exists === true) {
+      //   alert(`You already uploaded this file: ${res.url}`);
+      //   mediaPreview.appendChild(
+      //     createElement("a", { href: `/post/${res.postid}` }, ["Go To Post"])
+      //   );
+      //   return;
+      // }
+
       const res = await CheckFile(file);
       if (res.exists === true) {
-        alert(`You already uploaded this file: ${res.url}`);
-        mediaPreview.appendChild(
-          createElement("a", { href: `/post/${res.postid}` }, ["Go To Post"])
-        );
+        alert(`You already uploaded this file`);
         return;
       }
 

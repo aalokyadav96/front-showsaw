@@ -1,5 +1,5 @@
 import { apiFetch } from "../../api/api.js";
-import { navigate, renderPage } from "../../routes/index.js";
+import { navigate } from "../../routes/index.js";
 import SnackBar from '../../components/ui/Snackbar.mjs';
 import { createFormGroup } from "../../components/createFormGroup.js";
 import Button from "../../components/base/Button.js";
@@ -68,8 +68,7 @@ async function updateEvent(isLoggedIn, eventId) {
   try {
     const result = await apiFetch(`/events/event/${eventId}`, "PUT", formData);
     SnackBar(`Event updated successfully: ${result.title}`, 3000);
-    navigate(`/event/${result.eventid}`);
-    renderPage();
+    // navigate(`/event/${result.eventid}`);
   } catch (error) {
     console.error("Update Event Error:", error);
     SnackBar(`Error updating event: ${error.message}`, 3000);

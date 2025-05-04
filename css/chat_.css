@@ -1,0 +1,232 @@
+
+/* Chat App Container */
+#chatAppContainer {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* Sidebar Styling */
+#chatsSidebar {
+    width: 200px;
+    /* background-color: #ffffff; */
+    border-right: 1px solid #d1d5db;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+#newChatButton {
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#newChatButton:hover {
+    background-color: #0056b3;
+}
+
+.chat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+    cursor: pointer;
+}
+
+.chat-item:hover {
+    background-color: #f3f4f6;
+}
+
+.chat-item span {
+    width: 100%;
+}
+
+/* Contacts Modal Styling */
+#contactsModal {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #ffffff;
+    position: absolute;
+    z-index: 10;
+}
+
+#contactsModal button {
+    background-color: #f0f4f8;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+#contactsModal button:hover {
+    background-color: #e1e4e8;
+}
+
+/* Messages Area */
+#messagesArea {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff;
+    padding: 15px;
+    overflow-y: auto;
+}
+
+#searchInput {
+    padding: 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+/* Message List */
+#messagesList {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-width: 100vh;
+}
+
+/* Individual Message */
+.message {
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff;
+    padding: 15px;
+    border: 1px solid #e1e4e8;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    /* max-width: 350px; */
+}
+
+.message:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* .message .post-media {
+    max-width: 400px;
+    max-height: 560px;
+} */
+
+.message .post-media video, .message .post-media img {
+    /* max-width: 400px; */
+    /* max-height: 500px; */
+    height: 100%;
+}
+
+.messageContent {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.post-image {
+    max-width: 100%;
+    border-radius: 8px;
+    margin-top: 10px;
+}
+
+/* Action Buttons */
+.editBtn, .deleteBtn {
+    font-size: 12px;
+    padding: 6px 10px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: #ffffff;
+    width: fit-content;
+}
+
+.editBtn:hover, .deleteBtn:hover {
+    background-color: #0056b3;
+}
+
+/* Message Form */
+#messageForm {
+    display: flex;
+    gap: 10px;
+    padding: 10px;
+    border-top: 1px solid #e1e4e8;
+    background-color: #f9fafb;
+}
+
+#messageInput {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+#messageInput:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+#fileInput, button[type="submit"] {
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+/* 
+.message {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    background-color: #f9f9f9;
+}
+
+.messageHeader {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.messageContent {
+    margin-bottom: 8px;
+    white-space: pre-wrap;
+} */
+
+
+.hflex.messageActions {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+/* .chatMediaGroup {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.chatImage, .chatVideo {
+    max-width: 150px;
+    max-height: 150px;
+    object-fit: cover;
+    border-radius: 4px;
+}  */

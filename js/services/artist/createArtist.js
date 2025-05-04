@@ -153,7 +153,7 @@ async function createArtist(event) {
 
         if (response) {
             SnackBar("Artist created successfully!", 3000);
-            navigate(`/artist/${response.id}`);
+            navigate(`/artist/${response.artistid}`);
         } else {
             const errorData = await response;
             SnackBar(`Error: ${errorData.message}`, 3000);
