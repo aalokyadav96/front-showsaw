@@ -1,7 +1,7 @@
 import "../../../css/ui/MerchCard.css";
 
 // Updated MerchCard component
-const MerchCard = ({ name, price, image, stock, onBuy, onEdit, onDelete, isCreator, isLoggedIn }) => {
+const MerchCard = ({ name, price, image, stock, onBuy, onEdit, onDelete, onReport, isCreator, isLoggedIn }) => {
     const card = document.createElement('div');
     card.className = 'merch-card';
 
@@ -24,17 +24,19 @@ const MerchCard = ({ name, price, image, stock, onBuy, onEdit, onDelete, isCreat
     if (isCreator) {
         const editButton = document.createElement('button');
         editButton.textContent = 'Edit';
+        editButton.className = 'buttonx';
         editButton.addEventListener('click', onEdit);
 
         const deleteButton = document.createElement('button');
         deleteButton.textContent = 'Delete';
-        deleteButton.className = 'delete-btn';
+        deleteButton.className = 'delete-btn buttonx';
         deleteButton.addEventListener('click', onDelete);
 
         actions.appendChild(editButton);
         actions.appendChild(deleteButton);
     } else if (isLoggedIn) {
         const buyButton = document.createElement('button');
+        buyButton.className = "buttonx";
         if (stock > 0) {
             buyButton.textContent = 'Buy';
             buyButton.addEventListener('click', () => onBuy());
@@ -45,7 +47,14 @@ const MerchCard = ({ name, price, image, stock, onBuy, onEdit, onDelete, isCreat
             buyButton.disabled = true;
         }
 
+        const reportButton = document.createElement('button');
+        reportButton.textContent = 'Report';
+        reportButton.className = 'buttonx';
+        reportButton.addEventListener('click', onReport);
+
         actions.appendChild(buyButton);
+        actions.appendChild(reportButton);
+
     }
 
     card.appendChild(img);

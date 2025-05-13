@@ -25,10 +25,30 @@ async function renderPageContent(isLoggedIn, path, contentContainer) {
             contentContainer.innerHTML = "";
             Auth(isLoggedIn, contentContainer);
         },
-        "/chat": async () => {
-            const { Chat } = await import("../pages/chat/chat.js");
+        "/forums": async () => {
+            const { Chat } = await import("../pages/forum/chat.js");
             contentContainer.innerHTML = "";
             Chat(isLoggedIn, contentContainer);
+        },
+        "/chats": async () => {
+            const { Chats } = await import("../pages/userchat/chats.js");
+            contentContainer.innerHTML = "";
+            Chats(isLoggedIn, contentContainer);
+        },
+        "/newchat": async () => {
+            const { NewChat } = await import("../pages/newchat/newchat.js");
+            contentContainer.innerHTML = "";
+            NewChat(isLoggedIn, contentContainer);
+        },
+        "/sports": async () => {
+            const { Sports } = await import("../pages/sports/sports.js");
+            contentContainer.innerHTML = "";
+            Sports(isLoggedIn, contentContainer);
+        },
+        "/news": async () => {
+            const { News } = await import("../pages/news/news.js");
+            contentContainer.innerHTML = "";
+            News(isLoggedIn, contentContainer);
         },
         "/map": async () => {
             const { Map } = await import("../pages/map/map.js");
@@ -110,6 +130,56 @@ async function renderPageContent(isLoggedIn, path, contentContainer) {
             contentContainer.innerHTML = "";
             Itinerary(isLoggedIn, contentContainer);
         },
+        "/nearby": async () => {
+            const { Nearby } = await import("../pages/nearby/nearby.js");
+            contentContainer.innerHTML = "";
+            Nearby(isLoggedIn, contentContainer);
+        },
+        "/people": async () => {
+            const { People } = await import("../pages/people/people.js");
+            contentContainer.innerHTML = "";
+            People(isLoggedIn, contentContainer);
+        },
+        "/qna": async () => {
+            const { QnA } = await import("../pages/qna/qna.js");
+            contentContainer.innerHTML = "";
+            QnA(isLoggedIn, contentContainer);
+        },
+        "/poll": async () => {
+            const { Poll } = await import("../pages/poll/poll.js");
+            contentContainer.innerHTML = "";
+            Poll(isLoggedIn, contentContainer);
+        },
+        "/blog": async () => {
+            const { Blog } = await import("../pages/blog/blog.js");
+            contentContainer.innerHTML = "";
+            Blog(isLoggedIn, contentContainer);
+        },
+        "/quiz": async () => {
+            const { Quiz } = await import("../pages/quiz/quiz.js");
+            contentContainer.innerHTML = "";
+            Quiz(isLoggedIn, contentContainer);
+        },
+        "/ai": async () => {
+            const { AI } = await import("../pages/ai/ai.js");
+            contentContainer.innerHTML = "";
+            AI(isLoggedIn, contentContainer);
+        },
+        "/clips": async () => {
+            const { Clips } = await import("../pages/clips/clips.js");
+            contentContainer.innerHTML = "";
+            Clips(isLoggedIn, contentContainer);
+        },
+        "/jobs": async () => {
+            const { Jobs } = await import("../pages/jobs/jobs.js");
+            contentContainer.innerHTML = "";
+            Jobs(isLoggedIn, contentContainer);
+        },
+        "/shopping": async () => {
+            const { Shopping } = await import("../pages/shopping/shopping.js");
+            contentContainer.innerHTML = "";
+            Shopping(isLoggedIn, contentContainer);
+        },
     };
 
     // Dynamic Routes (Pattern Matching)
@@ -159,6 +229,30 @@ async function renderPageContent(isLoggedIn, path, contentContainer) {
             },
         },
         {
+            pattern: /^\/news\/([\w-]+)$/,
+            handler: async (matches) => {
+                const { News } = await import("../pages/news/newsPage.js");
+                try {
+                    contentContainer.innerHTML = "";
+                    News(isLoggedIn, matches[1], contentContainer);
+                } catch {
+                    content.innerHTML = `<h1>Artist Not Found</h1>`;
+                }
+            },
+        },
+        {
+            pattern: /^\/chat\/([\w-]+)$/,
+            handler: async (matches) => {
+                const { Chat } = await import("../pages/userchat/chat.js");
+                try {
+                    contentContainer.innerHTML = "";
+                    Chat(isLoggedIn, matches[1], contentContainer);
+                } catch {
+                    content.innerHTML = `<h1>Chat Not Found</h1>`;
+                }
+            },
+        },
+        {
             pattern: /^\/cartoon\/([\w-]+)$/,
             handler: async (matches) => {
                 const { Cartoon } = await import("../pages/cartoon/cartoonPage.js");
@@ -204,11 +298,11 @@ async function renderPageContent(isLoggedIn, path, contentContainer) {
             },
         },
         {
-            pattern: /^\/artist\/([\w-]+)$/,
+            pattern: /^\/hashtag\/([\w-]+)$/,
             handler: async (matches) => {
-                const { Artist } = await import("../pages/artist/artistPage.js");
+                const { Hashtag } = await import("../pages/hashtag/hashtagPage.js");
                 try {
-                    Artist(isLoggedIn, matches[1], content);
+                    Hashtag(isLoggedIn, matches[1], content);
                 } catch {
                     content.innerHTML = `<h1>Post Not Found</h1>`;
                 }

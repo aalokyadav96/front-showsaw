@@ -1,4 +1,3 @@
-import { CHAT_URL, SRC_URL } from "../../state/state.js";
 import VideoPlayer from '../../components/ui/VideoPlayer.mjs';
 import { DEFAULT_IMAGE } from "../../state/state.js";
 

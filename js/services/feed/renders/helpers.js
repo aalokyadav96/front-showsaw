@@ -2,6 +2,7 @@ import { SRC_URL, state } from "../../../state/state.js";
 import Snackbar from "../../../components/ui/Snackbar.mjs";
 import { apiFetch } from "../../../api/api.js";
 import { fetchFeed } from "../fetchFeed.js";
+import { reportPost } from "../../reporting/reporting.js";
 
 import { createCommentsSection } from "../../comments/comments.js";
 
@@ -18,6 +19,42 @@ export function createPostHeader(post) {
         </div>
     `;
 }
+
+// export function createActions(post, isLoggedIn, isCreator) {
+//     const actionsContainer = document.createElement("div");
+//     actionsContainer.className = "post-actions";
+
+//     if (isLoggedIn) {
+//         const likeButton = document.createElement("span");
+//         likeButton.className = "like";
+//         likeButton.textContent = `Like (${post.likes})`;
+
+//         const commentButton = document.createElement("span");
+//         commentButton.className = "comment";
+//         commentButton.textContent = "Comment";
+//         commentButton.addEventListener("click", () => {
+//             if (!post._commentSectionVisible) {
+//                 const commentsEl = createCommentsSection(post.postid, post.comments || []);
+//                 actionsContainer.parentElement.appendChild(commentsEl);
+//                 post._commentSectionVisible = true;
+//             }
+//         });
+
+
+//         actionsContainer.appendChild(likeButton);
+//         actionsContainer.appendChild(commentButton);
+
+//         if (isCreator) {
+//             const deleteButton = document.createElement("button");
+//             deleteButton.className = "delete-btn";
+//             deleteButton.textContent = "Delete";
+//             deleteButton.addEventListener("click", () => deletePost(post.postid));
+//             actionsContainer.appendChild(deleteButton);
+//         }
+//     }
+
+//     return actionsContainer;
+// }
 
 export function createActions(post, isLoggedIn, isCreator) {
     const actionsContainer = document.createElement("div");
@@ -38,22 +75,71 @@ export function createActions(post, isLoggedIn, isCreator) {
                 post._commentSectionVisible = true;
             }
         });
-        
 
         actionsContainer.appendChild(likeButton);
         actionsContainer.appendChild(commentButton);
+
+        // More button with dropdown
+        const moreWrapper = document.createElement("div");
+        moreWrapper.className = "more-wrapper";
+
+        const moreButton = document.createElement("button");
+        moreButton.className = "more-btn";
+        moreButton.textContent = "⋮";
+
+        const dropdown = document.createElement("div");
+        dropdown.className = "dropdown hidden";
+
+        // Report button
+        // Report button
+        const reportButton = document.createElement("button");
+        reportButton.className = "report-btn";
+        reportButton.textContent = "Report";
+        reportButton.addEventListener("click", () => {
+            dropdown.classList.add("hidden");
+            reportPost(post.postid);
+        });
+
+        dropdown.appendChild(reportButton);
 
         if (isCreator) {
             const deleteButton = document.createElement("button");
             deleteButton.className = "delete-btn";
             deleteButton.textContent = "Delete";
-            deleteButton.addEventListener("click", () => deletePost(post.postid));
-            actionsContainer.appendChild(deleteButton);
+            deleteButton.addEventListener("click", () => {
+                dropdown.classList.add("hidden");
+                deletePost(post.postid);
+            });
+            dropdown.appendChild(deleteButton);
         }
+
+
+        moreButton.addEventListener("click", (e) => {
+            e.stopPropagation();
+            dropdown.classList.toggle("hidden");
+        });
+        
+        // Hide dropdown when clicking outside
+        document.addEventListener("click", () => {
+            dropdown.classList.add("hidden");
+        });
+
+        // Hide dropdown on Escape key press
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") {
+                dropdown.classList.add("hidden");
+            }
+        });
+
+
+        moreWrapper.appendChild(moreButton);
+        moreWrapper.appendChild(dropdown);
+        actionsContainer.appendChild(moreWrapper);
     }
 
     return actionsContainer;
 }
+
 
 export function updateTimelineStyles() {
     document.querySelectorAll(".feed-item").forEach(item => {

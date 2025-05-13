@@ -1,5 +1,14 @@
 // comments.js
 
+// import { reportPost } from "../reporting/reporting.js";
+
+//         // Report button
+//         const reportButton = document.createElement("button");
+//         reportButton.className = "report-btn";
+//         reportButton.textContent = "Report";
+//         reportButton.addEventListener("click", () => {
+//             reportPost(msg.message_id);
+//         });
 export function createCommentsSection(postId, comments = []) {
     const container = document.createElement("div");
     container.className = "comments-section";

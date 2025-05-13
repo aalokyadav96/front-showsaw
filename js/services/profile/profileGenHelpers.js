@@ -5,6 +5,9 @@ import Modal from "../../components/ui/Modal.mjs";
 import { formatDate } from "./profileHelpers.js";
 import { generateBannerForm, generateAvatarForm } from "./generators.js";
 import { logout } from "../auth/authService.js";
+import { reportPost } from "../reporting/reporting.js";
+import Button from "../../components/base/Button.js";
+import {userChatInit} from "../userchat/chatPage.js";
 
 // /* Utility function to append multiple children */
 // function appendChildren(parent, ...children) {
@@ -31,8 +34,8 @@ function createBanner(profile) {
     // banncon.className = "vflex";
 
     // Use user's banner picture if available; otherwise, use default banner
-    const bannerPicture = profile.banner_picture 
-        ? `${SRC_URL}/userpic/banner/${profile.banner_picture}` 
+    const bannerPicture = profile.banner_picture
+        ? `${SRC_URL}/userpic/banner/${profile.banner_picture}`
         : `${SRC_URL}/userpic/banner/default.webp`;
 
     bgImg.style.backgroundImage = `url(${bannerPicture})`;
@@ -111,6 +114,7 @@ function createProfilePicture(profile) {
             });
         });
         profileArea.appendChild(editProfileButton);
+
     }
 
     return profileArea;
@@ -157,6 +161,15 @@ function createProfileActions(profile, isLoggedIn) {
         logoutButton.textContent = "Logout";
         logoutButton.addEventListener("click", async () => await logout());
         profileActions.appendChild(logoutButton);
+
+        // Report button
+        const reportButton = document.createElement("button");
+        reportButton.className = "report-btn";
+        reportButton.textContent = "Report";
+        reportButton.addEventListener("click", () => {
+            reportPost(profile.userid);
+        });
+        profileActions.appendChild(reportButton);
     }
 
     if (profile.userid === state.user) {
@@ -175,6 +188,11 @@ function createProfileActions(profile, isLoggedIn) {
         followButton.textContent = profile.is_following ? "Unfollow" : "Follow";
         followButton.addEventListener("click", () => toggleFollow(profile.userid, followButton, profile));
         profileActions.appendChild(followButton);
+
+        const sendMessagebtn = Button("Send Message", 'send-msg', {
+            click: () => userChatInit(profile.userid),
+        }, "buttonx");
+        profileActions.appendChild(sendMessagebtn);
     }
 
     return profileActions;

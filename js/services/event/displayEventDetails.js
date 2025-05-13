@@ -11,6 +11,7 @@ import { createElement } from "../../components/createElement.js";
 import { editEventForm } from "./editEvent.js";
 import { deleteEvent, viewEventAnalytics } from "./eventService.js";
 import { renderEventByType } from "./renders/renderEvents.js";
+import { reportPost } from "../reporting/reporting.js";
 
 // --- Config for Display Fields ---
 const fieldConfig = [
@@ -97,24 +98,24 @@ async function displayEventDetails(content, eventData, isCreator, isLoggedIn) {
     });
     bannerSection.appendChild(bannerImage);
 
+    // Report button
+    const reportButton = document.createElement("button");
+    reportButton.className = "report-btn";
+    reportButton.textContent = "Report";
+    reportButton.addEventListener("click", () => {
+        reportPost(eventData.eventid);
+    });
+
     // Event Info
     const eventInfo = createContainer(['event-info']);
     createDetailItems(fieldConfig, eventData, eventInfo);
-
-    // Place Link
-    if (eventData.placename && eventData.placeid) {
-        eventInfo.appendChild(
-            createElement('p', {}, [
-                createElement('strong', {}, [`Place: ${eventData.placename}`]),
-                createLink({ href: `/place/${eventData.placeid}`, children: [eventData.placename] })
-            ])
-        );
-    }
 
     // Optional Sections
     if (eventData.social_links) eventInfo.appendChild(createSocialLinks(eventData.social_links));
     if (eventData.tags?.length) eventInfo.appendChild(createTags(eventData.tags));
     if (eventData.custom_fields) eventInfo.appendChild(createCustomFields(eventData.custom_fields));
+
+    eventInfo.appendChild(reportButton);
 
     // Action Buttons (for creator)
     if (isLoggedIn && isCreator) {
@@ -124,6 +125,16 @@ async function displayEventDetails(content, eventData, isCreator, isLoggedIn) {
             { text: '📊 View Analytics', onClick: () => viewEventAnalytics(isLoggedIn, eventData.eventid), classes: ['analytics-btn'] },
         ];
         eventInfo.appendChild(createActionButtons(actions));
+    }
+
+    // Place Link
+    if (eventData.placename && eventData.placeid) {
+        eventInfo.appendChild(
+            createElement('p', {}, [
+                createElement('strong', {}, [`Place: ${eventData.placename}`]),
+                createLink({ href: `/place/${eventData.placeid}`, children: [eventData.placename] })
+            ])
+        );
     }
 
     // Edit Placeholder

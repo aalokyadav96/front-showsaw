@@ -7,6 +7,8 @@ import Modal from '../../components/ui/Modal.mjs';
 import { Button } from "../../components/base/Button.js";
 import { createElement } from "../../components/createElement.js";
 
+import { reportPost } from "../reporting/reporting.js";
+
 
 let mediaItems = []; // Ensure this is globally scoped
 
@@ -195,6 +197,15 @@ function renderMediaItem(media, index, isLoggedIn, entityType, entityId) {
 
         mediaItem.appendChild(deleteButton);
     }
+
+        // Report button
+        const reportButton = document.createElement("button");
+        reportButton.className = "report-btn";
+        reportButton.textContent = "Report";
+        reportButton.addEventListener("click", () => {
+            reportPost(media.id);
+        });
+        mediaItem.appendChild(reportButton);
 
     return mediaItem;
 }

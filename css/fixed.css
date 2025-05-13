@@ -1517,3 +1517,74 @@ button.del-artist-btn {
   aspect-ratio: 1 / 1;
   margin: 0 auto;
 }
+
+.post-actions .more-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.post-actions .more-btn {
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-size: 18px;
+}
+
+.post-actions .dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  z-index: 10;
+  display: flex;
+  background-color: var(--bg-color);
+  flex-direction: column;
+}
+
+.post-actions .dropdown button {
+  padding: 8px 12px;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  width: 100%;
+  color: var(--accent-color);
+}
+
+.post-actions .dropdown button:hover {
+  background-color: #f0f0f0;
+}
+
+.post-actions .hidden {
+  display: none;
+}
+
+
+/*****/
+.chat-messages {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  overflow-y: auto;
+  max-height: 80vh;
+  font-size: 1rem;
+}
+
+.message {
+  max-width: 75%;
+  padding: 10px;
+  border-radius: 12px;
+  word-wrap: break-word;
+}
+
+.message.sent {
+  align-self: flex-end;
+  background-color: #dcf8c6;
+}
+
+.message.received {
+  align-self: flex-start;
+  background-color: #f1f0f0;
+}

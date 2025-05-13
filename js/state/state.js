@@ -6,13 +6,15 @@ const API_URL = "http://localhost:4000/api";
 const SRC_URL = "http://localhost:4000/static";
 const SEARCH_URL = "http://localhost:4000/api";
 const AGI_URL = "http://localhost:4000/agi";
-const CHAT_URL = "http://localhost:4000/api/chat";
+const FORUM_URL = "http://localhost:4000/api/forum";
+const CHAT_URL = "http://localhost:4000/api/chats";
 
 // const SRC_URL       = "https://gallium.onrender.com/static";
 // const API_URL       = "https://gallium.onrender.com/api";
 // const SEARCH_URL    = "https://gallium.onrender.com/api";
 // const AGI_URL       = "https://gallium.onrender.com/agi";
-// const CHAT_URL       = "https://gallium.onrender.com/api/chat";
+// const FORUM_URL       = "https://gallium.onrender.com/api/forum";
+// const CHAT_URL       = "https://gallium.onrender.com/api/chats";
 
 // const AGI_URL       = "https://minihomepy.onrender.com/api";
 
@@ -20,7 +22,8 @@ const CHAT_URL = "http://localhost:4000/api/chat";
 // const AGI_URL = "/agi"; // Adjust the URL as needed
 // const SRC_URL = "/static"; // Adjust the URL as needed
 // const SEARCH_URL = "/api"; // Adjust the URL as needed
-// const CHAT_URL = "/api/chat"; // Adjust the URL as needed
+// const FORUM_URL = "/api/forum"; // Adjust the URL as needed
+// const CHAT_URL = "/api/chats"; // Adjust the URL as needed
 
 
 /*********** */
@@ -109,4 +112,4 @@ window.addEventListener("pageshow", (event) => {
 
 const DEFAULT_IMAGE = `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/wcAAwAB/hsbRWkAAAAASUVORK5CYII=`;
 
-export { API_URL, AGI_URL, SRC_URL, CHAT_URL, SEARCH_URL, DEFAULT_IMAGE, state, setState, clearState, getState };
+export { API_URL, AGI_URL, SRC_URL, CHAT_URL, FORUM_URL, SEARCH_URL, DEFAULT_IMAGE, state, setState, clearState, getState };

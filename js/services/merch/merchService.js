@@ -7,6 +7,8 @@ import { SRC_URL } from "../../state/state.js";
 import { handlePurchase } from '../payment/paymentService.js';
 import SnackBar from "../../components/ui/Snackbar.mjs";
 
+import { reportPost } from "../reporting/reporting.js";
+
 // Add merchandise to the event
 async function addMerchandise(entityType, eventId, merchList) {
     const merchName = document.getElementById('merch-name').value.trim();
@@ -294,6 +296,7 @@ async function displayMerchandise(merchcon, merchData, entityType, eventId, isCr
             onBuy: () => buyMerch(entityType, merch.merchid, eventId),
             onEdit: () => editMerchForm(entityType, merch.merchid, eventId),
             onDelete: () => deleteMerch(entityType, merch.merchid, eventId),
+            onReport: () => reportPost(merch.merchid, entityType, eventId),
         });
 
         merchList.appendChild(card);

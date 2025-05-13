@@ -2,7 +2,7 @@
 import { SRC_URL, state } from "../state/state.js";
 import { navigate } from "../routes/index.js";
 import { logout } from "../services/auth/authService.js";
-import { moreSVG } from "./svgs.js";
+import { moreSVG, chatSVG, notifSVG } from "./svgs.js";
 
 /** Utility Functions */
 const toggleElement = (selector, className) =>
@@ -109,20 +109,36 @@ const createProfileDropdown = (user) => {
 };
 
 /** Navigation Bar */
-const createNav = () => {
-    const isLoggedIn = Boolean(state.token);
+const createNav = (isLoggedIn) => {
+    // const isLoggedIn = Boolean(state.token);
     const navItems = [
-        { href: "/", label: "Home" },
+        { href: "/home", label: "Home" },
         { href: "/feed", label: "Feed" },
         { href: "/events", label: "Events" },
         { href: "/places", label: "Places" },
-        { href: "/artists", label: "Artists" },
-        // { href: "/bookings", label: "Bookings" },
         { href: "/itinerary", label: "Itinerary" },
-        { href: "/chat", label: "Forums" },
-        // { href: "/map", label: "Map" },
-        // { href: "/cartoons", label: "Cartoons" },
+        { href: "/nearby", label: "Nearby" },
+        { href: "/shopping", label: "Shopping" },
+        { href: "/news", label: "News" },
+        { href: "/clips", label: "Clips" },
+        { href: "/sports", label: "Sports" },
+        { href: "/forums", label: "Forums" },
+        { href: "/newchat", label: "NewChat" },
+        // { href: "/chats", label: "Chats" },
+        { href: "/qna", label: "QnA" },
+        // { href: "/poll", label: "Poll" },
+        // { href: "/quiz", label: "Quiz" },
+        // { href: "/artists", label: "Artists" },
+        { href: "/jobs", label: "Jobs" },
+        // { href: "/food", label: "Food" },
+        { href: "/blog", label: "Blog" },
+        { href: "/cartoons", label: "Cartoons" },
+        // { href: "/lives", label: "Lives" },
+        { href: "/map", label: "Map" },
+        { href: "/people", label: "People" },
+        { href: "/ai", label: "AI" },
         { href: "/search", label: "Search" },
+        { href: "/premium", label: "Premium" },
     ];
 
     // Create Header (with logo and profile or login button)
@@ -140,6 +156,21 @@ const createNav = () => {
 
     header.appendChild(logoDiv);
 
+    const topRightDiv = document.createElement("div");
+    topRightDiv.className = "hflex-sb";
+    header.appendChild(topRightDiv);
+    
+    const chatLink = document.createElement("a");
+    chatLink.href = "/chats";
+    chatLink.className = "logo-link-svg";
+    chatLink.innerHTML = chatSVG;
+    topRightDiv.appendChild(chatLink);
+
+    const notifLink = document.createElement("li");
+    notifLink.className = "logo-link-svg";
+    notifLink.innerHTML = notifSVG;
+    topRightDiv.appendChild(notifLink);
+
     // Add Profile Dropdown or Login Button
     const profileOrLogin = (node) => {
         if (isLoggedIn) {
@@ -152,7 +183,7 @@ const createNav = () => {
             node.appendChild(loginButton);
         }
     };
-    profileOrLogin(header);
+    profileOrLogin(topRightDiv);
 
     /*************************** */
 

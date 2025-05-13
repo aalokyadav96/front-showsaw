@@ -51,6 +51,7 @@ async function displayTickets(ticketLixt, ticketData, eventId, isCreator, isLogg
     //         }
     //     }))
     // };
+    
     if (ticketData && !isCreator) {
         ticketLixt.appendChild(createButton({
             text: "Verify Your Ticket",
@@ -69,6 +70,26 @@ async function displayTickets(ticketLixt, ticketData, eventId, isCreator, isLogg
             events: {
               click: () => {
                 printTicket(eventId);
+              },
+            },
+          }));
+          
+          ticketLixt.appendChild(createButton({
+            text: "Cancel Ticket",
+            classes: ["buttonx"],
+            events: {
+              click: () => {
+                cancelTicket(eventId);
+              },
+            },
+          }));
+           
+          ticketLixt.appendChild(createButton({
+            text: "transfer Ticket",
+            classes: ["buttonx"],
+            events: {
+              click: () => {
+                transferTicket(eventId);
               },
             },
           }));
@@ -181,5 +202,12 @@ async function displayTickets(ticketLixt, ticketData, eventId, isCreator, isLogg
     ticketLixt.appendChild(ticketList);
 }
 
+function cancelTicket(eventid) {
+    alert(`cancel ${eventid}`);
+}
+
+function transferTicket(eventid) {
+    alert(`transfer ${eventid}`);
+}
 
 export { displayNewTicket, displayTickets };

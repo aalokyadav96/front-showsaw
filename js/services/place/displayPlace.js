@@ -5,11 +5,14 @@ import { renderPlaceDetails } from "./renderPlaceDetails.js";
 import { displayMedia } from "../media/mediaService.js";
 import BookingForm from "../../components/ui/BookinggForm.mjs";
 import Snackbar from "../../components/ui/Snackbar.mjs";
+import Button from "../../components/base/Button.js";
 import RenderMenu from "../../components/ui/MenuRender.mjs";
 import { displayReviews } from "../reviews/displayReviews.js";
 import { createTabs } from "../../components/ui/createTabs.js";
 import { displayPlaceNearby, displayPlaceInfo } from "./placeTabs.js";
 import { renderPlace } from "./renders/renderPlace.js";
+import { reportPost } from "../reporting/reporting.js";
+
 
 export default async function displayPlace(isLoggedIn, placeId, contentContainer) {
   try {
@@ -44,6 +47,14 @@ export default async function displayPlace(isLoggedIn, placeId, contentContainer
 
     // Category‐specific rendering (e.g., a restaurant’s specials)
     renderPlace(placeData, detailsSection, isCreator, isLoggedIn, placeId);
+
+
+    detailsSection.appendChild(
+      Button("Report", "", {
+        click: () => reportPost(placeId),
+        mouseenter: () => console.log("Report Button hovered"),
+      }, "report-btn")
+    );
 
     // Booking form for logged‐in non‐creators
     if (isLoggedIn && !isCreator) {

@@ -1,0 +1,151 @@
+
+/* Sidebar */
+.sidebar {
+    width: 72px;
+    background-color: #1c1c1e;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px 0;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #555 transparent;
+  }
+  
+  .sidebar::-webkit-scrollbar {
+    width: 6px;
+  }
+  .sidebar::-webkit-scrollbar-thumb {
+    background-color: #555;
+    border-radius: 10px;
+  }
+  
+  .sidebar button {
+    background: none;
+    border: none;
+    margin: 8px 0;
+    font-size: 20px;
+    color: #aaa;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease;
+    cursor: pointer;
+  }
+  
+  .sidebar button:hover {
+    background-color: #333;
+    color: white;
+  }
+  
+  .sidebar button.active {
+    background-color: #5865f2;
+    color: white;
+  }
+  
+  
+  /* Main content */
+  .main {
+    flex: 1;
+    padding: 24px;
+  }
+  
+  /* Header */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+  }
+  
+  .header h1 {
+    font-size: 28px;
+  }
+  
+  .filters {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  
+  select, .dark-toggle {
+    padding: 6px 10px;
+    font-size: 14px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    background: white;
+    cursor: pointer;
+  }
+  
+  /* Sections and Cards */
+  .section {
+    margin-bottom: 32px;
+  }
+  
+  .section h2 {
+    font-size: 20px;
+    margin-bottom: 16px;
+  }
+  
+  .cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  
+  .card {
+    border-radius: 10px;
+    padding: 16px;
+    min-width: 250px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+  
+  .card.live::after {
+    content: "LIVE";
+    background: red;
+    color: #fff;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 8px;
+  }
+  
+  .match-info, .tournament-info {
+    font-size: 14px;
+    margin-top: 8px;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .upcoming-matches .match {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: #fff;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    align-items: center;
+  }
+  
+  /* Dark mode support */
+  body.dark {
+    background-color: #121212;
+    color: #eee;
+  }
+  
+  body.dark .card,
+  body.dark .match {
+    background-color: #1e1e1e;
+    color: #eee;
+  }
+  
+  body.dark select,
+  body.dark .dark-toggle {
+    background-color: #333;
+    color: #eee;
+    border-color: #555;
+  }
+  

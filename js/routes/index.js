@@ -1,9 +1,9 @@
 import { createNav, attachNavEventListeners } from "../components/navigation.js";
+import { secnav } from "../components/secNav.js";
 import { renderPageContent } from "./render.js";
 import { state } from "../state/state.js";
 import { profileSVG, searchSVG, settingsSVG, placesSVG, coffeeSVG, calendarSVG, locaSVG, evaSVG, chatSVG, filterSVG, plusCircleSVG, liveStreamSVG } from "../components/svgs.js";
 import RadarMenu from "../components/ui/RadarMenu.js";
-import { createElement } from "../components/createElement.js";
 
 
 async function loadContent(url) {
@@ -17,7 +17,14 @@ async function loadContent(url) {
     const main = document.createElement("main");
     main.id = "content";
 
-    app.appendChild(createNav());
+    app.appendChild(createNav(isLoggedIn));
+
+    const secNavElement = secnav(isLoggedIn);
+    if (secNavElement) {
+        app.appendChild(secNavElement);
+    }
+
+    // app.appendChild(secnav(isLoggedIn));
     app.appendChild(main);
 
 
@@ -60,6 +67,7 @@ async function loadContent(url) {
     await renderPageContent(isLoggedIn, url, main);
 }
 
+
 // SPA Navigation Function
 function navigate(path) {
     sessionStorage.setItem("redirectAfterLogin", window.location.pathname);
@@ -73,6 +81,20 @@ function navigate(path) {
         loadContent(path);
     }
 }
+
+// // SPA Navigation Function
+// function navigate(path) {
+//     sessionStorage.setItem("redirectAfterLogin", window.location.pathname);
+//     if (!path) {
+//         console.error("🚨 navigate called with null or undefined!", new Error().stack);
+//         return;
+//     }
+//     console.log("Navigating to:", path);
+//     if (window.location.pathname !== path) {
+//         history.pushState(null, "", path);
+//         loadContent(path);
+//     }
+// }
 
 // Initial Render
 async function renderPage() {

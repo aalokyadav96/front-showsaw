@@ -42,4 +42,13 @@ let plusSquareSVG = '<svg class="clrful" viewBox="0 0 24 24" width="24" height="
 
 let moreSVG = '<svg class="clrful" viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="css-i6dzq1"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>';
 
-export { profileSVG, searchSVG, liveStreamSVG, chatSVG, heartSVG, moonSVG, settingsSVG, downloadSVG, playSVG, PauseSVG, playCropSVG, headphonesSVG, imageSVG, filterSVG, placesSVG, coffeeSVG, calendarSVG, locaSVG, evaSVG, plusCircleSVG, plusSquareSVG, moreSVG };
+let notifSVG = '<svg class="clrful" viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="css-i6dzq1"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>';
+
+let shopBagSVG = '<svg class="clrful" viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="css-i6dzq1"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>';
+
+let xSVG = '<svg class="clrful" viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="css-i6dzq1"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+
+
+
+
+export { profileSVG, searchSVG, liveStreamSVG, chatSVG, heartSVG, moonSVG, settingsSVG, downloadSVG, playSVG, PauseSVG, playCropSVG, headphonesSVG, imageSVG, filterSVG, placesSVG, coffeeSVG, calendarSVG, locaSVG, evaSVG, plusCircleSVG, plusSquareSVG, moreSVG, notifSVG, shopBagSVG, xSVG };

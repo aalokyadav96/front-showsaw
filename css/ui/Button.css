@@ -2,8 +2,8 @@ button {
     border: 1px solid #eee;
     padding: 6px;
     border-radius: 5px;
-    background-color: #028907;
-    color: white;
+    background-color: var(--bg-color);
+    color: var(--text-color);
     width: fit-content;
     cursor: pointer;
     transition: background-color 0.3s ease-in-out;

@@ -10,6 +10,7 @@ import { createTabs } from "../../components/ui/createTabs.js"; // adjust path a
 import { editArtistForm, deleteArtistForm } from "./editArtist.js";
 import { createElement } from "../../components/ui/vidpopHelpers/helpers.js";
 import { createButton, createContainer } from "../../components/eventHelper.js";
+        import { reportPost } from "../reporting/reporting.js";
 
 
 export async function displayArtist(contentContainer, artistID, isLoggedIn) {
@@ -18,7 +19,7 @@ export async function displayArtist(contentContainer, artistID, isLoggedIn) {
 
     try {
         const artist = await apiFetch(`/artists/${artistID}`);
-        if (artist == null) {return}
+        if (artist == null) { return }
         const isCreator = isLoggedIn && artist?.createdBy === isLoggedIn?.userid;
 
         const artistPics = document.createElement("div");
@@ -27,7 +28,7 @@ export async function displayArtist(contentContainer, artistID, isLoggedIn) {
         if (artist.photo) {
             const artistPhoto = document.createElement("div");
             artistPhoto.className = "hflex";
-    
+
             const photo = document.createElement("img");
             photo.src = `${SRC_URL}/artistpic/photo/${artist.photo}`;
             photo.alt = `${artist.name}'s photo`;
@@ -39,7 +40,7 @@ export async function displayArtist(contentContainer, artistID, isLoggedIn) {
         if (artist.banner) {
             const artistBanner = document.createElement("div");
             artistBanner.className = "hflex";
-    
+
             const banner = document.createElement("img");
             banner.src = `${SRC_URL}/artistpic/banner/${artist.banner}`;
             banner.alt = `${artist.name}'s banner`;
@@ -49,7 +50,20 @@ export async function displayArtist(contentContainer, artistID, isLoggedIn) {
         }
 
         contentContainer.appendChild(artistPics);
-        contentContainer.appendChild(createButton({text:"Subscribe", classes:["buttonx"]}));
+
+
+
+        // Report button
+        const reportButton = document.createElement("button");
+        reportButton.className = "report-btn";
+        reportButton.textContent = "Report";
+        reportButton.addEventListener("click", () => {
+            reportPost(artistID);
+        });
+
+        contentContainer.append(createButton({ text: "Subscribe", classes: ["buttonx"] }), reportButton);
+
+
         contentContainer.appendChild(createElement('div', "editdiv", { id: "editevent" }));
 
         // Tab render functions
