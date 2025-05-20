@@ -222,57 +222,57 @@ function HomeX(isLoggedIn, container) {
         return;
     }
 
-    // Create header with title and feed mode toggle.
-    const header = document.createElement("header");
-    header.classList.add("header");
+    // // Create header with title and feed mode toggle.
+    // const header = document.createElement("header");
+    // header.classList.add("header");
 
-    const title = document.createElement("p");
-    title.innerText = "Personalized Feed";
-    header.appendChild(title);
+    // // const title = document.createElement("p");
+    // // title.innerText = "Personalized Feed";
+    // // header.appendChild(title);
 
-    // Feed toggle: Switch between Infinite Scroll and Load More.
-    const toggleContainer = document.createElement("div");
-    toggleContainer.classList.add("feed-toggle");
-    const toggleLabel = document.createElement("label");
-    toggleLabel.innerText = "Infinite Scroll:";
-    const toggleInput = document.createElement("input");
-    toggleInput.type = "checkbox";
-    toggleInput.checked = (feedMode === "infinite");
-    toggleInput.addEventListener("change", () => {
-        feedMode = toggleInput.checked ? "infinite" : "load_more";
-        localStorage.setItem("feedMode", feedMode);
-        // Reload active tab content with new mode.
-        document.querySelectorAll(".tab-content.active").forEach(activeContent => {
-            activeContent.innerHTML = "";
-            const activeTabId = activeContent.id;
-            // Reset state for the active tab.
-            state[activeTabId].page = 1;
-            state[activeTabId].hasMore = true;
-            loadSection(activeTabId, activeContent);
-            // If in load_more mode, ensure a Load More button is visible.
-            if (feedMode === "load_more") {
-                let btn = activeContent.parentElement.querySelector(".load-more");
-                if (!btn) {
-                    btn = document.createElement("button");
-                    btn.innerText = "Load More";
-                    btn.classList.add("load-more");
-                    btn.addEventListener("click", () => loadSection(activeTabId, activeContent));
-                    activeContent.parentElement.appendChild(btn);
-                } else {
-                    btn.style.display = "block";
-                }
-            } else {
-                // In infinite mode, hide the button.
-                const btn = activeContent.parentElement.querySelector(".load-more");
-                if (btn) btn.style.display = "none";
-            }
-        });
-    });
-    toggleLabel.appendChild(toggleInput);
-    toggleContainer.appendChild(toggleLabel);
-    header.appendChild(toggleContainer);
+    // // Feed toggle: Switch between Infinite Scroll and Load More.
+    // const toggleContainer = document.createElement("div");
+    // toggleContainer.classList.add("feed-toggle");
+    // const toggleLabel = document.createElement("label");
+    // toggleLabel.innerText = "Infinite Scroll:";
+    // const toggleInput = document.createElement("input");
+    // toggleInput.type = "checkbox";
+    // toggleInput.checked = (feedMode === "infinite");
+    // toggleInput.addEventListener("change", () => {
+    //     feedMode = toggleInput.checked ? "infinite" : "load_more";
+    //     localStorage.setItem("feedMode", feedMode);
+    //     // Reload active tab content with new mode.
+    //     document.querySelectorAll(".tab-content.active").forEach(activeContent => {
+    //         activeContent.innerHTML = "";
+    //         const activeTabId = activeContent.id;
+    //         // Reset state for the active tab.
+    //         state[activeTabId].page = 1;
+    //         state[activeTabId].hasMore = true;
+    //         loadSection(activeTabId, activeContent);
+    //         // If in load_more mode, ensure a Load More button is visible.
+    //         if (feedMode === "load_more") {
+    //             let btn = activeContent.parentElement.querySelector(".load-more");
+    //             if (!btn) {
+    //                 btn = document.createElement("button");
+    //                 btn.innerText = "Load More";
+    //                 btn.classList.add("load-more");
+    //                 btn.addEventListener("click", () => loadSection(activeTabId, activeContent));
+    //                 activeContent.parentElement.appendChild(btn);
+    //             } else {
+    //                 btn.style.display = "block";
+    //             }
+    //         } else {
+    //             // In infinite mode, hide the button.
+    //             const btn = activeContent.parentElement.querySelector(".load-more");
+    //             if (btn) btn.style.display = "none";
+    //         }
+    //     });
+    // });
+    // toggleLabel.appendChild(toggleInput);
+    // toggleContainer.appendChild(toggleLabel);
+    // header.appendChild(toggleContainer);
 
-    container.appendChild(header);
+    // container.appendChild(header);
 
     // Set up tab configuration for each feed section.
     const tabsConfig = [

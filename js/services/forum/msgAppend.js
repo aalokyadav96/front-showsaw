@@ -74,17 +74,17 @@ export function appendMessage(msg) {
 
         msgDiv.appendChild(actionsDiv);
     }
-    
-        // Report button
-        const reportButton = document.createElement("button");
-        reportButton.className = "report-btn";
-        reportButton.textContent = "Report";
-        reportButton.addEventListener("click", () => {
-            reportPost(msg.message_id);
-        });
 
-        msgDiv.appendChild(reportButton);
-    
+    // Report button
+    const reportButton = document.createElement("button");
+    reportButton.className = "report-btn";
+    reportButton.textContent = "Report";
+    reportButton.addEventListener("click", () => {
+        reportPost(msg.message_id, "message", "forum", msg.chat_id);
+    });
+
+    msgDiv.appendChild(reportButton);
+
     messagesList.appendChild(msgDiv);
 }
 

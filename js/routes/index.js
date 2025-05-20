@@ -12,7 +12,7 @@ async function loadContent(url) {
 
     state.token = sessionStorage.getItem("token") || localStorage.getItem("token") || null;
     const isLoggedIn = !!state.token;
-    console.log("User logged in:", isLoggedIn);
+    // console.log("User logged in:", isLoggedIn);
 
     const main = document.createElement("main");
     main.id = "content";

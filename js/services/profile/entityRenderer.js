@@ -176,6 +176,9 @@ function createEntityLink(item, entityType) {
         case "feedpost":
             entityLink.href = `/post/${item.entity_id}`;
             break;
+        case "merch":
+            entityLink.href = `/merch/${item.entity_id}`;
+            break;
     }
     entityLink.textContent = "View Details";
     entityLink.style.color = "#007bff";

@@ -53,7 +53,6 @@ async function createEventForm(isLoggedIn, content) {
                     { value: "festival", label: "Festival" },
                     { value: "meetup", label: "Meetup" },
                     { value: "workshop", label: "Workshop" },
-                    { value: "theater", label: "Theater" },
                     { value: "other", label: "Other" }
                 ]
             },

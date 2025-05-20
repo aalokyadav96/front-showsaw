@@ -215,7 +215,6 @@ async function editEventForm(isLoggedIn, eventId) {
           { value: "Festival", label: "Festival" },
           { value: "Meetup", label: "Meetup" },
           { value: "Workshop", label: "Workshop" },
-          { value: "Theater", label: "Theater" },
           { value: "Other", label: "Other" }
         ]
       },

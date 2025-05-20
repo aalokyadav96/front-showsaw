@@ -1,16 +1,27 @@
-import { SRC_URL, state } from "../../../state/state.js";
+import { SRC_URL, getState, state } from "../../../state/state.js";
 import Snackbar from "../../../components/ui/Snackbar.mjs";
 import { apiFetch } from "../../../api/api.js";
 import { fetchFeed } from "../fetchFeed.js";
 import { reportPost } from "../../reporting/reporting.js";
+import { toggleLike } from "../../beats/likes.js";
+
 
 import { createCommentsSection } from "../../comments/comments.js";
 
 export function createPostHeader(post) {
+    const userPicUrl = `${SRC_URL}/userpic/thumb/${post.userid + ".jpg"}`;
+    const fallbackPic = 'default.png'; // Fallback image in case userpic doesn't exist
+
     return `
         <div class="post-header hflex">
             <a class="user-icon" href="/user/${post.username}">
-                <img loading="lazy" src="${SRC_URL}/userpic/thumb/${post.userid + ".jpg" || 'default.png'}" alt="Profile Picture" class="profile-thumb" />
+                <img 
+                    loading="lazy" 
+                    src="${userPicUrl}" 
+                    alt="Profile Picture" 
+                    class="profile-thumb" 
+                    onerror="this.onerror=null; this.src='${SRC_URL}/userpic/thumb/${fallbackPic}'" 
+                />
             </a>
             <div class="user-time">
                 <div class="username">${post.username}</div>
@@ -20,57 +31,48 @@ export function createPostHeader(post) {
     `;
 }
 
-// export function createActions(post, isLoggedIn, isCreator) {
-//     const actionsContainer = document.createElement("div");
-//     actionsContainer.className = "post-actions";
-
-//     if (isLoggedIn) {
-//         const likeButton = document.createElement("span");
-//         likeButton.className = "like";
-//         likeButton.textContent = `Like (${post.likes})`;
-
-//         const commentButton = document.createElement("span");
-//         commentButton.className = "comment";
-//         commentButton.textContent = "Comment";
-//         commentButton.addEventListener("click", () => {
-//             if (!post._commentSectionVisible) {
-//                 const commentsEl = createCommentsSection(post.postid, post.comments || []);
-//                 actionsContainer.parentElement.appendChild(commentsEl);
-//                 post._commentSectionVisible = true;
-//             }
-//         });
-
-
-//         actionsContainer.appendChild(likeButton);
-//         actionsContainer.appendChild(commentButton);
-
-//         if (isCreator) {
-//             const deleteButton = document.createElement("button");
-//             deleteButton.className = "delete-btn";
-//             deleteButton.textContent = "Delete";
-//             deleteButton.addEventListener("click", () => deletePost(post.postid));
-//             actionsContainer.appendChild(deleteButton);
-//         }
-//     }
-
-//     return actionsContainer;
-// }
-
 export function createActions(post, isLoggedIn, isCreator) {
+    let currentUserId = getState("user");
+    let entityType = "feed";
+    let entityId = post.postid;
     const actionsContainer = document.createElement("div");
     actionsContainer.className = "post-actions";
-
+    // const handleLikeClick = debounce(async () => {
+    //     try {
+    //         const result = await toggleLike("post", post.postid);
+    //         if (result && typeof result.count === "number") {
+    //             likeButton.textContent = `Like (${result.count})`;
+    //         }
+    //     } catch (err) {
+    //         console.error("Failed to toggle like", err);
+    //     }
+    // }, 500); // 500ms debounce delay
     if (isLoggedIn) {
         const likeButton = document.createElement("span");
         likeButton.className = "like";
         likeButton.textContent = `Like (${post.likes})`;
+        
+        const handleLikeClick = debounce(async () => {
+            try {
+                const result = await toggleLike("post", post.postid);
+                if (result && typeof result.count === "number") {
+                    likeButton.textContent = `Like (${result.count})`;
+                }
+            } catch (err) {
+                console.error("Failed to toggle like", err);
+            }
+        }, 500); // 500ms debounce
+
+
+        likeButton.addEventListener("click", handleLikeClick);
+
 
         const commentButton = document.createElement("span");
         commentButton.className = "comment";
         commentButton.textContent = "Comment";
         commentButton.addEventListener("click", () => {
             if (!post._commentSectionVisible) {
-                const commentsEl = createCommentsSection(post.postid, post.comments || []);
+                const commentsEl = createCommentsSection(post.postid, post.comments || [], entityType, entityId, currentUserId);
                 actionsContainer.parentElement.appendChild(commentsEl);
                 post._commentSectionVisible = true;
             }
@@ -97,7 +99,7 @@ export function createActions(post, isLoggedIn, isCreator) {
         reportButton.textContent = "Report";
         reportButton.addEventListener("click", () => {
             dropdown.classList.add("hidden");
-            reportPost(post.postid);
+            reportPost(post.postid, "post");
         });
 
         dropdown.appendChild(reportButton);
@@ -118,7 +120,7 @@ export function createActions(post, isLoggedIn, isCreator) {
             e.stopPropagation();
             dropdown.classList.toggle("hidden");
         });
-        
+
         // Hide dropdown when clicking outside
         document.addEventListener("click", () => {
             dropdown.classList.add("hidden");
@@ -168,3 +170,11 @@ async function deletePost(postId) {
         }
     }
 }
+function debounce(func, delay) {
+    let timeout;
+    return function (...args) {
+        if (timeout) clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), delay);
+    };
+}
+

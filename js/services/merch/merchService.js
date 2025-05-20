@@ -5,7 +5,9 @@ import { Button } from "../../components/base/Button.js";
 import { createElement } from "../../components/createElement.js";
 import { SRC_URL } from "../../state/state.js";
 import { handlePurchase } from '../payment/paymentService.js';
+// import { handlePurchase } from '../payment/pay.js';
 import SnackBar from "../../components/ui/Snackbar.mjs";
+import Modal from "../../components/ui/Modal.mjs";
 
 import { reportPost } from "../reporting/reporting.js";
 
@@ -83,16 +85,155 @@ async function deleteMerch(entityType, merchId, eventId) {
     }
 }
 
+// async function editMerchForm(entityType, merchId, eventId) {
+//     try {
+//         const response = await apiFetch(`/merch/${entityType}/${eventId}/${merchId}`, 'GET');
+
+//         // const editDiv = document.getElementById('editevent');
+//         const editDiv = document.getElementById('edittabs');
+//         editDiv.textContent = ""; // Clear existing content
+
+//         const heading = document.createElement("h3");
+//         heading.textContent = "Edit Merchandise";
+
+//         const form = document.createElement("form");
+//         form.id = "edit-merch-form";
+
+//         const merchIdInput = document.createElement("input");
+//         merchIdInput.type = "hidden";
+//         merchIdInput.name = "merchid";
+//         merchIdInput.value = merchId;
+
+//         const nameLabel = document.createElement("label");
+//         nameLabel.setAttribute("for", "merchName");
+//         nameLabel.textContent = "Name:";
+
+//         const nameInput = document.createElement("input");
+//         nameInput.type = "text";
+//         nameInput.id = "merchName";
+//         nameInput.name = "merchName";
+//         nameInput.value = response.name;
+//         nameInput.required = true;
+
+//         const priceLabel = document.createElement("label");
+//         priceLabel.setAttribute("for", "merchPrice");
+//         priceLabel.textContent = "Price:";
+
+//         const priceInput = document.createElement("input");
+//         priceInput.type = "number";
+//         priceInput.id = "merchPrice";
+//         priceInput.name = "merchPrice";
+//         priceInput.value = response.price;
+//         priceInput.required = true;
+//         priceInput.step = "0.01";
+
+//         const stockLabel = document.createElement("label");
+//         stockLabel.setAttribute("for", "merchStock");
+//         stockLabel.textContent = "Stock:";
+
+//         const stockInput = document.createElement("input");
+//         stockInput.type = "number";
+//         stockInput.id = "merchStock";
+//         stockInput.name = "merchStock";
+//         stockInput.value = response.stock;
+//         stockInput.required = true;
+
+//         const submitButton = document.createElement("button");
+//         submitButton.type = "submit";
+//         submitButton.className = "button";
+//         submitButton.textContent = "Update Merchandise";
+
+//         // Append all elements to the form
+//         form.append(
+//             merchIdInput,
+//             nameLabel, nameInput,
+//             priceLabel, priceInput,
+//             stockLabel, stockInput,
+//             submitButton
+//         );
+
+//         // Append form and heading to the editDiv
+//         editDiv.append(heading, form);
+
+//         // Attach the submit event listener
+//         form.addEventListener("submit", async (event) => {
+//             event.preventDefault();
+
+//             // Prepare data to send to the backend
+//             const merchData = {
+//                 name: nameInput.value,
+//                 price: parseFloat(priceInput.value),
+//                 stock: parseInt(stockInput.value)
+//             };
+
+//             try {
+//                 // Send a PUT request with JSON data
+//                 const updateResponse = await apiFetch(`/merch/${entityType}/${eventId}/${merchId}`, 'PUT', JSON.stringify(merchData), { 'Content-Type': 'application/json' });
+
+//                 if (updateResponse.success) {
+//                     alert('Merchandise updated successfully!');
+//                 } else {
+//                     alert(`Failed to update merchandise: ${updateResponse.message}`);
+//                 }
+//             } catch (error) {
+//                 console.error('Error updating merchandise:', error);
+//                 alert('An error occurred while updating the merchandise.');
+//             }
+//         });
+//     } catch (error) {
+//         console.error('Error fetching merchandise details:', error);
+//         alert('An error occurred while fetching the merchandise details.');
+//     }
+// }
+
+// function addMerchForm(entityType, eventId, merchList) {
+//     // const editEventDiv = document.getElementById('editevent');
+//     const editEventDiv = document.getElementById('edittabs');
+//     editEventDiv.textContent = ""; // Clear existing content
+
+//     const heading = document.createElement("h3");
+//     heading.textContent = "Add Merchandise";
+
+//     const merchNameInput = document.createElement("input");
+//     merchNameInput.type = "text";
+//     merchNameInput.id = "merch-name";
+//     merchNameInput.placeholder = "Merchandise Name";
+//     merchNameInput.required = true;
+
+//     const merchPriceInput = document.createElement("input");
+//     merchPriceInput.type = "number";
+//     merchPriceInput.id = "merch-price";
+//     merchPriceInput.placeholder = "Price";
+//     merchPriceInput.required = true;
+
+//     const merchStockInput = document.createElement("input");
+//     merchStockInput.type = "number";
+//     merchStockInput.id = "merch-stock";
+//     merchStockInput.placeholder = "Stock Available";
+//     merchStockInput.required = true;
+
+//     const merchImageInput = document.createElement("input");
+//     merchImageInput.type = "file";
+//     merchImageInput.id = "merch-image";
+//     merchImageInput.accept = "image/*";
+
+//     const addButton = document.createElement("button");
+//     addButton.id = "add-merch-btn";
+//     addButton.textContent = "Add Merchandise";
+//     addButton.addEventListener("click", () => addMerchandise(entityType, eventId, merchList));
+
+//     const cancelButton = document.createElement("button");
+//     cancelButton.id = "cancel-merch-btn";
+//     cancelButton.textContent = "Cancel";
+//     cancelButton.addEventListener("click", clearMerchForm);
+
+//     editEventDiv.append(heading, merchNameInput, merchPriceInput, merchStockInput, merchImageInput, addButton, cancelButton);
+// }
+
+
 async function editMerchForm(entityType, merchId, eventId) {
     try {
         const response = await apiFetch(`/merch/${entityType}/${eventId}/${merchId}`, 'GET');
-
-        // const editDiv = document.getElementById('editevent');
-        const editDiv = document.getElementById('edittabs');
-        editDiv.textContent = ""; // Clear existing content
-
-        const heading = document.createElement("h3");
-        heading.textContent = "Edit Merchandise";
 
         const form = document.createElement("form");
         form.id = "edit-merch-form";
@@ -141,7 +282,6 @@ async function editMerchForm(entityType, merchId, eventId) {
         submitButton.className = "button";
         submitButton.textContent = "Update Merchandise";
 
-        // Append all elements to the form
         form.append(
             merchIdInput,
             nameLabel, nameInput,
@@ -150,14 +290,15 @@ async function editMerchForm(entityType, merchId, eventId) {
             submitButton
         );
 
-        // Append form and heading to the editDiv
-        editDiv.append(heading, form);
+        const modal = Modal({
+            title: "Edit Merchandise",
+            content: form,
+            onClose: () => modal.remove()
+        });
 
-        // Attach the submit event listener
         form.addEventListener("submit", async (event) => {
             event.preventDefault();
 
-            // Prepare data to send to the backend
             const merchData = {
                 name: nameInput.value,
                 price: parseFloat(priceInput.value),
@@ -165,11 +306,13 @@ async function editMerchForm(entityType, merchId, eventId) {
             };
 
             try {
-                // Send a PUT request with JSON data
-                const updateResponse = await apiFetch(`/merch/${entityType}/${eventId}/${merchId}`, 'PUT', JSON.stringify(merchData), { 'Content-Type': 'application/json' });
+                const updateResponse = await apiFetch(`/merch/${entityType}/${eventId}/${merchId}`, 'PUT', JSON.stringify(merchData), {
+                    'Content-Type': 'application/json'
+                });
 
                 if (updateResponse.success) {
                     alert('Merchandise updated successfully!');
+                    modal.remove();
                 } else {
                     alert(`Failed to update merchandise: ${updateResponse.message}`);
                 }
@@ -185,12 +328,8 @@ async function editMerchForm(entityType, merchId, eventId) {
 }
 
 function addMerchForm(entityType, eventId, merchList) {
-    // const editEventDiv = document.getElementById('editevent');
-    const editEventDiv = document.getElementById('edittabs');
-    editEventDiv.textContent = ""; // Clear existing content
-
-    const heading = document.createElement("h3");
-    heading.textContent = "Add Merchandise";
+    const form = document.createElement("form");
+    form.id = "add-merch-form";
 
     const merchNameInput = document.createElement("input");
     merchNameInput.type = "text";
@@ -216,16 +355,35 @@ function addMerchForm(entityType, eventId, merchList) {
     merchImageInput.accept = "image/*";
 
     const addButton = document.createElement("button");
-    addButton.id = "add-merch-btn";
+    addButton.type = "submit";
     addButton.textContent = "Add Merchandise";
-    addButton.addEventListener("click", () => addMerchandise(entityType, eventId, merchList));
 
     const cancelButton = document.createElement("button");
-    cancelButton.id = "cancel-merch-btn";
+    cancelButton.type = "button";
     cancelButton.textContent = "Cancel";
-    cancelButton.addEventListener("click", clearMerchForm);
 
-    editEventDiv.append(heading, merchNameInput, merchPriceInput, merchStockInput, merchImageInput, addButton, cancelButton);
+    form.append(
+        merchNameInput,
+        merchPriceInput,
+        merchStockInput,
+        merchImageInput,
+        addButton,
+        cancelButton
+    );
+
+    const modal = Modal({
+        title: "Add Merchandise",
+        content: form,
+        onClose: () => modal.remove()
+    });
+
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        await addMerchandise(entityType, eventId, merchList);
+        modal.remove();
+    });
+
+    cancelButton.addEventListener("click", () => modal.remove());
 }
 
 function displayNewMerchandise(merchData, merchList) {
@@ -261,7 +419,7 @@ function displayNewMerchandise(merchData, merchList) {
 async function displayMerchandise(merchcon, merchData, entityType, eventId, isCreator, isLoggedIn) {
     merchcon.appendChild(createElement('h2', "", ["Merchandise"]));
     var merchList = document.createElement('div');
-    merchList.className = "merchcon hvflex";
+    merchList.className = "merchcon hflex-wrap";
 
     if (isCreator) {
         const button = Button("Add Merchandise", "add-merch", {
@@ -296,7 +454,7 @@ async function displayMerchandise(merchcon, merchData, entityType, eventId, isCr
             onBuy: () => buyMerch(entityType, merch.merchid, eventId),
             onEdit: () => editMerchForm(entityType, merch.merchid, eventId),
             onDelete: () => deleteMerch(entityType, merch.merchid, eventId),
-            onReport: () => reportPost(merch.merchid, entityType, eventId),
+            onReport: () => reportPost(merch.merchid, "merch", entityType, eventId),
         });
 
         merchList.appendChild(card);

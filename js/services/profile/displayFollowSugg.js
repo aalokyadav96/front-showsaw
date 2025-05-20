@@ -66,7 +66,8 @@ async function displayFollowSuggestions(userid, suggestionsSection) {
             suggestionsSection.appendChild(suggestionsList);
         } else {
             const noSuggestionsMessage = document.createElement("p");
-            noSuggestionsMessage.textContent = "No follow suggestions available.";
+            // noSuggestionsMessage.textContent = "No follow suggestions available.";
+            noSuggestionsMessage.textContent = "";
             suggestionsSection.appendChild(noSuggestionsMessage);
         }
     } catch (error) {

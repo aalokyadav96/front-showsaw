@@ -37,15 +37,15 @@ export async function displayArtists(container, isLoggedIn) {
             artistCard.appendChild(name);
 
             const category = document.createElement("p");
-            category.textContent = `Type: ${artist.category}`;
+            category.textContent = `${artist.category}`;
             artistCard.appendChild(category);
 
-            if (artist.banner) {
-                const banner = document.createElement("img");
-                banner.src = `${SRC_URL}/artistpic/banner/${artist.banner}`;
-                banner.alt = `${artist.name}'s banner`;
-                banner.className = "artist-banner";
-                artistCard.appendChild(banner);
+            if (artist.photo) {
+                const photo = document.createElement("img");
+                photo.src = `${SRC_URL}/artistpic/photo/${artist.photo}`;
+                photo.alt = `${artist.name}'s photo`;
+                photo.className = "artist-photo";
+                artistCard.appendChild(photo);
             }
 
             const bio = document.createElement("p");

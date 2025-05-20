@@ -25,35 +25,20 @@ async function renderPageContent(isLoggedIn, path, contentContainer) {
             contentContainer.innerHTML = "";
             Auth(isLoggedIn, contentContainer);
         },
-        "/forums": async () => {
-            const { Chat } = await import("../pages/forum/chat.js");
-            contentContainer.innerHTML = "";
-            Chat(isLoggedIn, contentContainer);
-        },
         "/chats": async () => {
             const { Chats } = await import("../pages/userchat/chats.js");
             contentContainer.innerHTML = "";
             Chats(isLoggedIn, contentContainer);
         },
-        "/newchat": async () => {
-            const { NewChat } = await import("../pages/newchat/newchat.js");
+        "/livechat": async () => {
+            const { LiveChats } = await import("../pages/livechat/chats.js");
             contentContainer.innerHTML = "";
-            NewChat(isLoggedIn, contentContainer);
+            LiveChats(isLoggedIn, contentContainer);
         },
-        "/sports": async () => {
-            const { Sports } = await import("../pages/sports/sports.js");
+        "/forums": async () => {
+            const { Chat } = await import("../pages/forum/chat.js");
             contentContainer.innerHTML = "";
-            Sports(isLoggedIn, contentContainer);
-        },
-        "/news": async () => {
-            const { News } = await import("../pages/news/news.js");
-            contentContainer.innerHTML = "";
-            News(isLoggedIn, contentContainer);
-        },
-        "/map": async () => {
-            const { Map } = await import("../pages/map/map.js");
-            contentContainer.innerHTML = "";
-            Map(isLoggedIn, contentContainer);
+            Chat(isLoggedIn, contentContainer);
         },
         "/create-event": async () => {
             const { Create } = await import("../pages/events/createEvent.js");
@@ -80,11 +65,6 @@ async function renderPageContent(isLoggedIn, path, contentContainer) {
             contentContainer.innerHTML = "";
             Artists(isLoggedIn, contentContainer);
         },
-        "/cartoons": async () => {
-            const { Cartoons } = await import("../pages/cartoon/cartoons.js");
-            contentContainer.innerHTML = "";
-            Cartoons(isLoggedIn, contentContainer);
-        },
         "/places": async () => {
             const { Places } = await import("../pages/places/places.js");
             contentContainer.innerHTML = "";
@@ -110,11 +90,6 @@ async function renderPageContent(isLoggedIn, path, contentContainer) {
             contentContainer.innerHTML = "";
             Create(isLoggedIn, contentContainer);
         },
-        "/create-cartoon": async () => {
-            const { Create } = await import("../pages/cartoon/createCartoon.js");
-            contentContainer.innerHTML = "";
-            Create(isLoggedIn, contentContainer);
-        },
         "/create-itinerary": async () => {
             const { CreateItinerary } = await import("../pages/itinerary/createItinerary.js");
             contentContainer.innerHTML = "";
@@ -129,56 +104,6 @@ async function renderPageContent(isLoggedIn, path, contentContainer) {
             const { Itinerary } = await import("../pages/itinerary/itinerary.js");
             contentContainer.innerHTML = "";
             Itinerary(isLoggedIn, contentContainer);
-        },
-        "/nearby": async () => {
-            const { Nearby } = await import("../pages/nearby/nearby.js");
-            contentContainer.innerHTML = "";
-            Nearby(isLoggedIn, contentContainer);
-        },
-        "/people": async () => {
-            const { People } = await import("../pages/people/people.js");
-            contentContainer.innerHTML = "";
-            People(isLoggedIn, contentContainer);
-        },
-        "/qna": async () => {
-            const { QnA } = await import("../pages/qna/qna.js");
-            contentContainer.innerHTML = "";
-            QnA(isLoggedIn, contentContainer);
-        },
-        "/poll": async () => {
-            const { Poll } = await import("../pages/poll/poll.js");
-            contentContainer.innerHTML = "";
-            Poll(isLoggedIn, contentContainer);
-        },
-        "/blog": async () => {
-            const { Blog } = await import("../pages/blog/blog.js");
-            contentContainer.innerHTML = "";
-            Blog(isLoggedIn, contentContainer);
-        },
-        "/quiz": async () => {
-            const { Quiz } = await import("../pages/quiz/quiz.js");
-            contentContainer.innerHTML = "";
-            Quiz(isLoggedIn, contentContainer);
-        },
-        "/ai": async () => {
-            const { AI } = await import("../pages/ai/ai.js");
-            contentContainer.innerHTML = "";
-            AI(isLoggedIn, contentContainer);
-        },
-        "/clips": async () => {
-            const { Clips } = await import("../pages/clips/clips.js");
-            contentContainer.innerHTML = "";
-            Clips(isLoggedIn, contentContainer);
-        },
-        "/jobs": async () => {
-            const { Jobs } = await import("../pages/jobs/jobs.js");
-            contentContainer.innerHTML = "";
-            Jobs(isLoggedIn, contentContainer);
-        },
-        "/shopping": async () => {
-            const { Shopping } = await import("../pages/shopping/shopping.js");
-            contentContainer.innerHTML = "";
-            Shopping(isLoggedIn, contentContainer);
         },
     };
 
@@ -215,7 +140,6 @@ async function renderPageContent(isLoggedIn, path, contentContainer) {
                 }
             },
         },
-        
         {
             pattern: /^\/artist\/([\w-]+)$/,
             handler: async (matches) => {
@@ -229,14 +153,14 @@ async function renderPageContent(isLoggedIn, path, contentContainer) {
             },
         },
         {
-            pattern: /^\/news\/([\w-]+)$/,
+            pattern: /^\/merch\/([\w-]+)$/,
             handler: async (matches) => {
-                const { News } = await import("../pages/news/newsPage.js");
+                const { Merch } = await import("../pages/merch/merch.js");
                 try {
                     contentContainer.innerHTML = "";
-                    News(isLoggedIn, matches[1], contentContainer);
+                    Merch(isLoggedIn, matches[1], contentContainer);
                 } catch {
-                    content.innerHTML = `<h1>Artist Not Found</h1>`;
+                    content.innerHTML = `<h1>Merch Not Found</h1>`;
                 }
             },
         },
@@ -253,14 +177,14 @@ async function renderPageContent(isLoggedIn, path, contentContainer) {
             },
         },
         {
-            pattern: /^\/cartoon\/([\w-]+)$/,
+            pattern: /^\/livechat\/([\w-]+)$/,
             handler: async (matches) => {
-                const { Cartoon } = await import("../pages/cartoon/cartoonPage.js");
+                const { LiveChat } = await import("../pages/livechat/chat.js");
                 try {
                     contentContainer.innerHTML = "";
-                    Cartoon(isLoggedIn, matches[1], contentContainer);
+                    LiveChat(isLoggedIn, matches[1], contentContainer);
                 } catch {
-                    content.innerHTML = `<h1>Cartoon Not Found</h1>`;
+                    content.innerHTML = `<h1>Chat Not Found</h1>`;
                 }
             },
         },

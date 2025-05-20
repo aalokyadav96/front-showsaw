@@ -33,6 +33,7 @@ async function uploadMedia(isLoggedIn, entityType, entityId, mediaList, modal) {
         if (uploadResponse && uploadResponse.id) {  // Check if the response contains an 'id'
             SnackBar("Media uploaded successfully!");
             modal.remove();
+            document.body.style.overflow = "";
             displayNewMedia(isLoggedIn, uploadResponse, mediaList);
         } else {
             alert(`Failed to upload media: ${uploadResponse?.message || 'Unknown error'}`);
@@ -203,7 +204,7 @@ function renderMediaItem(media, index, isLoggedIn, entityType, entityId) {
         reportButton.className = "report-btn";
         reportButton.textContent = "Report";
         reportButton.addEventListener("click", () => {
-            reportPost(media.id);
+            reportPost(media.id, "media");
         });
         mediaItem.appendChild(reportButton);
 
@@ -218,6 +219,7 @@ async function displayMedia(content, entityType, entityId, isLoggedIn) {
     const mediaData = response;
 
     const mediaList = createElement("div", { class: "hvflex" });
+    // const mediaList = createElement("div", { class: "grid-4" });
     content.appendChild(mediaList);
 
     // Add "Add Media" button for logged-in users
@@ -259,6 +261,21 @@ async function displayMedia(content, entityType, entityId, isLoggedIn) {
 
     }
 }
+
+/********
+ * 
+ * 
+ * 
+ * import GridxMasonary from "./GridxMasonary.mjs";
+const items = Array.from({ length: 10 }, (_, i) => {
+    const div = document.createElement("div");
+    div.textContent = `Item ${i + 1}`;
+    return div;
+});
+document.body.appendChild(GridxMasonary(items));
+ * 
+ */
+
 
 function playVideo(videos, index, videoid) {
     // poster = `${SRC_URL}/uploads/${media.id}.jpg`;

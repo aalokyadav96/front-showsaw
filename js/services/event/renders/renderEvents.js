@@ -1,5 +1,6 @@
 // --- Master Router: renderEventByType ---
 import { renderConcert } from './renderConcert.js';
+import { renderConference } from './renderConference.js';
 import { renderWorkshop } from './renderWorkshop.js';
 import { renderSportsEvent } from './renderSportsEvent.js';
 import { renderMeetup } from './renderMeetup.js';
@@ -10,6 +11,7 @@ export function renderEventByType(eventType, data, container, isCreator) {
     const type = eventType.toLowerCase();
     const renderers = {
         'concert': renderConcert,
+        'conference': renderConference,
         'workshop': renderWorkshop,
         'sports': renderSportsEvent,
         'meetup': renderMeetup,

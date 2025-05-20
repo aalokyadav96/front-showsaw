@@ -6,6 +6,7 @@ import { createElement } from "../../components/createElement.js";
 import { SRC_URL } from "../../state/state.js";
 import {handlePurchase} from '../payment/paymentService.js';
 import SnackBar from "../../components/ui/Snackbar.mjs";
+import Modal from "../../components/ui/Modal.mjs";
 
 // Add Menu to the event
 async function addMenu(placeId, menuList) {
@@ -84,11 +85,11 @@ async function editMenuForm(menuId, placeId) {
     try {
         const response = await apiFetch(`/places/menu/${placeId}/${menuId}`, 'GET');
 
-        const editDiv = document.getElementById('editplace');
-        editDiv.textContent = ""; // Clear existing content
+        // const editDiv = document.getElementById('editplace');
+        // editDiv.textContent = ""; // Clear existing content
 
-        const heading = document.createElement("h3");
-        heading.textContent = "Edit Menu";
+        // const heading = document.createElement("h3");
+        // heading.textContent = "Edit Menu";
 
         const form = document.createElement("form");
         form.id = "edit-menu-form";
@@ -145,8 +146,14 @@ async function editMenuForm(menuId, placeId) {
             submitButton
         );
 
-        // Append form and heading to the editDiv
-        editDiv.append(heading, form);
+        // // Append form and heading to the editDiv
+        // editDiv.append(heading, form);
+
+        const modal = Modal({
+            title: "Edit Merchandise",
+            content: form,
+            onClose: () => modal.remove()
+        });
 
         // Attach the submit event listener
         form.addEventListener("submit", async (event) => {
@@ -179,13 +186,53 @@ async function editMenuForm(menuId, placeId) {
     }
 }
 
-function addMenuForm(placeId, menuList) {
-    // const editEventDiv = document.getElementById('editevent');
-    const editEventDiv = menuList;
-    editEventDiv.textContent = ""; // Clear existing content
+// function addMenuForm(placeId, menuList) {
+//     // const editEventDiv = document.getElementById('editevent');
+//     const editEventDiv = menuList;
+//     editEventDiv.textContent = ""; // Clear existing content
 
-    const heading = document.createElement("h3");
-    heading.textContent = "Add Menu";
+//     const heading = document.createElement("h3");
+//     heading.textContent = "Add Menu";
+
+//     const menuNameInput = document.createElement("input");
+//     menuNameInput.type = "text";
+//     menuNameInput.id = "menu-name";
+//     menuNameInput.placeholder = "Menu Name";
+//     menuNameInput.required = true;
+
+//     const menuPriceInput = document.createElement("input");
+//     menuPriceInput.type = "number";
+//     menuPriceInput.id = "menu-price";
+//     menuPriceInput.placeholder = "Price";
+//     menuPriceInput.required = true;
+
+//     const menuStockInput = document.createElement("input");
+//     menuStockInput.type = "number";
+//     menuStockInput.id = "menu-stock";
+//     menuStockInput.placeholder = "Stock Available";
+//     menuStockInput.required = true;
+
+//     const menuImageInput = document.createElement("input");
+//     menuImageInput.type = "file";
+//     menuImageInput.id = "menu-image";
+//     menuImageInput.accept = "image/*";
+
+//     const addButton = document.createElement("button");
+//     addButton.id = "add-menu-btn";
+//     addButton.textContent = "Add Menu";
+//     addButton.addEventListener("click", () => addMenu(placeId, menuList));
+
+//     const cancelButton = document.createElement("button");
+//     cancelButton.id = "cancel-menu-btn";
+//     cancelButton.textContent = "Cancel";
+//     cancelButton.addEventListener("click", clearMenuForm);
+
+//     editEventDiv.append(heading, menuNameInput, menuPriceInput, menuStockInput, menuImageInput, addButton, cancelButton);
+// }
+
+function addMenuForm(placeId, menuList) {
+    const form = document.createElement("form");
+    form.id = "add-menu-form";
 
     const menuNameInput = document.createElement("input");
     menuNameInput.type = "text";
@@ -211,16 +258,35 @@ function addMenuForm(placeId, menuList) {
     menuImageInput.accept = "image/*";
 
     const addButton = document.createElement("button");
-    addButton.id = "add-menu-btn";
+    addButton.type = "submit";
     addButton.textContent = "Add Menu";
-    addButton.addEventListener("click", () => addMenu(placeId, menuList));
 
     const cancelButton = document.createElement("button");
-    cancelButton.id = "cancel-menu-btn";
+    cancelButton.type = "button";
     cancelButton.textContent = "Cancel";
-    cancelButton.addEventListener("click", clearMenuForm);
 
-    editEventDiv.append(heading, menuNameInput, menuPriceInput, menuStockInput, menuImageInput, addButton, cancelButton);
+    form.append(
+        menuNameInput,
+        menuPriceInput,
+        menuStockInput,
+        menuImageInput,
+        addButton,
+        cancelButton
+    );
+
+    const modal = Modal({
+        title: "Add Menu",
+        content: form,
+        onClose: () => modal.remove()
+    });
+
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        await addMenu(placeId, menuList); // You may need to modify this if it needs values from the form.
+        modal.remove();
+    });
+
+    cancelButton.addEventListener("click", () => modal.remove());
 }
 
 function displayNewMenu(menuData, menuList) {

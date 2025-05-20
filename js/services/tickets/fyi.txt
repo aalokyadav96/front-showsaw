@@ -1,0 +1,53 @@
+Thanks for the detailed context. The issue is that you're using `apiFetch`, which likely wraps `fetch` and **automatically parses the response** (e.g. as JSON) or **throws on non-2xx statuses** — and that breaks binary (`Blob`) handling like PDF downloads.
+
+### Fix
+
+You **must bypass `apiFetch`** when dealing with binary files like PDFs. Replace the PDF fetch logic with plain `fetch`.
+
+### ✅ Fixed `printTicketPDF` function:
+
+```js
+const printTicketPDF = async (ticketId, eventId, uniqueCode) => {
+  try {
+    const endpoint = `/ticket/print/${eventId}/${ticketId}?uniqueCode=${encodeURIComponent(uniqueCode)}`;
+
+    // Use raw fetch for binary response
+    const response = await fetch(endpoint, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/pdf',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch PDF: ${response.statusText}`);
+    }
+
+    const blob = await response.blob();
+
+    const downloadUrl = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    link.download = `ticket-${ticketId}.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(downloadUrl);
+
+    return true;
+  } catch (error) {
+    console.error(`Error downloading ticket PDF:`, error);
+    return false;
+  }
+};
+```
+
+### Why `apiFetch` breaks here
+
+- If it assumes JSON (`res.json()`), it corrupts the PDF binary stream.
+- If it throws for `res.ok === false`, you never get to handle the actual blob.
+- Some wrappers even intercept or rewrap responses, blocking access to `res.blob()`.
+
+Use plain `fetch` for files, and keep `apiFetch` for JSON APIs.
+
+Would you like a custom helper just for file downloads to keep your code cleaner?

@@ -1,84 +1,79 @@
-/* Modal container */
 .modal {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 9999;
-  }
-  
-  /* Modal overlay */
-  .modal-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(2px);
-  }
-  
-  /* Modal dialog */
-  .modal-dialog {
-    position: relative;
-    width: 90%;
-    max-width: 500px;
-    margin: 0 auto;
-    background: var(--card-bg);
-    border-radius: 8px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-    outline: none;
+    inset: 0;
     display: flex;
-    flex-direction: column;
-    animation: fadeInUp 0.3s ease-out;
+    align-items: center;
+    justify-content: center;
+    pointer-events: auto;
   }
   
-  /* Modal header */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    pointer-events: auto;
+  }
+  
+  .modal-dialog {
+    background: white;
+    border-radius: 4px;
+    max-width: 90%;
+    max-height: 80%;
+    z-index: inherit;
+    overflow-y: auto;
+    outline: none;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  }
+  
+  .modal--small .modal-dialog {
+    width: 300px;
+  }
+  
+  .modal--medium .modal-dialog {
+    width: 500px;
+  }
+  
+  .modal--large .modal-dialog {
+    width: 800px;
+  }
+  
+  /* Fade in/out animations */
+  @keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+  }
+  @keyframes fadeOut {
+    from {opacity: 1;}
+    to {opacity: 0;}
+  }
+  
+  .modal--fade-in {
+    animation: fadeIn 0.25s forwards;
+  }
+  
+  .modal--fade-out {
+    animation: fadeOut 0.25s forwards;
+  }
+  
   .modal-header {
-    padding: 1rem 1.25rem;
-    /* background-color: #f5f5f5; */
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 1rem;
     border-bottom: 1px solid #ddd;
   }
   
-  /* Modal title */
-  .modal-header h3 {
-    margin: 0;
-    font-size: 1.25rem;
-  }
-  
-  /* Close button */
   .modal-close {
     background: none;
     border: none;
     font-size: 1.5rem;
     line-height: 1;
     cursor: pointer;
-    padding: 0;
   }
   
-  .modal-close:hover {
-    color: #000;
-  }
-  
-  /* Modal body */
   .modal-body {
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
-  }
-  
-  /* Optional animation */
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    padding: 1rem;
+    overflow-y: auto;
+    max-height: calc(80vh - 100px); /* Adjust depending on header/footer size */
   }
   

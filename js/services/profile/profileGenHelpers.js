@@ -31,7 +31,7 @@ function createBanner(profile) {
     bgImg.className = "bg_img";
 
     const banncon = document.createElement("span");
-    // banncon.className = "vflex";
+    banncon.style.position = "relative";
 
     // Use user's banner picture if available; otherwise, use default banner
     const bannerPicture = profile.banner_picture
@@ -79,7 +79,11 @@ function createProfilePicture(profile) {
     thumb.className = "thumb";
 
     // Use default profile picture if none is available
-    const profilePic = profile.profile_picture ? `${SRC_URL}/userpic/${profile.profile_picture}` : `${SRC_URL}/userpic/default-profile.png`;
+    const profilexPic = profile.profile_picture ? `${SRC_URL}/userpic/${profile.profile_picture}` : `${SRC_URL}/userpic/default-profile.png`;
+    
+    const profilePic = profile.userid
+        ? `${SRC_URL}/userpic/thumb/${profile.userid}.jpg`
+        : `${SRC_URL}/userpic/thumb/thumb.jpg`;
 
     const img = document.createElement("img");
     img.src = profilePic;
@@ -90,7 +94,7 @@ function createProfilePicture(profile) {
 
     // Add click event to open full image if available
     if (profile.profile_picture) {
-        thumb.addEventListener("click", () => Sightbox(profilePic, "image"));
+        thumb.addEventListener("click", () => Sightbox(profilexPic, "image"));
     }
 
     profileArea.appendChild(thumb);
@@ -145,7 +149,7 @@ function createProfileDetails(profile, isLoggedIn) {
 
     const profileInfo = createProfileInfo(profile);
 
-    appendChildren(profileDetails, username, name, bio, profileActions, profileInfo);
+    appendChildren(profileDetails, profileActions, username, name, bio, profileInfo);
     return profileDetails;
 }
 
@@ -154,7 +158,10 @@ function createProfileActions(profile, isLoggedIn) {
     const profileActions = document.createElement("div");
     profileActions.className = "profile-actions";
 
-    if (isLoggedIn) {
+    // if (isLoggedIn) {
+    // }
+
+    if (profile.userid === state.user) {
         // Logout Button
         const logoutButton = document.createElement("button");
         logoutButton.className = "dropdown-item logout-btn";
@@ -162,17 +169,6 @@ function createProfileActions(profile, isLoggedIn) {
         logoutButton.addEventListener("click", async () => await logout());
         profileActions.appendChild(logoutButton);
 
-        // Report button
-        const reportButton = document.createElement("button");
-        reportButton.className = "report-btn";
-        reportButton.textContent = "Report";
-        reportButton.addEventListener("click", () => {
-            reportPost(profile.userid);
-        });
-        profileActions.appendChild(reportButton);
-    }
-
-    if (profile.userid === state.user) {
         const editButton = document.createElement("button");
         editButton.className = "btn edit-btn";
         editButton.dataset.action = "edit-profile";
@@ -193,6 +189,15 @@ function createProfileActions(profile, isLoggedIn) {
             click: () => userChatInit(profile.userid),
         }, "buttonx");
         profileActions.appendChild(sendMessagebtn);
+
+        // Report button
+        const reportButton = document.createElement("button");
+        reportButton.className = "report-btn";
+        reportButton.textContent = "Report";
+        reportButton.addEventListener("click", () => {
+            reportPost(profile.userid, "user");
+        });
+        profileActions.appendChild(reportButton);
     }
 
     return profileActions;

@@ -1,4 +1,5 @@
-import { displayChat } from "../../services/userchat/chatPage.js";
+import { displayChat } from "../../services/chats/displayNewchat.js";
+// import { displayChat } from "../../services/chats/chatPage.js";
 
 async function Chat(isLoggedIn, chatID, contentContainer) {
     contentContainer.innerHTML = '';

@@ -1,0 +1,57 @@
+Here’s a breakdown of your two questions:
+
+---
+
+### 🔍 **Search Bar Placement — Inline vs. Separate Page**
+
+**Recommendation: Put the search bar *on* the events listing page.**
+
+#### Why?
+- **Faster access**: Users expect instant filtering without changing pages.
+- **Better UX**: Real-time filtering or auto-submission gives quicker results.
+- **Standard practice**: Most ticket platforms (Eventbrite, BookMyShow) use inline search with filters.
+
+#### When to use separate search page (like Twitter):
+- Only if you expect **complex, full-text search across many domains** (e.g. tweets, users, hashtags).
+- For events, this is unnecessary unless you're combining blog posts, creators, and tickets in one search feed.
+
+---
+
+### ✅ Implementation Plan for Your New Features
+
+Here’s a roadmap for the features you mentioned:
+
+---
+
+#### 1. **QR Code Generation on Ticket**
+- Use a library like `github.com/skip2/go-qrcode` in Go.
+- Embed the QR code in the PDF (`qrcode.EncodeToPNG(...)`, embed using `gofpdf` or similar).
+
+#### 2. **Custom Ticket PDF Design**
+- Use `gofpdf`, `unidoc`, or HTML to PDF service (e.g., wkhtmltopdf).
+- Structure: event info, attendee info, ticket ID, QR code.
+- Make layout modular (template-like) so you can support different themes later.
+
+#### 3. **Admin/Scanner App or View**
+- Web view: Create a `/scanner` route with a simple camera-based QR scanner (use JS libraries like `html5-qrcode`).
+- Mobile app (optional): Use webview or a PWA with same QR logic.
+- Scanner endpoint: `GET /verify-ticket?code=...`, respond with valid/invalid and ticket info.
+
+#### 4. **Bot/Spam Protection**
+- Add **honeypot fields** in forms (invisible fields bots fill, humans don’t).
+- Rate-limit API calls like ticket verification, PDF download, login.
+- Add **reCAPTCHA v3** or hCaptcha where high abuse risk exists (signup, checkout).
+
+#### 5. **Support for Both Offline & Online Verification**
+- Online: scan QR and verify against backend.
+- Offline: QR code should contain encrypted/encoded data (e.g. ticket ID + HMAC).
+- Scanner app can verify offline using shared secret or public key to validate HMAC/signature.
+
+#### 6. **Abuse Handling**
+- Track ticket usage: log when and where a ticket was scanned.
+- Set ticket status: unused, scanned, revoked.
+- Allow admin to view abuse reports, mark tickets as blocked, regenerate.
+
+---
+
+Would you like a sample Go function to generate a ticket PDF with embedded QR and template layout next?

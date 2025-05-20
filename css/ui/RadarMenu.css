@@ -44,10 +44,10 @@
   transition: transform 0.2s;
   position: fixed;
   bottom: 10px;
-  /* left: 0; */
+  right: 10px;
   /* left: calc(50vw - 60px); */
-  left: 50%;
-  transform: translateX(-50%);
+  /* left: 50%; */
+  /* transform: translateX(-50%); */
 }
 
   .radar-menu {

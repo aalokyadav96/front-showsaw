@@ -3,6 +3,7 @@ import { SRC_URL, state } from "../state/state.js";
 import { navigate } from "../routes/index.js";
 import { logout } from "../services/auth/authService.js";
 import { moreSVG, chatSVG, notifSVG } from "./svgs.js";
+import { createElement } from "../components/createElement.js";
 
 /** Utility Functions */
 const toggleElement = (selector, className) =>
@@ -13,7 +14,7 @@ const closeElement = (selector, className) =>
 const handleNavigation = (event, href) => {
     event.preventDefault();
     if (!href) return console.error("🚨 handleNavigation received null href!");
-    console.log("handleNavigation called with href:", href);
+    // console.log("handleNavigation called with href:", href);
     navigate(href);
 };
 
@@ -67,16 +68,36 @@ const createProfileDropdown = (user) => {
     toggle.className = "profile-dropdown-toggle hflex";
     toggle.tabIndex = 0;
 
+    // // Use user's profile picture if available; otherwise, use default "thumb.jpg"
+    // const profilePic = user
+    //     ? `${SRC_URL}/userpic/thumb/${user}.jpg`
+    //     : `${SRC_URL}/userpic/thumb/thumb.jpg`;
+
+    // const image = document.createElement("img");
+    // image.src = profilePic;
+    // image.loading = "lazy";
+    // image.alt = "Profile Picture";
+    // image.className = "profile-image circle";
+
+    // toggle.appendChild(image);
     // Use user's profile picture if available; otherwise, use default "thumb.jpg"
     const profilePic = user
         ? `${SRC_URL}/userpic/thumb/${user}.jpg`
         : `${SRC_URL}/userpic/thumb/thumb.jpg`;
 
+    const fallbackPic = `${SRC_URL}/userpic/thumb/thumb.jpg`;
+
     const image = document.createElement("img");
     image.src = profilePic;
     image.loading = "lazy";
     image.alt = "Profile Picture";
-    image.className = "profile-image";
+    image.className = "profile-image circle";
+
+    // Set fallback image if the user's picture doesn't load
+    image.onerror = function () {
+        this.onerror = null; // Prevent infinite loop if fallback also fails
+        this.src = fallbackPic;
+    };
 
     toggle.appendChild(image);
 
@@ -85,7 +106,6 @@ const createProfileDropdown = (user) => {
 
     const links = [
         { href: "/profile", text: "Profile" },
-        { href: "/settings", text: "Settings" }
     ];
     links.forEach(({ href, text }) => {
         const anchor = document.createElement("a");
@@ -113,32 +133,15 @@ const createNav = (isLoggedIn) => {
     // const isLoggedIn = Boolean(state.token);
     const navItems = [
         { href: "/home", label: "Home" },
-        { href: "/feed", label: "Feed" },
         { href: "/events", label: "Events" },
         { href: "/places", label: "Places" },
+        { href: "/feed", label: "Feed" },
         { href: "/itinerary", label: "Itinerary" },
-        { href: "/nearby", label: "Nearby" },
-        { href: "/shopping", label: "Shopping" },
-        { href: "/news", label: "News" },
-        { href: "/clips", label: "Clips" },
-        { href: "/sports", label: "Sports" },
-        { href: "/forums", label: "Forums" },
-        { href: "/newchat", label: "NewChat" },
-        // { href: "/chats", label: "Chats" },
-        { href: "/qna", label: "QnA" },
-        // { href: "/poll", label: "Poll" },
-        // { href: "/quiz", label: "Quiz" },
-        // { href: "/artists", label: "Artists" },
-        { href: "/jobs", label: "Jobs" },
-        // { href: "/food", label: "Food" },
-        { href: "/blog", label: "Blog" },
-        { href: "/cartoons", label: "Cartoons" },
-        // { href: "/lives", label: "Lives" },
-        { href: "/map", label: "Map" },
-        { href: "/people", label: "People" },
-        { href: "/ai", label: "AI" },
+        { href: "/artists", label: "Artists" },
         { href: "/search", label: "Search" },
-        { href: "/premium", label: "Premium" },
+        { href: "/forums", label: "Forums" },
+        { href: "/livechat", label: "LiveChat" },
+
     ];
 
     // Create Header (with logo and profile or login button)
@@ -151,7 +154,7 @@ const createNav = (isLoggedIn) => {
     const logoLink = document.createElement("a");
     logoLink.href = "/";
     logoLink.className = "logo-link";
-    logoLink.textContent = "Zincate";
+    logoLink.textContent = "Gallium";
     logoDiv.appendChild(logoLink);
 
     header.appendChild(logoDiv);
@@ -159,16 +162,17 @@ const createNav = (isLoggedIn) => {
     const topRightDiv = document.createElement("div");
     topRightDiv.className = "hflex-sb";
     header.appendChild(topRightDiv);
-    
-    const chatLink = document.createElement("a");
-    chatLink.href = "/chats";
-    chatLink.className = "logo-link-svg";
-    chatLink.innerHTML = chatSVG;
+
+    const chatspan = createElement('a', { class: "flex-center" }, []);
+    chatspan.innerHTML = chatSVG;
+    chatspan.href = "/chats";
+    const chatLink = createElement('div', { class: "top-svg" }, [chatspan]);
     topRightDiv.appendChild(chatLink);
 
-    const notifLink = document.createElement("li");
-    notifLink.className = "logo-link-svg";
-    notifLink.innerHTML = notifSVG;
+
+    const notifspan = createElement('span', { class: "flex-center" }, []);
+    notifspan.innerHTML = notifSVG;
+    const notifLink = createElement('div', { class: "top-svg" }, [notifspan]);
     topRightDiv.appendChild(notifLink);
 
     // Add Profile Dropdown or Login Button
@@ -230,10 +234,10 @@ const createNav = (isLoggedIn) => {
     // </div>`;
 
     const nin = document.createElement("div");
-    nin.className = "navigation__toggle";
+    nin.className = "navigation__toggle flex-center";
     nin.style.borderLeft = "1px solid #ccc";
     // nin.innerHTML = `<label class="navigation__link" for="more" aria-hidden="true">${downloadSVG}</label>`;
-    nin.innerHTML = `<label class="morecon" for="more" aria-hidden="true">${moreSVG}</label>`;
+    nin.innerHTML = `<label class="flex-center" for="more" aria-hidden="true">${moreSVG}</label>`;
 
 
     ul.appendChild(fragment);

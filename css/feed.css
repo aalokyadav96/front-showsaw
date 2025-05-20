@@ -1,9 +1,9 @@
 /* Container */
-.container {
-    max-width: 800px;
+/* .container {
+    max-width: 650px;
     margin: auto;
     padding: 10px;
-}
+} */
 
 /* Post Composer */
 .post-compose {
@@ -63,8 +63,11 @@
 /* Feed Item */
 .feed-item {
     background-color: var(--card-bg);
-    padding: 15px;
+    padding: 5px;
     border-radius: 8px;
+    border: 1px solid #eeeeee;
+    flex: 2;
+    width: 100%;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
@@ -101,10 +104,6 @@
 .delete-btn {
     background: #dc3545;
     color: white;
-    border: none;
-    padding: 8px;
-    border-radius: 6px;
-    cursor: pointer;
 }
 
 .delete-btn:hover {
@@ -126,7 +125,7 @@
     }
 
     .post-actions {
-        flex-direction: column;
+        /* flex-direction: column; */
         align-items: flex-start;
     }
 }

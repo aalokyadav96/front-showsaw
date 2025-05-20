@@ -1,8 +1,11 @@
 // import { state } from "../../state/state.js";
 import Button from "../../components/base/Button.js";
+import { getState } from "../../state/state.js";
 import { displayUserProfileData } from "./otherUserProfileService.js";
-// import { displayFollowSuggestions } from "./displayFollowSugg.js";
+import { displayFollowSuggestions } from "./displayFollowSugg.js";
 import { createBanner, createBannerEditButton, createProfilePicture, createProfileDetails, createStatistics } from "./profileGenHelpers.js";
+import { othusrdata } from "./otheruserdata.js";
+import { createElement } from "../../components/createElement.js";
 
 // /* Utility function to append multiple children */
 // function appendChildren(parent, ...children) {
@@ -27,40 +30,39 @@ function profilGen(profile, isLoggedIn) {
     const section = document.createElement("section");
     section.className = "channel";
 
-    // const suggs = document.createElement("section");
-    // suggs.className = "hflex";
-    // displayFollowSuggestions(profile.userid, suggs);
+    const suggs = document.createElement("section");
+    suggs.className = "hflex";
+    displayFollowSuggestions(profile.userid, suggs);
 
     appendChildren(
         section,
         createBanner(profile),
         createProfilePicture(profile),
         createProfileDetails(profile, isLoggedIn),
-        // createStatistics(profile),
-        // suggs
+        createStatistics(profile),
+        suggs
     );
 
-    // Load User Data Button
-    const udata = document.createElement("div");
-    udata.className = "udata-info";
-    const loadUserDataButton = Button("Load UserData", "load-user-data", {
-        click: () => displayUserProfileData(isLoggedIn, udata, profile.userid),
-    });
+    if (profile.userid === getState("user")) {
+        // Load User Data Button
+        const udata = document.createElement("div");
+        udata.className = "udata-info";
+        const loadUserDataButton = Button("Load UserData", "load-user-data", {
+            click: () => displayUserProfileData(isLoggedIn, udata, profile.userid),
+        });
 
-    appendChildren(section, loadUserDataButton, udata);
+        appendChildren(section, loadUserDataButton, udata);
 
-    // if (profile.userid === state.user) {
-    //     const deleteProfileButton = document.createElement("button");
-    //     deleteProfileButton.className = "btn delete-btn";
-    //     deleteProfileButton.dataset.action = "delete-profile";
-    //     deleteProfileButton.textContent = "Delete Profile";
-    //     section.appendChild(deleteProfileButton);
-    // }
+    } else {
+        let kc = createElement('div');
+        othusrdata(kc, profile.userid);
+        appendChildren(section, kc);
+    }
 
     profileContainer.appendChild(section);
     return profileContainer;
 }
 
-// export { displayFollowSuggestions };
+export { displayFollowSuggestions };
 
 export default profilGen;

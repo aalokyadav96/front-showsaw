@@ -1,8 +1,8 @@
 import { apixFetch } from "../../api/api.js";
-import {FORUM_URL} from "../../state/state.js";
+import { FORUM_URL } from "../../state/state.js";
 // chatAPI.js
 // export const FORUM_URL = "http://localhost:8080";
-export {FORUM_URL};
+export { FORUM_URL };
 
 export async function getContacts() {
   const response = await apixFetch(`${FORUM_URL}/contacts`);
@@ -25,7 +25,8 @@ export async function sendMessage(formData) {
 }
 
 export async function createChat(contactId) {
-  const response = await apixFetch(`${FORUM_URL}/chats/create`, 'POST', JSON.stringify({ contact_id: contactId }));
+  // const response = await apixFetch(`${FORUM_URL}/chats/create`, 'POST', JSON.stringify({ contact_id: contactId }));
+  const response = await apixFetch(`${FORUM_URL}/chats/create`, 'POST', JSON.stringify(contactId));
   return response;
 }
 

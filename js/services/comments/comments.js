@@ -1,15 +1,50 @@
-// comments.js
+import { apiFetch } from "../../api/api.js";
+import { reportPost } from "../reporting/reporting.js";
 
-// import { reportPost } from "../reporting/reporting.js";
+// export function createCommentsSection(postId, comments = [], entityType, entityId) {
+//     const container = document.createElement("div");
+//     container.className = "comments-section";
 
-//         // Report button
-//         const reportButton = document.createElement("button");
-//         reportButton.className = "report-btn";
-//         reportButton.textContent = "Report";
-//         reportButton.addEventListener("click", () => {
-//             reportPost(msg.message_id);
-//         });
-export function createCommentsSection(postId, comments = []) {
+//     const list = document.createElement("div");
+//     list.className = "comments-list";
+//     container.appendChild(list);
+
+//     const form = createCommentForm(postId, entityType, entityId, newComment => {
+//         addCommentToDOM(list, newComment, entityType, entityId);
+//     });
+
+//     container.appendChild(form);
+
+//     // Load initial comments
+//     comments.forEach(comment => addCommentToDOM(list, comment, entityType, entityId));
+
+//     return container;
+// }
+
+// export function createCommentsSection(postId, comments = [], entityType, entityId) {
+//     const container = document.createElement("div");
+//     container.className = "comments-section";
+
+//     const list = document.createElement("div");
+//     list.className = "comments-list";
+//     container.appendChild(list);
+
+//     // Add the load comments button
+//     const loadSpan = createLoadCommentsSpan(entityType, entityId, list);
+//     container.appendChild(loadSpan);
+
+//     // Add comment form
+//     const form = createCommentForm(postId, entityType, entityId, newComment => {
+//         addCommentToDOM(list, newComment, entityType, entityId);
+//     });
+//     container.appendChild(form);
+
+//     // If initial comments are passed (e.g., for SSR/preloaded content)
+//     comments.forEach(comment => addCommentToDOM(list, comment, entityType, entityId));
+
+//     return container;
+// }
+export function createCommentsSection(postId, comments = [], entityType, entityId, currentUserId) {
     const container = document.createElement("div");
     container.className = "comments-section";
 
@@ -17,19 +52,20 @@ export function createCommentsSection(postId, comments = []) {
     list.className = "comments-list";
     container.appendChild(list);
 
-    const form = createCommentForm(postId, newComment => {
-        addCommentToDOM(list, newComment);
-    });
+    const loadSpan = createLoadCommentsSpan(entityType, entityId, list, currentUserId);
+    container.appendChild(loadSpan);
 
+    const form = createCommentForm(postId, entityType, entityId, newComment => {
+        addCommentToDOM(list, newComment, entityType, entityId, currentUserId);
+    });
     container.appendChild(form);
 
-    // Load initial comments
-    comments.forEach(comment => addCommentToDOM(list, comment));
+    comments.forEach(comment => addCommentToDOM(list, comment, entityType, entityId, currentUserId));
 
     return container;
 }
 
-function createCommentForm(postId, onCommentAdded) {
+function createCommentForm(postId, entityType, entityId, onCommentAdded) {
     const form = document.createElement("form");
     form.className = "comment-form";
 
@@ -51,14 +87,13 @@ function createCommentForm(postId, onCommentAdded) {
         if (!content) return;
 
         try {
-            const res = await fetch(`/api/posts/${postId}/comments`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ content })
-            });
-            const data = await res.json();
+            const newComment = await apiFetch(
+                `/comments/${entityType}/${entityId}`,
+                "POST",
+                JSON.stringify({ content })
+            );
             input.value = "";
-            onCommentAdded(data);
+            onCommentAdded(newComment);
         } catch (err) {
             console.error("Failed to post comment", err);
         }
@@ -67,7 +102,48 @@ function createCommentForm(postId, onCommentAdded) {
     return form;
 }
 
-function addCommentToDOM(container, comment) {
+// function addCommentToDOM(container, comment, entityType, entityId) {
+//     const wrapper = document.createElement("div");
+//     wrapper.className = "comment";
+//     wrapper.dataset.commentId = comment._id;
+
+//     const text = document.createElement("span");
+//     text.textContent = comment.content;
+
+//     const editBtn = document.createElement("button");
+//     editBtn.textContent = "Edit";
+//     editBtn.className = "edit-comment";
+//     editBtn.type = "button";
+
+//     const deleteBtn = document.createElement("button");
+//     deleteBtn.textContent = "Delete";
+//     deleteBtn.className = "delete-comment";
+//     deleteBtn.type = "button";
+
+//     const reportBtn = document.createElement("button");
+//     reportBtn.textContent = "Report";
+//     reportBtn.className = "report-comment";
+//     reportBtn.type = "button";
+
+//     editBtn.addEventListener("click", () =>
+//         handleEditComment(wrapper, comment, entityType, entityId)
+//     );
+//     deleteBtn.addEventListener("click", () =>
+//         handleDeleteComment(wrapper, comment._id, entityType, entityId)
+//     );
+//     reportBtn.addEventListener("click", () =>
+//         handleReportComment(wrapper, comment._id, entityType, entityId)
+//     );
+
+//     wrapper.appendChild(text);
+//     wrapper.appendChild(editBtn);
+//     wrapper.appendChild(deleteBtn);
+//     wrapper.appendChild(reportBtn);
+
+//     container.appendChild(wrapper);
+// }
+
+function addCommentToDOM(container, comment, entityType, entityId, currentUserId) {
     const wrapper = document.createElement("div");
     wrapper.className = "comment";
     wrapper.dataset.commentId = comment._id;
@@ -75,31 +151,55 @@ function addCommentToDOM(container, comment) {
     const text = document.createElement("span");
     text.textContent = comment.content;
 
-    const editBtn = document.createElement("button");
-    editBtn.textContent = "Edit";
-    editBtn.className = "edit-comment";
-
-    const deleteBtn = document.createElement("button");
-    deleteBtn.textContent = "Delete";
-    deleteBtn.className = "delete-comment";
-
-    editBtn.addEventListener("click", () => handleEditComment(wrapper, comment));
-    deleteBtn.addEventListener("click", () => handleDeleteComment(wrapper, comment._id));
+    const reportBtn = document.createElement("button");
+    reportBtn.textContent = "Report";
+    reportBtn.className = "report-comment";
+    reportBtn.type = "button";
 
     wrapper.appendChild(text);
-    wrapper.appendChild(editBtn);
-    wrapper.appendChild(deleteBtn);
+    wrapper.appendChild(reportBtn);
+
+    // Only show edit/delete if current user is the author
+    if (comment.created_by === currentUserId) {
+        const editBtn = document.createElement("button");
+        editBtn.textContent = "Edit";
+        editBtn.className = "edit-comment";
+        editBtn.type = "button";
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "Delete";
+        deleteBtn.className = "delete-comment";
+        deleteBtn.type = "button";
+
+        editBtn.addEventListener("click", () =>
+            handleEditComment(wrapper, comment, entityType, entityId, currentUserId)
+        );
+        deleteBtn.addEventListener("click", () =>
+            handleDeleteComment(wrapper, comment._id, entityType, entityId)
+        );
+
+        wrapper.appendChild(editBtn);
+        wrapper.appendChild(deleteBtn);
+    }
+
+    reportBtn.addEventListener("click", () =>
+        handleReportComment(comment._id, entityType, entityId)
+    );
 
     container.appendChild(wrapper);
 }
 
-async function handleEditComment(wrapper, comment) {
+async function handleEditComment(wrapper, comment, entityType, entityId, currentUserId) {
+    // Guard in case someone triggers this manually
+    if (comment.authorId !== currentUserId) return;
+
     const input = document.createElement("input");
     input.type = "text";
     input.value = comment.content;
 
     const saveBtn = document.createElement("button");
     saveBtn.textContent = "Save";
+    saveBtn.type = "button";
 
     wrapper.innerHTML = "";
     wrapper.appendChild(input);
@@ -110,28 +210,121 @@ async function handleEditComment(wrapper, comment) {
         if (!newContent) return;
 
         try {
-            const res = await fetch(`/api/comments/${comment._id}`, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ content: newContent })
-            });
-            const data = await res.json();
-            comment.content = data.content;
-
-            wrapper.innerHTML = "";
-            addCommentToDOM(wrapper.parentElement, comment);
-            wrapper.remove(); // Remove old wrapper
+            const updatedComment = await apiFetch(
+                `/comments/${entityType}/${entityId}/${comment._id}`,
+                "PUT",
+                JSON.stringify({ content: newContent })
+            );
+            comment.content = updatedComment.content;
+            const parent = wrapper.parentElement;
+            wrapper.remove();
+            addCommentToDOM(parent, comment, entityType, entityId, currentUserId);
         } catch (err) {
             console.error("Failed to update comment", err);
         }
     });
 }
 
-async function handleDeleteComment(wrapper, commentId) {
+// async function handleEditComment(wrapper, comment, entityType, entityId) {
+//     const input = document.createElement("input");
+//     input.type = "text";
+//     input.value = comment.content;
+
+//     const saveBtn = document.createElement("button");
+//     saveBtn.textContent = "Save";
+//     saveBtn.type = "button";
+
+//     wrapper.innerHTML = "";
+//     wrapper.appendChild(input);
+//     wrapper.appendChild(saveBtn);
+
+//     saveBtn.addEventListener("click", async () => {
+//         const newContent = input.value.trim();
+//         if (!newContent) return;
+
+//         try {
+//             const updatedComment = await apiFetch(
+//                 `/comments/${entityType}/${entityId}/${comment._id}`,
+//                 "PUT",
+//                 JSON.stringify({ content: newContent })
+//             );
+//             comment.content = updatedComment.content;
+
+//             // Replace the current wrapper with a fresh comment DOM
+//             const parent = wrapper.parentElement;
+//             wrapper.remove();
+//             addCommentToDOM(parent, comment, entityType, entityId);
+//         } catch (err) {
+//             console.error("Failed to update comment", err);
+//         }
+//     });
+// }
+
+async function handleReportComment(commentId, entityType, entityId) {
+    reportPost(commentId, "comment", entityType, entityId);
+}
+
+async function handleDeleteComment(wrapper, commentId, entityType, entityId) {
     try {
-        await fetch(`/api/comments/${commentId}`, { method: "DELETE" });
+        await apiFetch(`/comments/${entityType}/${entityId}/${commentId}`, "DELETE");
         wrapper.remove();
     } catch (err) {
         console.error("Failed to delete comment", err);
     }
 }
+
+function createLoadCommentsSpan(entityType, entityId, listContainer, currentUserId) {
+    const span = document.createElement("span");
+    span.textContent = "Load Comments";
+    span.className = "load-comments";
+    span.style.cursor = "pointer";
+    span.style.color = "blue";
+    span.style.textDecoration = "underline";
+
+    let loaded = false;
+
+    span.addEventListener("click", async () => {
+        if (loaded) return;
+        try {
+            const comments = await apiFetch(`/comments/${entityType}/${entityId}`, "GET");
+            comments.forEach(comment => {
+                addCommentToDOM(listContainer, comment, entityType, entityId, currentUserId);
+            });
+            loaded = true;
+            span.remove();
+        } catch (err) {
+            console.error("Failed to load comments", err);
+            span.textContent = "Failed to load. Retry?";
+        }
+    });
+
+    return span;
+}
+
+// function createLoadCommentsSpan(entityType, entityId, listContainer) {
+//     const span = document.createElement("span");
+//     span.textContent = "Load Comments";
+//     span.className = "load-comments";
+//     span.style.cursor = "pointer";
+//     span.style.color = "blue";
+//     span.style.textDecoration = "underline";
+
+//     let loaded = false;
+
+//     span.addEventListener("click", async () => {
+//         if (loaded) return; // Prevent re-fetching
+//         try {
+//             const comments = await apiFetch(`/comments/${entityType}/${entityId}`, "GET");
+//             comments.forEach(comment => {
+//                 addCommentToDOM(listContainer, comment, entityType, entityId);
+//             });
+//             loaded = true;
+//             span.remove(); // Remove the span after loading once
+//         } catch (err) {
+//             console.error("Failed to load comments", err);
+//             span.textContent = "Failed to load. Retry?";
+//         }
+//     });
+
+//     return span;
+// }

@@ -1,17 +1,15 @@
-@import url("./layout.css");
-@import url("./base.css");
-@import url("./fixed.css");
-@import url("./feedimages.css");
-@import url("./udataTabs.css");
-@import url("./home.css");
-@import url("./chat.css");
-@import url("./place.css");
-@import url("./map.css");
-@import url("./navx.css");
-@import url("./itinerary.css");
-@import url("./eventpage.css");
-@import url("./sports.css");
-@import url("./news.css");
-@import url("./aaspaas.css");
-@import url("./secnav.css");
-/* @import url("./index-v6ZkzdGd.css"); */
+@import url("base.css");
+@import url("allstyles.css");
+@import url("morestyles.css");
+@import url("custom.css");
+@import url("feedimages.css");
+@import url("feed.css");
+@import url("chat.css");
+@import url("eventpage.css");
+@import url("home.css");
+@import url("itinerary.css");
+@import url("layout.css");
+@import url("place.css");
+@import url("udataTabs.css");
+@import url("fixed.css");
+/* @import url("index-v6ZkzdGd.css"); */

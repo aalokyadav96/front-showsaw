@@ -7,12 +7,23 @@
     justify-content: space-between;
     align-items: center;
 }
-.feed-toggle label {
+.feed-toggle {
     font-size: 0.9em;
     display: flex;
     align-items: center;
     gap: 5px;
+    width: 100%;
 }
+
+.feed-toggle input {
+    width: 2rem;
+}
+
+.feed-toggle label {
+    width: 100%;
+    flex-grow: 1;
+}
+
 
 /* Card Styles */
 .card {

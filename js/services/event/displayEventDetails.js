@@ -103,7 +103,7 @@ async function displayEventDetails(content, eventData, isCreator, isLoggedIn) {
     reportButton.className = "report-btn";
     reportButton.textContent = "Report";
     reportButton.addEventListener("click", () => {
-        reportPost(eventData.eventid);
+        reportPost(eventData.eventid, "event");
     });
 
     // Event Info

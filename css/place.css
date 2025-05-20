@@ -1,7 +1,7 @@
 /* Reset & layout */
-.placepage, #places {
+/* .placepage, #places {
   padding: 0.6rem;
-}
+} */
 
 #place-banner {
     width: 100%;
@@ -9,7 +9,7 @@
     overflow: hidden;
     position: relative;
     border-radius: 8px;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
   }
   
   #place-banner img {
@@ -134,14 +134,14 @@
   /***************/
   /* General Reset */
 .restaurant-header, .tabs, .tab-content, .creator-tools, .overview-section, .menu-grid, .order-grid {
-  margin: 20px auto;
+  /* margin: 20px auto; */
   max-width: 1200px;
 }
 
 /* Header */
 .restaurant-header {
   text-align: center;
-  padding-bottom: 20px;
+  padding-bottom: 10px;
   border-bottom: 2px solid #eee;
 }
 
@@ -205,7 +205,6 @@
 
 .tabs button, .tabx button {
   padding: 10px 20px;
-  background: #039b01;
   border: none;
   border-radius: 25px;
   cursor: pointer;

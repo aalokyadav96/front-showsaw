@@ -1,16 +1,18 @@
 import {
-    renderSongsTab,
     renderAlbumsTab,
     renderPostsTab,
     renderMerchTab,
     renderEventsTab
 } from "./artistTabs.js";
+import {
+    renderSongsTab,
+} from "./artistSongsTab.js";
 import { SRC_URL, apiFetch } from "../../api/api.js";
 import { createTabs } from "../../components/ui/createTabs.js"; // adjust path as needed
 import { editArtistForm, deleteArtistForm } from "./editArtist.js";
 import { createElement } from "../../components/ui/vidpopHelpers/helpers.js";
 import { createButton, createContainer } from "../../components/eventHelper.js";
-        import { reportPost } from "../reporting/reporting.js";
+import { reportPost } from "../reporting/reporting.js";
 
 
 export async function displayArtist(contentContainer, artistID, isLoggedIn) {
@@ -58,7 +60,7 @@ export async function displayArtist(contentContainer, artistID, isLoggedIn) {
         reportButton.className = "report-btn";
         reportButton.textContent = "Report";
         reportButton.addEventListener("click", () => {
-            reportPost(artistID);
+            reportPost(artistID, "artist");
         });
 
         contentContainer.append(createButton({ text: "Subscribe", classes: ["buttonx"] }), reportButton);
@@ -79,9 +81,9 @@ export async function displayArtist(contentContainer, artistID, isLoggedIn) {
                 render: (container) => renderSongsTab(container, artistID, isCreator),
             },
             {
-                title: "Albums",
-                id: "albums",
-                render: (container) => renderAlbumsTab(container, artistID, isCreator),
+                title: "Events",
+                id: "events",
+                render: (container) => renderEventsTab(container, artistID),
             },
             {
                 title: "Posts",
@@ -94,9 +96,9 @@ export async function displayArtist(contentContainer, artistID, isLoggedIn) {
                 render: (container) => renderMerchTab(container, artistID, isCreator, isLoggedIn),
             },
             {
-                title: "Events",
-                id: "events",
-                render: (container) => renderEventsTab(container, artistID),
+                title: "Albums",
+                id: "albums",
+                render: (container) => renderAlbumsTab(container, artistID, isCreator),
             },
         ];
 

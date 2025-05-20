@@ -59,11 +59,6 @@ body {
     transition: background 0.3s, color 0.3s;
 }
 
-#content {
-    /* padding: 8px; */
-    min-height: 101vh;
-}
-
 /* Basic Button Styling */
 /* button {
     background-color: var(--primary-color);

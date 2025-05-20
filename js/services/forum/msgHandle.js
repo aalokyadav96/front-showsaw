@@ -17,14 +17,13 @@ export function createMessagesArea() {
     const messagesList = createElement('div', { id: 'messagesList' });
     messagesArea.appendChild(messagesList);
 
-    const messageForm = createMessageForm();
+    // const messageForm = createMessageForm();
+    const messageForm = CreateMessageForm("fdyfgd");
     messagesArea.appendChild(messageForm);
 
     return messagesArea;
 }
-
-// Create message form
-function createMessageForm() {
+function CreateMessageForm(chatid) {
     const form = createElement('form', { id: 'messageForm' });
 
     const messageInput = createElement('input', {
@@ -39,14 +38,57 @@ function createMessageForm() {
         id: 'fileInput',
         multiple: true, // allow multiple file selection
     });
+    fileInput.style.display = "none"; // hide the raw file input
+
+    // // 1) HIDDEN file input
+    // const fileInput = document.createElement("input");
+    // fileInput.type = "file";
+    // fileInput.accept = "image/*,video/*";
+    // fileInput.id = `file-input-${chatid}`;
+    // fileInput.multiple = true; // allow multiple file selection
+    // fileInput.style.display = "none"; // hide the raw file input
+
+    // 2) Label acting as the icon/button for file upload
+    const fileLabel = document.createElement("label");
+    fileLabel.htmlFor = fileInput.id;
+    fileLabel.className = "file-label";
+    // You can swap out the emoji for an <img> or SVG if you have an asset
+    fileLabel.textContent = "📎";
+    fileLabel.title = "Attach image or video";
+
 
     const sendButton = createElement('button', { type: 'submit' }, 'Send');
 
-    form.append(fileInput, messageInput, sendButton);
+    form.append(fileInput, fileLabel, messageInput, sendButton);
     form.addEventListener('submit', handleSendMessage);
 
     return form;
 }
+
+// // Create message form
+// function createMessageForm() {
+//     const form = createElement('form', { id: 'messageForm' });
+
+//     const messageInput = createElement('input', {
+//         type: 'text',
+//         id: 'messageInput',
+//         placeholder: 'Type your message',
+//         required: true,
+//     });
+
+//     const fileInput = createElement('input', {
+//         type: 'file',
+//         id: 'fileInput',
+//         multiple: true, // allow multiple file selection
+//     });
+
+//     const sendButton = createElement('button', { type: 'submit' }, 'Send');
+
+//     form.append(fileInput, messageInput, sendButton);
+//     form.addEventListener('submit', handleSendMessage);
+
+//     return form;
+// }
 
 // --------------------------
 // Message Handling
@@ -169,102 +211,3 @@ function clearForm() {
 }
 
 export { CURRENT_CHAT_ID };
-
-// import { getMessages, sendMessage } from './chatAPI.js';
-// import { createElement } from "./helpers.js";
-// import { handleSearchMessages } from "./messages.js";
-// import {appendMessage} from "./msgAppend";
-// import { CURRENT_CHAT_ID } from './chatUI.js';
-
-// // --------------------------
-// // Messages Area
-// // --------------------------
-// export function createMessagesArea() {
-//     const messagesArea = createElement('div', { id: 'messagesArea', style: 'display: none;' });
-
-//     // Search Input
-//     const searchInput = createElement('input', { id: 'searchInput', placeholder: 'Search messages' });
-//     searchInput.addEventListener('input', handleSearchMessages);
-//     messagesArea.appendChild(searchInput);
-
-//     // Messages List
-//     const messagesList = createElement('div', { id: 'messagesList' });
-//     messagesArea.appendChild(messagesList);
-
-//     // Message Form
-//     const messageForm = createMessageForm();
-//     messagesArea.appendChild(messageForm);
-
-//     return messagesArea;
-// }
-
-// // Create message form
-// function createMessageForm() {
-//     const form = createElement('form', { id: 'messageForm' });
-
-//     const messageInput = createElement('input', { type: 'text', id: 'messageInput', placeholder: 'Type your message', required: true });
-//     const fileInput = createElement('input', { type: 'file', id: 'fileInput' });
-//     const sendButton = createElement('button', { type: 'submit' }, 'Send');
-
-//     form.append(messageInput, fileInput, sendButton);
-//     form.addEventListener('submit', handleSendMessage);
-
-//     return form;
-// }
-
-// // --------------------------
-// // Message Handling
-// // --------------------------
-
-// // Load messages for selected chat
-// export async function loadMessages(chatId) {
-//     try {
-//         const messages = await getMessages(chatId);
-//         renderMessages(messages);
-//     } catch (err) {
-//         console.error("Failed to load messages:", err);
-//     }
-// }
-
-// // Handle sending a new message
-// async function handleSendMessage(e) {
-//     e.preventDefault();
-//     if (!CURRENT_CHAT_ID) {
-//         alert('Please select a chat first.');
-//         return;
-//     }
-
-//     const formData = new FormData();
-//     formData.append('content', document.getElementById('messageInput').value);
-//     formData.append('chat_id', CURRENT_CHAT_ID);
-//     if (document.getElementById('fileInput').files[0]) {
-//         formData.append('file', document.getElementById('fileInput').files[0]);
-//     }
-
-//     try {
-//         const result = await sendMessage(formData);
-//         clearForm();
-//         appendMessage(result);
-//     } catch (err) {
-//         console.error("Failed to send message:", err);
-//     }
-// }
-
-
-// // Render messages in messages list
-// function renderMessages(messages) {
-//     const messagesList = document.getElementById('messagesList');
-//     messagesList.innerHTML = '';
-
-//     messages.forEach((msg) => {
-//         appendMessage(msg);
-//     });
-// }
-
-// function clearForm() {
-//     document.getElementById('messageInput').value = "";
-//     document.getElementById('fileInput').value = "";
-// }
-
-
-// export { CURRENT_CHAT_ID };
