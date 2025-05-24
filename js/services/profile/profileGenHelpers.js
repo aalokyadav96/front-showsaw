@@ -131,7 +131,8 @@ function createProfileDetails(profile, isLoggedIn) {
 
     const username = document.createElement("strong");
     username.className = "username";
-    username.textContent = profile.username || "Not provided";
+    // username.textContent = profile.username || "Not provided";
+    username.textContent = `@${profile.username}`;
 
     const name = document.createElement("p");
     name.className = "name";
@@ -149,7 +150,7 @@ function createProfileDetails(profile, isLoggedIn) {
 
     const profileInfo = createProfileInfo(profile);
 
-    appendChildren(profileDetails, profileActions, username, name, bio, profileInfo);
+    appendChildren(profileDetails, profileActions, name, username, bio, profileInfo);
     return profileDetails;
 }
 

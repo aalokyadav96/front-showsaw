@@ -46,7 +46,7 @@ export function reportPost(targetId, targetType, entityType="", entityId="") {
   }
 
   // 3) Build modal content (vanilla JS)
-  const content = createElement("div", {}, []);
+  const content = createElement("div", {class:"vflex"}, []);
 
   // 3.1) Reason label + dropdown
   const reasonLabel = createElement("label", { for: "report-reason" }, ["Reason:"]);

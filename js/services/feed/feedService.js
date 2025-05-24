@@ -12,7 +12,11 @@ async function displayFeed(isLoggedIn, feedsec) {
 
     // Set up event listeners for post creation and media upload
     setupPostCreation();
-    fetchFeed();
+
+    const postsContainer = document.getElementById("postsContainer");
+    postsContainer.innerHTML = '<p>Loading posts...</p>';
+    
+    fetchFeed(postsContainer);
 
 }
 

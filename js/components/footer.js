@@ -1,7 +1,6 @@
 import { setLanguage } from "../i18n.js";
-import "../../css/footer.css";
 import { navigate } from "../routes/index.js";
-
+import Button from "./base/Button.js";
 
 const handleNavigation = (event, href) => {
     event.preventDefault();
@@ -69,6 +68,8 @@ const Footer = () => {
         }
     });
 
+    var reportButt = Button("Feedback",'feedback-btn', {}, "action-btn", {});
+
     // Footer Bottom
     const footerBottom = document.createElement("div");
     footerBottom.className = "footer-bottom";
@@ -78,6 +79,7 @@ const Footer = () => {
 
     footerBottom.appendChild(langSelect);
     footerBottom.appendChild(copyright);
+    footerBottom.appendChild(reportButt);
 
     // Append elements
     container.appendChild(nav);

@@ -81,9 +81,14 @@ async function renderPageContent(isLoggedIn, path, contentContainer) {
             Settings(isLoggedIn, contentContainer);
         },
         "/feed": async () => {
-            const { Feed } = await import("../pages/feed/feed.js");
+        //     const { Feed } = await import("../pages/feed/feed.js");
+        //     contentContainer.innerHTML = "";
+        //     Feed(isLoggedIn, contentContainer);
+        // },
+        // "/weed": async () => {
+            const { Weed } = await import("../pages/weed/weed.js");
             contentContainer.innerHTML = "";
-            Feed(isLoggedIn, contentContainer);
+            Weed(isLoggedIn, contentContainer);
         },
         "/create-artist": async () => {
             const { Create } = await import("../pages/artist/createArtist.js");

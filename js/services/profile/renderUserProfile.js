@@ -28,10 +28,10 @@ function profilGen(profile, isLoggedIn) {
     profileContainer.className = "profile-container hflex";
 
     const section = document.createElement("section");
-    section.className = "channel";
+    section.className = "channel vflex";
 
     const suggs = document.createElement("section");
-    suggs.className = "hflex";
+    suggs.className = "followcon hflex";
     displayFollowSuggestions(profile.userid, suggs);
 
     appendChildren(

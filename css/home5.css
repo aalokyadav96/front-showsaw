@@ -1,0 +1,187 @@
+/* ============================
+   RESET & BASE STYLES
+   ============================ */
+   /* * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont,
+                 "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+  }
+   */
+  /* ============================
+     HTABS CONTAINER
+     ============================ */
+  .htabs-container {
+    width: 100%;
+    max-width: 1024px;
+    margin: 0 auto;
+    padding: 0 12px;
+  }
+  
+  /* ============================
+     TAB BUTTONS (MOBILE-FIRST)
+     ============================ */
+  .htab-buttons {
+    display: flex;
+    overflow-x: auto;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 16px;
+  }
+  
+  .htab-button {
+    flex: 1 0 auto;
+    white-space: nowrap;
+    text-align: center;
+    padding: 12px 16px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #555;
+    background: none;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    transition: color 0.2s ease;
+  }
+  
+  .htab-button:not(:last-child) {
+    /* optional: small gap between buttons on desktop */
+    margin-right: 0.3rem;
+  }
+  
+  .htab-button:hover {
+    color: #111;
+  }
+  
+  .htab-button.active {
+    color: #007bff;
+  }
+  
+  .htab-button.active::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 20%;
+    right: 20%;
+    height: 3px;
+    background-color: #007bff;
+    border-radius: 2px 2px 0 0;
+  }
+  
+  /* Hide scrollbar in WebKit but keep scrolling functionality */
+  .htab-buttons::-webkit-scrollbar {
+    height: 4px;
+  }
+  
+  .htab-buttons::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 2px;
+  }
+  
+  /* ============================
+     TAB CONTENT PANES
+     ============================ */
+  /* .htab-contents { */
+    /* no special styling needed here */
+  /* } */
+  
+  .htab-content {
+    display: none;
+    padding-bottom: 24px; /* give some breathing room at bottom */
+  }
+  
+  .htab-content.active {
+    display: block;
+  }
+  
+  /* ============================
+     CARD (MOBILE-FIRST: Single Column)
+     ============================ */
+  .card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    margin-bottom: 16px;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  }
+  
+  .card h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #222;
+    padding: 12px 16px 4px;
+  }
+  
+  .card p {
+    font-size: 14px;
+    color: #555;
+    padding: 0 16px 12px;
+    line-height: 1.4;
+  }
+  
+  /* ============================
+     LAYOUT: GRID ON DESKTOP
+     ============================ */
+  @media (min-width: 768px) {
+    /* Make each .htab-content a grid of cards */
+    .htab-content.active {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      grid-gap: 16px;
+      padding-bottom: 32px;
+    }
+  
+    /* Remove bottom margin from cards (grid gap handles spacing) */
+    .card {
+      margin-bottom: 0;
+    }
+  
+    /* Slightly larger font on desktop */
+    .card h3 {
+      font-size: 20px;
+      padding: 16px;
+    }
+  
+    .card p {
+      font-size: 15px;
+      padding: 0 16px 16px;
+    }
+  
+    /* Increase tab-button padding & font */
+    .htab-button {
+      padding: 14px 20px;
+      font-size: 17px;
+    }
+  }
+  
+  /* ============================
+     SMALLER SCREENS (< 480px)
+     ============================ */
+  @media (max-width: 480px) {
+    .htab-button {
+      padding: 10px 12px;
+      font-size: 15px;
+    }
+  
+    .card h3 {
+      font-size: 16px;
+      padding: 10px 12px 4px;
+    }
+  
+    .card p {
+      font-size: 13px;
+      padding: 0 12px 10px;
+    }
+  }
+  

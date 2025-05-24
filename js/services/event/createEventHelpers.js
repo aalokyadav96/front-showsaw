@@ -1,4 +1,4 @@
-import { state } from "../../state/state.js";
+import { API_URL, state } from "../../state/state.js";
 import { apiFetch } from "../../api/api.js";
 import { navigate } from "../../routes/index.js";
 import SnackBar from '../../components/ui/Snackbar.mjs';
@@ -69,7 +69,7 @@ function addAutoConListeners(eventPlaceInput) {
         }
 
         try {
-            const response = await fetch(`/api/suggestions/places?query=${query}`);
+            const response = await fetch(`${API_URL}/suggestions/places?query=${query}`);
             const suggestions = await response.json();
 
             autocompleteList.innerHTML = "";

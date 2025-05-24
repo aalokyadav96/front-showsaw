@@ -17,7 +17,7 @@ const VideoPlayer = (
   container.className = `video-container theme-${theme}`;
 
   const controlsContainer = document.createElement("div");
-  controlsContainer.className = "hflex buttcon";
+  controlsContainer.className = "hflex-sb buttcon";
 
   const videocon = document.createElement("div");
   videocon.className = "videocon";

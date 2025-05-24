@@ -39,11 +39,11 @@ export default async function displayPlace(isLoggedIn, placeId, contentContainer
 
     // ─── (Optional) Banner Section ──────────────────────────────────────────────
     // (You may uncomment this and style accordingly)
-    //
+    
     // const bannerURL = placeData.banner
     //   ? `${SRC_URL}/placepic/${placeData.banner}`
     //   : "default-banner.jpg";
-    //
+    
     // contentContainer.appendChild(
     //   createElement("div", { id: "place-banner" }, [
     //     createElement("img", {
@@ -55,7 +55,6 @@ export default async function displayPlace(isLoggedIn, placeId, contentContainer
     // );
 
     // ─── Creator Editable Details ───────────────────────────────────────────────
-    if (isCreator) {
       const editSection = createElement("div", { class: "detail-section hvflex" });
       try {
         renderPlaceDetails(isLoggedIn, editSection, placeData, isCreator);
@@ -63,7 +62,6 @@ export default async function displayPlace(isLoggedIn, placeId, contentContainer
       } catch (err) {
         console.warn("Failed to render edit section:", err);
       }
-    }
 
     // ─── Tabs Setup ─────────────────────────────────────────────────────────────
     const tabs = [];

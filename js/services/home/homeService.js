@@ -154,46 +154,46 @@ function renderSection(section, data, container) {
 }
 
 // ============================
-// Tabs UI Component
+// Htabs UI Component
 // ============================
-export function createTabs(tabs) {
-    const tabContainer = createContainer(["tabs-container"]);
-    const tabButtons = createContainer(["tab-buttons"]);
-    const tabContents = createContainer(["tab-contents"]);
+export function createHtabs(htabs) {
+    const htabContainer = createContainer(["htabs-container"]);
+    const htabButtons = createContainer(["htab-buttons"]);
+    const htabContents = createContainer(["htab-contents"]);
 
-    // Create individual tab content containers.
-    const tabContentContainers = tabs.map(({ id }) =>
-        createElement("article", { id, class: ["tab-content"] })
+    // Create individual htab content containers.
+    const htabContentContainers = htabs.map(({ id }) =>
+        createElement("article", { id, class: ["htab-content"] })
     );
 
-    tabs.forEach(({ title, id, render }, index) => {
-        const tabButton = createDivButton({
+    htabs.forEach(({ title, id, render }, index) => {
+        const htabButton = createDivButton({
             text: title,
-            classes: ["tab-button"],
-            events: { click: () => activateTab(id, render, tabContentContainers[index]) },
+            classes: ["htab-button"],
+            events: { click: () => activateHtab(id, render, htabContentContainers[index]) },
         });
 
-        // Mark the first tab as active.
+        // Mark the first htab as active.
         if (index === 0) {
-            tabButton.classList.add("active");
+            htabButton.classList.add("active");
         }
 
-        tabButtons.appendChild(tabButton);
-        tabContents.appendChild(tabContentContainers[index]);
+        htabButtons.appendChild(htabButton);
+        htabContents.appendChild(htabContentContainers[index]);
     });
 
-    tabContainer.appendChild(tabButtons);
-    tabContainer.appendChild(tabContents);
+    htabContainer.appendChild(htabButtons);
+    htabContainer.appendChild(htabContents);
 
-    function activateTab(tabId, renderContent, contentContainer) {
+    function activateHtab(htabId, renderContent, contentContainer) {
         // Update active button styles.
-        document.querySelectorAll(".tab-button").forEach((btn, idx) => {
-            btn.classList.toggle("active", tabs[idx].id === tabId);
+        document.querySelectorAll(".htab-button").forEach((btn, idx) => {
+            btn.classList.toggle("active", htabs[idx].id === htabId);
         });
 
-        // Show/hide the appropriate tab content.
-        document.querySelectorAll(".tab-content").forEach(content => {
-            content.classList.toggle("active", content.id === tabId);
+        // Show/hide the appropriate htab content.
+        document.querySelectorAll(".htab-content").forEach(content => {
+            content.classList.toggle("active", content.id === htabId);
         });
 
         // Render content if it hasn’t been rendered yet.
@@ -202,14 +202,14 @@ export function createTabs(tabs) {
         }
     }
 
-    // Activate the first tab by default.
-    if (tabs.length > 0) {
-        const firstTab = tabs[0];
-        activateTab(firstTab.id, firstTab.render, tabContentContainers[0]);
-        tabContentContainers[0].classList.add("active");
+    // Activate the first htab by default.
+    if (htabs.length > 0) {
+        const firstHtab = htabs[0];
+        activateHtab(firstHtab.id, firstHtab.render, htabContentContainers[0]);
+        htabContentContainers[0].classList.add("active");
     }
 
-    return tabContainer;
+    return htabContainer;
 }
 
 function HomeX(isLoggedIn, container) {
@@ -222,60 +222,8 @@ function HomeX(isLoggedIn, container) {
         return;
     }
 
-    // // Create header with title and feed mode toggle.
-    // const header = document.createElement("header");
-    // header.classList.add("header");
-
-    // // const title = document.createElement("p");
-    // // title.innerText = "Personalized Feed";
-    // // header.appendChild(title);
-
-    // // Feed toggle: Switch between Infinite Scroll and Load More.
-    // const toggleContainer = document.createElement("div");
-    // toggleContainer.classList.add("feed-toggle");
-    // const toggleLabel = document.createElement("label");
-    // toggleLabel.innerText = "Infinite Scroll:";
-    // const toggleInput = document.createElement("input");
-    // toggleInput.type = "checkbox";
-    // toggleInput.checked = (feedMode === "infinite");
-    // toggleInput.addEventListener("change", () => {
-    //     feedMode = toggleInput.checked ? "infinite" : "load_more";
-    //     localStorage.setItem("feedMode", feedMode);
-    //     // Reload active tab content with new mode.
-    //     document.querySelectorAll(".tab-content.active").forEach(activeContent => {
-    //         activeContent.innerHTML = "";
-    //         const activeTabId = activeContent.id;
-    //         // Reset state for the active tab.
-    //         state[activeTabId].page = 1;
-    //         state[activeTabId].hasMore = true;
-    //         loadSection(activeTabId, activeContent);
-    //         // If in load_more mode, ensure a Load More button is visible.
-    //         if (feedMode === "load_more") {
-    //             let btn = activeContent.parentElement.querySelector(".load-more");
-    //             if (!btn) {
-    //                 btn = document.createElement("button");
-    //                 btn.innerText = "Load More";
-    //                 btn.classList.add("load-more");
-    //                 btn.addEventListener("click", () => loadSection(activeTabId, activeContent));
-    //                 activeContent.parentElement.appendChild(btn);
-    //             } else {
-    //                 btn.style.display = "block";
-    //             }
-    //         } else {
-    //             // In infinite mode, hide the button.
-    //             const btn = activeContent.parentElement.querySelector(".load-more");
-    //             if (btn) btn.style.display = "none";
-    //         }
-    //     });
-    // });
-    // toggleLabel.appendChild(toggleInput);
-    // toggleContainer.appendChild(toggleLabel);
-    // header.appendChild(toggleContainer);
-
-    // container.appendChild(header);
-
-    // Set up tab configuration for each feed section.
-    const tabsConfig = [
+    // Set up htab configuration for each feed section.
+    const htabsConfig = [
         {
             id: "recommended_events",
             // title: "🎉 Recommended Events",
@@ -339,139 +287,8 @@ function HomeX(isLoggedIn, container) {
         }
     ];
 
-    // Create the tabs UI and append it.
-    const tabsComponent = createTabs(tabsConfig);
-    container.appendChild(tabsComponent);
+    // Create the htabs UI and append it.
+    const htabsComponent = createHtabs(htabsConfig);
+    container.appendChild(htabsComponent);
 }
-// ============================
-// Main Home Function
-// ============================
-// function Home(isLoggedIn, container) {
-//     container.innerHTML = ""; // Clear previous content
-
-//     if (!isLoggedIn) {
-//         const message = document.createElement("p");
-//         message.innerText = "you need to Log in";
-//         container.appendChild(message);
-//         return;
-//     }
-
-//     // Create header with title and feed mode toggle.
-//     const header = document.createElement("header");
-//     header.classList.add("header");
-
-//     const title = document.createElement("p");
-//     title.innerText = "Personalized Feed";
-//     header.appendChild(title);
-
-//     // Feed toggle: Switch between Infinite Scroll and Load More.
-//     const toggleContainer = document.createElement("div");
-//     toggleContainer.classList.add("feed-toggle");
-//     const toggleLabel = document.createElement("label");
-//     toggleLabel.innerText = "Infinite Scroll:";
-//     const toggleInput = document.createElement("input");
-//     toggleInput.type = "checkbox";
-//     toggleInput.checked = (feedMode === "infinite");
-//     toggleInput.addEventListener("change", () => {
-//         feedMode = toggleInput.checked ? "infinite" : "load_more";
-//         localStorage.setItem("feedMode", feedMode);
-//         // Reload active tab content with new mode.
-//         document.querySelectorAll(".tab-content.active").forEach(activeContent => {
-//             activeContent.innerHTML = "";
-//             const activeTabId = activeContent.id;
-//             // Reset state for the active tab.
-//             state[activeTabId].page = 1;
-//             state[activeTabId].hasMore = true;
-//             loadSection(activeTabId, activeContent);
-//             // If in load_more mode, ensure a Load More button is visible.
-//             if (feedMode === "load_more") {
-//                 let btn = activeContent.parentElement.querySelector(".load-more");
-//                 if (!btn) {
-//                     btn = document.createElement("button");
-//                     btn.innerText = "Load More";
-//                     btn.classList.add("load-more");
-//                     btn.addEventListener("click", () => loadSection(activeTabId, activeContent));
-//                     activeContent.parentElement.appendChild(btn);
-//                 } else {
-//                     btn.style.display = "block";
-//                 }
-//             } else {
-//                 // In infinite mode, hide the button.
-//                 const btn = activeContent.parentElement.querySelector(".load-more");
-//                 if (btn) btn.style.display = "none";
-//             }
-//         });
-//     });
-//     toggleLabel.appendChild(toggleInput);
-//     toggleContainer.appendChild(toggleLabel);
-//     header.appendChild(toggleContainer);
-
-//     container.appendChild(header);
-
-//     // Set up tab configuration for each feed section.
-//     const tabsConfig = [
-//         {
-//             id: "recommended_events",
-//             title: "🎉 Recommended Events",
-//             render: (contentContainer) => {
-//                 // For Load More mode, add the button.
-//                 if (feedMode === "load_more") {
-//                     const btn = document.createElement("button");
-//                     btn.innerText = "Load More";
-//                     btn.classList.add("load-more");
-//                     btn.addEventListener("click", () => loadSection("recommended_events", contentContainer));
-//                     contentContainer.parentElement.appendChild(btn);
-//                 }
-//                 loadSection("recommended_events", contentContainer);
-//             }
-//         },
-//         {
-//             id: "recommended_places",
-//             title: "📍 Recommended Places",
-//             render: (contentContainer) => {
-//                 if (feedMode === "load_more") {
-//                     const btn = document.createElement("button");
-//                     btn.innerText = "Load More";
-//                     btn.classList.add("load-more");
-//                     btn.addEventListener("click", () => loadSection("recommended_places", contentContainer));
-//                     contentContainer.parentElement.appendChild(btn);
-//                 }
-//                 loadSection("recommended_places", contentContainer);
-//             }
-//         },
-//         {
-//             id: "followed_posts",
-//             title: "📝 Followed Posts",
-//             render: (contentContainer) => {
-//                 if (feedMode === "load_more") {
-//                     const btn = document.createElement("button");
-//                     btn.innerText = "Load More";
-//                     btn.classList.add("load-more");
-//                     btn.addEventListener("click", () => loadSection("followed_posts", contentContainer));
-//                     contentContainer.parentElement.appendChild(btn);
-//                 }
-//                 loadSection("followed_posts", contentContainer);
-//             }
-//         },
-//         {
-//             id: "ads",
-//             title: "🛍️ Sponsored Ads",
-//             render: (contentContainer) => {
-//                 if (feedMode === "load_more") {
-//                     const btn = document.createElement("button");
-//                     btn.innerText = "Load More";
-//                     btn.classList.add("load-more");
-//                     btn.addEventListener("click", () => loadSection("ads", contentContainer));
-//                     contentContainer.parentElement.appendChild(btn);
-//                 }
-//                 loadSection("ads", contentContainer);
-//             }
-//         }
-//     ];
-
-//     // Create the tabs UI and append it.
-//     const tabsComponent = createTabs(tabsConfig);
-//     container.appendChild(tabsComponent);
-// }
-
 export { HomeX };

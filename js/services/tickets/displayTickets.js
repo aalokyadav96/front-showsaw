@@ -55,7 +55,7 @@ async function displayTickets(ticketLixt, ticketData, eventId, isCreator, isLogg
     if (ticketData && !isCreator) {
         ticketLixt.appendChild(createButton({
             text: "Verify Your Ticket",
-            classes: ["buttonx"],
+            classes: ["buttonx", "action-btn"],
             events: {
               click: () => {
                 verifyTicketAndShowModal(eventId);
@@ -66,7 +66,7 @@ async function displayTickets(ticketLixt, ticketData, eventId, isCreator, isLogg
 
           ticketLixt.appendChild(createButton({
             text: "Print Your Ticket",
-            classes: ["buttonx"],
+            classes: ["buttonx", "action-btn"],
             events: {
               click: () => {
                 printTicket(eventId);
@@ -76,7 +76,7 @@ async function displayTickets(ticketLixt, ticketData, eventId, isCreator, isLogg
           
           ticketLixt.appendChild(createButton({
             text: "Cancel Ticket",
-            classes: ["buttonx"],
+            classes: ["buttonx", "action-btn"],
             events: {
               click: () => {
                 cancelTicket(eventId);
@@ -85,8 +85,8 @@ async function displayTickets(ticketLixt, ticketData, eventId, isCreator, isLogg
           }));
            
           ticketLixt.appendChild(createButton({
-            text: "transfer Ticket",
-            classes: ["buttonx"],
+            text: "Transfer Ticket",
+            classes: ["buttonx", "action-btn"],
             events: {
               click: () => {
                 transferTicket(eventId);

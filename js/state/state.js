@@ -2,19 +2,19 @@
 
 /******* */
 
-const API_URL = "http://localhost:4000/api";
-const SRC_URL = "http://localhost:4000/static";
-const SEARCH_URL = "http://localhost:4000/api";
-const AGI_URL = "http://localhost:4000/agi";
-const FORUM_URL = "http://localhost:4000/api/forum";
-const CHAT_URL = "http://localhost:4000/api/chats";
+// const API_URL = "http://localhost:4000/api";
+// const SRC_URL = "http://localhost:4000/static";
+// const SEARCH_URL = "http://localhost:4000/api";
+// const AGI_URL = "http://localhost:4000/agi";
+// const FORUM_URL = "http://localhost:4000/api/forum";
+// const CHAT_URL = "http://localhost:4000/api/chats";
 
-// const SRC_URL       = "https://gallium.onrender.com/static";
-// const API_URL       = "https://gallium.onrender.com/api";
-// const SEARCH_URL    = "https://gallium.onrender.com/api";
-// const AGI_URL       = "https://gallium.onrender.com/agi";
-// const FORUM_URL       = "https://gallium.onrender.com/api/forum";
-// const CHAT_URL       = "https://gallium.onrender.com/api/chats";
+const SRC_URL       = "https://gallium.onrender.com/static";
+const API_URL       = "https://gallium.onrender.com/api";
+const SEARCH_URL    = "https://gallium.onrender.com/api";
+const AGI_URL       = "https://gallium.onrender.com/agi";
+const FORUM_URL       = "https://gallium.onrender.com/api/forum";
+const CHAT_URL       = "https://gallium.onrender.com/api/chats";
 
 // const AGI_URL       = "https://minihomepy.onrender.com/api";
 

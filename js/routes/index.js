@@ -1,10 +1,9 @@
-import { createNav, attachNavEventListeners } from "../components/navigation.js";
+import { attachNavEventListeners, createheader } from "../components/header.js";
+import { createNav } from "../components/navigation.js";
 import { secnav } from "../components/secNav.js";
+// import { Footer } from "../components/footer.js";
 import { renderPageContent } from "./render.js";
 import { state } from "../state/state.js";
-import { profileSVG, searchSVG, settingsSVG, placesSVG, coffeeSVG, calendarSVG, locaSVG, evaSVG, chatSVG, filterSVG, plusCircleSVG, liveStreamSVG } from "../components/svgs.js";
-import RadarMenu from "../components/ui/RadarMenu.js";
-
 
 async function loadContent(url) {
     const app = document.getElementById("app");
@@ -17,6 +16,7 @@ async function loadContent(url) {
     const main = document.createElement("main");
     main.id = "content";
 
+    app.appendChild(createheader(isLoggedIn));
     app.appendChild(createNav(isLoggedIn));
 
     const secNavElement = secnav(isLoggedIn);
@@ -26,42 +26,8 @@ async function loadContent(url) {
 
     // app.appendChild(secnav(isLoggedIn));
     app.appendChild(main);
+    // app.appendChild(Footer());
 
-
-    const menuItems = [
-        { text: "Events", action: () => navigate("/events"), svg: calendarSVG },
-        { text: "Places", action: () => navigate("/places"), svg: placesSVG },
-        { text: "Search", action: () => navigate("/search"), svg: searchSVG },
-    ];
-
-    if (isLoggedIn) {
-        menuItems.push(
-            { text: "Feed", action: () => navigate("/feed"), svg: coffeeSVG },
-            { text: "Chat", action: () => navigate("/chat"), svg: chatSVG },
-            { text: "Settings", action: () => navigate("/settings"), svg: settingsSVG },
-            { text: "Profile", action: () => navigate("/profile"), svg: profileSVG },
-            { text: "Eva", action: () => navigate("/create-event"), svg: evaSVG },
-            { text: "Loca", action: () => navigate("/create-place"), svg: locaSVG },
-            { text: "Artist", action: () => navigate("/create-artist"), svg: liveStreamSVG },
-        );
-    } else {
-        menuItems.push(
-            { text: "Login", action: () => navigate("/login"), svg: "" }
-        );
-    }
-
-
-    const radarMenuElement = RadarMenu(menuItems, {
-        buttonText: "+",
-        menuSize: 320,
-        radius: 120,
-        baseAngle: 60,
-        startAngle: 180
-    });
-
-    // xul.appendChild(createElement('li', {rel: `vtab${count}`, class:""}));
-
-    app.appendChild(radarMenuElement);
 
     attachNavEventListeners();
     await renderPageContent(isLoggedIn, url, main);

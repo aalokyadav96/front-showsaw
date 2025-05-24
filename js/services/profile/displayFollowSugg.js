@@ -23,7 +23,8 @@ async function displayFollowSuggestions(userid, suggestionsSection) {
 
                 // Profile Picture
                 const profilePic = document.createElement("img");
-                profilePic.className = "profile-picture";
+                // profilePic.className = "profile-picture";
+                profilePic.className = "circle padd-4";
                 profilePic.src = user.userid ? `${SRC_URL}/userpic/thumb/${user.userid}.jpg` : "${SRC_URL}/userpic/thumb/default-avatar.jpg";
                 profilePic.alt = `${user.username}'s profile`;
                 profilePic.setAttribute("loading", "lazy");
@@ -33,7 +34,7 @@ async function displayFollowSuggestions(userid, suggestionsSection) {
                 // Username
                 const username = document.createElement("span");
                 username.className = "username";
-                username.textContent = user.username;
+                username.textContent = `@${user.username}`;
 
                 // Bio
                 const bio = document.createElement("span");
