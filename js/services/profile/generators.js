@@ -1,10 +1,46 @@
-import { SRC_URL, state } from "../../state/state.js";
+import { getState, setState } from "../../state/state.js"; // You forgot this
+import { SRC_URL } from "../../state/state.js";
 import { apiFetch } from "../../api/api.js";
 import { handleError } from "../../utils/utils.js";
 import Snackbar from '../../components/ui/Snackbar.mjs';
-import { renderPage } from "../../routes/index.js";
 import { createForm } from "../../components/createForm.js"; 
 import { showLoadingMessage, removeLoadingMessage, capitalize } from "./profileHelpers.js";
+
+import { createElement } from "../../components/createElement.js";
+
+async function updatePicture(type) {
+    if (!getState("token")) {
+        Snackbar(`Please log in to update your ${type} picture.`, 3000);
+        return;
+    }
+
+    const fileInput = document.getElementById(`edit-${type}-picture`);
+    if (!fileInput || !fileInput.files[0]) {
+        Snackbar(`No ${type} picture selected.`, 3000);
+        return;
+    }
+
+    showLoadingMessage(`Updating ${type} picture...`);
+
+    try {
+        const formData = new FormData();
+        formData.append(`${type}_picture`, fileInput.files[0]);
+
+        const updatedProfile = await apiFetch(`/profile/${type}`, 'PUT', formData);
+        if (!updatedProfile) throw new Error(`No response received for ${type} picture update.`);
+
+        const currentProfile = getState("userProfile") || {};
+        setState({ userProfile: { ...currentProfile, ...updatedProfile } }, true);
+
+        Snackbar(`${capitalize(type)} picture updated successfully.`, 3000);
+        window.location.pathname = window.location.pathname;
+    } catch (error) {
+        console.error(`Error updating ${type} picture:`, error);
+        handleError(`Error updating ${type} picture. Please try again.`);
+    } finally {
+        removeLoadingMessage();
+    }
+}
 
 
 function generateBannerForm(content, pic) {
@@ -39,61 +75,37 @@ function generateAvatarForm(content, pic) {
     });
 }
 
-async function updatePicture(type) {
-    if (!state.token) {
-        Snackbar(`Please log in to update your ${type} picture.`, 3000);
-        return;
-    }
-
-    const fileInput = document.getElementById(`edit-${type}-picture`);
-    if (!fileInput || !fileInput.files[0]) {
-        Snackbar(`No ${type} picture selected.`, 3000);
-        return;
-    }
-
-    showLoadingMessage(`Updating ${type} picture...`);
-
-    try {
-        const formData = new FormData();
-        formData.append(`${type}_picture`, fileInput.files[0]);
-
-        const updatedProfile = await apiFetch(`/profile/${type}`, 'PUT', formData);
-        if (!updatedProfile) throw new Error(`No response received for ${type} picture update.`);
-
-        state.userProfile = { ...state.userProfile, ...updatedProfile };
-        localStorage.setItem("userProfile", JSON.stringify(state.userProfile));
-
-        Snackbar(`${capitalize(type)} picture updated successfully.`, 3000);
-        window.location.pathname = window.location.pathname;
-    } catch (error) {
-        console.error(`Error updating ${type} picture:`, error);
-        handleError(`Error updating ${type} picture. Please try again.`);
-    } finally {
-        removeLoadingMessage();
-    }
-}
-
-
 async function updateProfilePics(type) {
     await updatePicture(type);
 }
 
-function generateFormField(label, id, type, value) {
-    if (value == undefined) {value = ""};
-    if (type === "textarea") {
-        return `
-            <label for="${id}">${label}</label>
-            <textarea id="${id}" name="${id}">${value}</textarea>
-        `;
-    }
-    return `
-    <div class="form-group">
-        <label for="${id}">${label}</label>
-        <input id="${id}" name="${id}" type="${type}" value="${value}" />
-    </div>
-    `;
-}
+function generateFormField(label, id, type, value = "") {
+    const wrapper = createElement("div", { class: "form-group" });
 
+    const labelEl = createElement("label", { for: id }, [label]);
+
+    let inputEl;
+    if (type === "textarea") {
+        inputEl = createElement("textarea", {
+            id,
+            name: id,
+            rows: 4
+        });
+        inputEl.value = value;
+    } else {
+        inputEl = createElement("input", {
+            id,
+            name: id,
+            type,
+            value
+        });
+    }
+
+    wrapper.appendChild(labelEl);
+    wrapper.appendChild(inputEl);
+
+    return wrapper;
+}
 
 
 export { generateBannerForm, generateAvatarForm, generateFormField };

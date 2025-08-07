@@ -1,70 +1,91 @@
-import { attachNavEventListeners, createheader } from "../components/header.js";
-import { createNav } from "../components/navigation.js";
-import { secnav } from "../components/secNav.js";
-// import { Footer } from "../components/footer.js";
-import { renderPageContent } from "./render.js";
-import { state } from "../state/state.js";
+import { createheader } from "../components/header.js";
+import { createNav, highlightActiveNav } from "../components/navigation.js";
+import { render } from "./router.js";
+import {
+  setState,
+  getRouteState,
+  saveScroll,
+  restoreScroll,
+} from "../state/state.js";
 
+let isNavigating = false;
+
+/**
+ * Loads layout and route content into static containers
+ * @param {string} url
+ */
 async function loadContent(url) {
-    const app = document.getElementById("app");
-    app.innerHTML = ""; // Clear previous content
+  const header = document.getElementById("pageheader");
+  const nav = document.getElementById("primary-nav");
+  const main = document.getElementById("content");
+  const footer = document.getElementById("pagefooter");
 
-    state.token = sessionStorage.getItem("token") || localStorage.getItem("token") || null;
-    const isLoggedIn = !!state.token;
-    // console.log("User logged in:", isLoggedIn);
+  if (!header || !nav || !main || !footer) {
+    console.error("❌ Missing static layout containers in HTML.");
+    return;
+  }
 
-    const main = document.createElement("main");
-    main.id = "content";
+  // hydrate persisted state only once
+  const hydratedToken = localStorage.getItem("token");
+  const hydratedUser = localStorage.getItem("user");
 
-    app.appendChild(createheader(isLoggedIn));
-    app.appendChild(createNav(isLoggedIn));
+  if (hydratedToken && hydratedUser) {
+    // setState({ token: hydratedToken, user: JSON.parse(hydratedUser) }, true);
+    setState({ token: hydratedToken, user: hydratedUser }, true);
+  }
 
-    const secNavElement = secnav(isLoggedIn);
-    if (secNavElement) {
-        app.appendChild(secNavElement);
-    }
+  // Clear dynamic DOM sections
+  header.replaceChildren();
+  nav.replaceChildren();
+  main.replaceChildren();
 
-    // app.appendChild(secnav(isLoggedIn));
-    app.appendChild(main);
-    // app.appendChild(Footer());
+  // Render layout
+  const headerContent = createheader();
+  if (headerContent) header.appendChild(headerContent);
 
+  const navContent = createNav();
+  if (navContent && url != "/home") {
+    nav.appendChild(navContent);
+    highlightActiveNav(url); // 🔥 This makes sure the active link reflects current URL
+  }
 
-    attachNavEventListeners();
-    await renderPageContent(isLoggedIn, url, main);
+  // Render page module
+  await render(url, main);
+
+  // Restore scroll
+  restoreScroll(main, getRouteState(url));
 }
 
-
-// SPA Navigation Function
+/**
+ * SPA PushState navigation
+ * @param {string} path
+ */
 function navigate(path) {
-    sessionStorage.setItem("redirectAfterLogin", window.location.pathname);
-    if (!path) {
-        console.error("🚨 navigate called with null or undefined!", new Error().stack);
-        return;
-    }
-    console.log("Navigating to:", path);
-    if (window.location.pathname !== path) {
-        history.pushState(null, "", path);
-        loadContent(path);
-    }
+  if (!path) {
+    console.error("🚨 navigate called with null or undefined!", new Error().stack);
+    return;
+  }
+
+  if (window.location.pathname === path || isNavigating) return;
+
+  console.log("Navigating to:", path);
+  isNavigating = true;
+
+  saveScroll(document.getElementById("content"), getRouteState(window.location.pathname));
+  history.pushState(null, "", path);
+  
+  loadContent(path)
+    .catch(err => console.error("Navigation failed:", err))
+    .finally(() => {
+      isNavigating = false;
+    });
 }
 
-// // SPA Navigation Function
-// function navigate(path) {
-//     sessionStorage.setItem("redirectAfterLogin", window.location.pathname);
-//     if (!path) {
-//         console.error("🚨 navigate called with null or undefined!", new Error().stack);
-//         return;
-//     }
-//     console.log("Navigating to:", path);
-//     if (window.location.pathname !== path) {
-//         history.pushState(null, "", path);
-//         loadContent(path);
-//     }
-// }
-
-// Initial Render
+/**
+ * Initial page render
+ */
 async function renderPage() {
-    await loadContent(window.location.pathname);
+  await loadContent(window.location.pathname);
 }
 
 export { navigate, renderPage, loadContent };

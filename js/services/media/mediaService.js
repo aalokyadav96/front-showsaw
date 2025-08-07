@@ -7,6 +7,7 @@ import Modal from '../../components/ui/Modal.mjs';
 import { Button } from "../../components/base/Button.js";
 import { createElement } from "../../components/createElement.js";
 
+import { resolveImagePath, PictureType, EntityType } from "../../utils/imagePaths.js";
 import { reportPost } from "../reporting/reporting.js";
 
 
@@ -90,107 +91,101 @@ function addMediaEventListeners(isLoggedIn, entityType) {
 
 // Display newly uploaded media in the list
 function displayNewMedia(isLoggedIn, mediaData, mediaList) {
-    // const mediaList = document.getElementById("media-list");
     const isCreator = isLoggedIn && state.user === mediaData.creatorid;
+    const mediaItem = createElement("div", { class: "imgcon" });
 
-    const mediaItem = document.createElement("div");
-    mediaItem.className = "imgcon";
+    let mediaElement;
 
-    let mediaContent = "";
-
-    // Render image or video depending on media type
     if (mediaData.type === "image") {
-        mediaContent = `
-            <img loading="lazy" src="${SRC_URL}/uploads/${mediaData.url}" alt="${mediaData.caption || "Media"}" 
-                class="media-img" data-index="${mediaItems.length}" 
-                style="max-width: 160px; max-height: 240px; height: auto; width: auto;" />
-        `;
+        const img = createElement("img", {
+            src: resolveImagePath(EntityType.MEDIA, PictureType.PHOTO, mediaData.url),
+            alt: mediaData.caption || "Media",
+            loading: "lazy",
+            style: "max-width: 160px; max-height: 240px; height: auto; width: auto;",
+            "data-index": mediaItems.length,
+        });
+        mediaElement = img;
     } else if (mediaData.type === "video") {
-        mediaContent = `
-            <video controls style="max-width: 160px; max-height: 240px;">
-                <source src="${SRC_URL}/uploads/${mediaData.url}" type="video/mp4" />
-                Your browser does not support the video tag.
-            </video>
-        `;
+        const videoSrc = resolveImagePath(EntityType.MEDIA, PictureType.VIDEO, mediaData.url);
+
+        const video = createElement("video", {
+            controls: true,
+            style: "max-width: 160px; max-height: 240px;",
+        }, [
+            createElement("source", {
+                src: videoSrc,
+                type: "video/mp4",
+            }),
+            "Your browser does not support the video tag."
+        ]);
+
+        mediaElement = video;
     }
 
-    mediaItem.innerHTML = `
-        <h3>${mediaData.caption || "No caption provided"}</h3>
-        ${mediaContent}
-        ${isCreator ? `
-            <button class="delete-media-btn" data-media-id="${mediaData.id}" data-entity-id="${mediaData.entityid}">Delete</button>
-        ` : ""}
-    `;
+    mediaItem.appendChild(createElement("h3", {}, [mediaData.caption || "No caption provided"]));
+    mediaItem.appendChild(mediaElement);
 
-    mediaList.appendChild(mediaItem); // Append the new media item to the list
-    mediaItems.push(mediaData); // Add the new media to the global mediaItems array
+    if (isCreator) {
+        const deleteBtn = createElement("button", {
+            class: "delete-media-btn",
+            "data-media-id": mediaData.id,
+            "data-entity-id": mediaData.entityid,
+        }, ["Delete"]);
+        mediaItem.appendChild(deleteBtn);
+    }
+
+    mediaList.appendChild(mediaItem);
+    mediaItems.push(mediaData);
 }
 
-function renderMediaItem(media, index, isLoggedIn, entityType, entityId) {
-    const mediaItem = document.createElement("div");
-    mediaItem.className = "media-item";
 
-    // Validate media source URL
-    const mediaUrl = `${SRC_URL}/uploads/${media.url}`;
+// Render single media item
+function renderMediaItem(media, index, isLoggedIn, entityType, entityId) {
+    const mediaItem = createElement("div", { class: "media-item" });
+
     if (!media.url) {
         console.error("Invalid media URL");
         return mediaItem;
     }
 
     if (media.type === "image") {
-        // Handle image media
-        const figure = document.createElement("figure");
+        const img = createElement("img", {
+            src: resolveImagePath(EntityType.MEDIA, PictureType.THUMB, media.url),
+            loading: "lazy",
+            alt: media.caption || "Media Image",
+            class: "media-img",
+            "data-index": index,
+        });
 
-        const img = document.createElement("img");
-        img.src = mediaUrl;
-        img.loading = "lazy";
-        img.alt = media.caption || "Media Image";
-        img.className = "media-img";
-        img.dataset.index = index;
-        figure.appendChild(img);
-
-        const caption = document.createElement("figcaption");
-        caption.textContent = media.caption || "No caption provided";
-        figure.appendChild(caption);
+        const caption = createElement("figcaption", {}, [media.caption || "No caption provided"]);
+        const figure = createElement("figure", {}, [img, caption]);
 
         mediaItem.appendChild(figure);
     } else if (media.type === "video") {
-        console.log(typeof VidPlay); // Should log "function"
+        const video = createElement("video", {
+            class: "media-video",
+            controls: false,
+            // poster: `${SRC_URL}/uploads/${media.id}.jpg`, // optionally use resolveImagePath if you want
+            poster: resolveImagePath(EntityType.MEDIA, PictureType.THUMB, media.id + ".jpg"),
+        });
 
-        // Handle video media
-        const video = document.createElement("video");
-        video.className = "media-video";
-        video.controls = false;
-        video.poster = `${SRC_URL}/uploads/${media.id}.jpg`;
-
-        // const source = document.createElement("source");
-        // source.src = mediaUrl;
-        // source.type = "video/mp4";
-        // video.appendChild(source);
-
-        const caption = document.createElement("figcaption");
-        caption.textContent = media.caption || "No caption provided";
-
-        const figure = document.createElement("figure");
-        figure.appendChild(video);
-        figure.appendChild(caption);
+        const caption = createElement("figcaption", {}, [media.caption || "No caption provided"]);
+        const figure = createElement("figure", {}, [video, caption]);
 
         mediaItem.appendChild(figure);
-    } else {
-        console.warn("Unsupported media type");
     }
 
-    // Add delete button for creators
+    // Creator-only delete
     if (isLoggedIn && state.user === media.creatorid) {
-        const deleteButton = document.createElement("button");
-        deleteButton.className = "delete-media-btn";
-        deleteButton.textContent = "Delete";
-        deleteButton.dataset.mediaId = media.id;
+        const deleteButton = createElement("button", {
+            class: "delete-media-btn",
+            "data-media-id": media.id,
+        }, ["Delete"]);
 
         deleteButton.addEventListener("click", async () => {
             try {
                 await deleteMedia(media.id, entityType, entityId);
-                mediaItem.remove(); // Remove the item on successful delete
+                mediaItem.remove();
             } catch (error) {
                 console.error("Failed to delete media:", error);
             }
@@ -199,30 +194,31 @@ function renderMediaItem(media, index, isLoggedIn, entityType, entityId) {
         mediaItem.appendChild(deleteButton);
     }
 
-        // Report button
-        const reportButton = document.createElement("button");
-        reportButton.className = "report-btn";
-        reportButton.textContent = "Report";
-        reportButton.addEventListener("click", () => {
-            reportPost(media.id, "media");
-        });
-        mediaItem.appendChild(reportButton);
+    // Report button
+    const reportButton = createElement("button", {
+        class: "report-btn"
+    }, ["Report"]);
 
+    reportButton.addEventListener("click", () => {
+        reportPost(media.id, "media");
+    });
+
+    mediaItem.appendChild(reportButton);
     return mediaItem;
 }
 
 
+
 async function displayMedia(content, entityType, entityId, isLoggedIn) {
     content.innerHTML = ""; // Clear existing content
-    content.appendChild(createElement('h2',"",["Media Gallery"]));
+    content.appendChild(createElement("h2", "", ["Media Gallery"]));
+
     const response = await apiFetch(`/media/${entityType}/${entityId}`);
     const mediaData = response;
 
     const mediaList = createElement("div", { class: "hvflex" });
-    // const mediaList = createElement("div", { class: "grid-4" });
     content.appendChild(mediaList);
 
-    // Add "Add Media" button for logged-in users
     if (isLoggedIn) {
         const addMediaButton = Button("Add Media", "add-media-btn", {
             click: () => showMediaUploadForm(isLoggedIn, entityType, entityId, mediaList),
@@ -232,7 +228,7 @@ async function displayMedia(content, entityType, entityId, isLoggedIn) {
 
     if (mediaData.length === 0) {
         mediaList.appendChild(
-            createElement("p", {},["No media available for this entity."])
+            createElement("p", {}, ["No media available for this entity."])
         );
     } else {
         const mediaCards = []; // For Lightbox
@@ -243,9 +239,13 @@ async function displayMedia(content, entityType, entityId, isLoggedIn) {
             mediaList.appendChild(mediaItem);
 
             if (media.type === "image") {
-                mediaCards.push(`${SRC_URL}/uploads/${media.url}`);
+                mediaCards.push(
+                    resolveImagePath(EntityType.MEDIA, PictureType.PHOTO, media.url)
+                );
             } else if (media.type === "video") {
-                videoCards.push(`${SRC_URL}/uploads/${media.url}`);
+                videoCards.push(
+                    resolveImagePath(EntityType.MEDIA, PictureType.VIDEO, media.url)
+                );
             }
         });
 
@@ -258,9 +258,58 @@ async function displayMedia(content, entityType, entityId, isLoggedIn) {
         mediaList.querySelectorAll(".media-video").forEach((video, index) => {
             video.addEventListener("click", () => playVideo(videoCards, index, entityId));
         });
-
     }
 }
+
+// async function displayMedia(content, entityType, entityId, isLoggedIn) {
+//     content.innerHTML = ""; // Clear existing content
+//     content.appendChild(createElement('h2',"",["Media Gallery"]));
+//     const response = await apiFetch(`/media/${entityType}/${entityId}`);
+//     const mediaData = response;
+
+//     const mediaList = createElement("div", { class: "hvflex" });
+//     // const mediaList = createElement("div", { class: "grid-4" });
+//     content.appendChild(mediaList);
+
+//     // Add "Add Media" button for logged-in users
+//     if (isLoggedIn) {
+//         const addMediaButton = Button("Add Media", "add-media-btn", {
+//             click: () => showMediaUploadForm(isLoggedIn, entityType, entityId, mediaList),
+//         });
+//         content.prepend(addMediaButton);
+//     }
+
+//     if (mediaData.length === 0) {
+//         mediaList.appendChild(
+//             createElement("p", {},["No media available for this entity."])
+//         );
+//     } else {
+//         const mediaCards = []; // For Lightbox
+//         const videoCards = []; // For VidPlay
+
+//         mediaData.forEach((media, index) => {
+//             const mediaItem = renderMediaItem(media, index, isLoggedIn, entityType, entityId);
+//             mediaList.appendChild(mediaItem);
+
+//             if (media.type === "image") {
+//                 mediaCards.push(`${SRC_URL}/uploads/${media.url}`);
+//             } else if (media.type === "video") {
+//                 videoCards.push(`${SRC_URL}/uploads/${media.url}`);
+//             }
+//         });
+
+//         // Add Lightbox functionality
+//         mediaList.querySelectorAll(".media-img").forEach((img, index) => {
+//             img.addEventListener("click", () => Lightbox(mediaCards, index));
+//         });
+
+//         // Add VidPlay functionality
+//         mediaList.querySelectorAll(".media-video").forEach((video, index) => {
+//             video.addEventListener("click", () => playVideo(videoCards, index, entityId));
+//         });
+
+//     }
+// }
 
 /********
  * 
@@ -313,7 +362,7 @@ function showMediaUploadForm(isLoggedIn, entityType, entityId, mediaList) {
     previewDiv.id = "mediaPreview";
 
     const uploadButton = Button("Upload", "uploadMediaBtn", {
-        click: () => {uploadMedia(isLoggedIn, entityType, entityId, mediaList, modal);uploadButton.style.display="none";},
+        click: () => { uploadMedia(isLoggedIn, entityType, entityId, mediaList, modal); uploadButton.style.display = "none"; },
     });
 
     // content.appendChild(title);

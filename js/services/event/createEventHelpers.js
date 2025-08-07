@@ -158,8 +158,8 @@ async function createEvent(isLoggedIn) {
         const placeName = place.value;
         
         // Get selected artists
-        const artistSelect = document.getElementById("artist-select");
-        const selectedArtists = Array.from(artistSelect.selectedOptions).map(option => option.value);
+        // const artistSelect = document.getElementById("artist-select");
+        // const selectedArtists = Array.from(artistSelect.selectedOptions).map(option => option.value);
 
         if (!title || !date || !time || !place || !location || !description || !category) {
             SnackBar("Please fill in all required fields.", 3000);
@@ -179,10 +179,10 @@ async function createEvent(isLoggedIn) {
             category
         }));
 
-        // ➡️ Attach artists JSON if any selected
-        if (selectedArtists.length > 0) {
-            formData.append('artists', JSON.stringify(selectedArtists));
-        }
+        // // ➡️ Attach artists JSON if any selected
+        // if (selectedArtists.length > 0) {
+        //     formData.append('artists', JSON.stringify(selectedArtists));
+        // }
 
         if (bannerFile) {
             formData.append('banner', bannerFile);

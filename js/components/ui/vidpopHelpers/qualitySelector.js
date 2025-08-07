@@ -1,12 +1,12 @@
-import { createElement } from "./helpers.js";
+import { createElement } from "../../createElement";
 
 export function createQualitySelector(video, qualities) {
-  const select = createElement("select", "quality-selector");
+  const select = createElement("select", { class: "quality-selector" }, []);
 
   const stored = localStorage.getItem("videoQuality") || "480p";
 
   qualities.forEach(({ label }) => {
-    const opt = createElement("option", null, { value: label });
+    const opt = createElement("option", { value: label }, []);
     opt.textContent = label;
     opt.selected = label === stored;
     select.appendChild(opt);

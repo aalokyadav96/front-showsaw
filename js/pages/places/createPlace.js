@@ -1,10 +1,9 @@
 import { createPlaceForm } from '../../services/place/createPlaceService.js';
 
 async function CreatePlace(isLoggedIn, contentContainer) {
-    console.log("dfgrhg");
     contentContainer.innerHTML = '';
     const content = document.createElement("div");
-    content.classList = "create-place-section";
+    content.classList = "create-section";
     contentContainer.appendChild(content);
 
     createPlaceForm(isLoggedIn, content)    

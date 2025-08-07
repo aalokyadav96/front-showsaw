@@ -1,420 +1,774 @@
-// main.js
-
 import { createElement } from "../../components/createElement.js";
-import { apiFetch } from ".././../api/api.js";
-import {fetchFeed} from "../feed/fetchFeed.js";
+import { apiFetch } from "../../api/api.js";
+import { fetchFeed } from "../feed/fetchFeed.js";
+import { miscnav } from "./miscnav.js";
 
-// (You can remove this import if you prefer to use `fetch` everywhere.
-//  In this example, we’ll only use `apiFetch` for JSON GETs—CSRF and feed.)
+const TAB_CONFIG = [
+  { name: "Text", type: "text", multiple: false },
+  { name: "Images", type: "image", multiple: true },
+  { name: "Video", type: "video", multiple: false },
+  { name: "Audio", type: "audio", multiple: false }
+];
 
 export function displayWeed(isLoggedIn, root) {
-  // ─────────────────────────────────────────────────────────────────
-  // 1) Build the tabbed composer UI
-  // ─────────────────────────────────────────────────────────────────
+  let activeTab = TAB_CONFIG[0].name;
+  const layout = createEl("div", { class: "feed-layout" });
+  root.appendChild(layout);
 
-  const tabs = ["Text", "Images", "Video"];
-  let activeTab = "Text";
+  const miscCon = createEl("div", { class: "vflex misccon", style: "order: 3;" });
+  miscCon.appendChild(miscnav());
+  layout.appendChild(miscCon);
 
-  // - Container that holds everything:
-  const container = document.createElement("div");
-  container.className = "container feed";
-  // (You can style #container in CSS later.)
-  root.appendChild(container);
+  const formCon = createEl("div", { class: "vflex formcon", style: "order: 1;" });
+  layout.appendChild(formCon);
 
-  var formcon = createElement('div',{},[]);
-  container.appendChild(formcon);
+  const feedContainer = createEl("div", {
+    id: "postsContainer",
+    class: "postsContainer",
+    style: "order: 2;"
+  });
+  layout.appendChild(feedContainer);
 
-  // -- 1.1) Tab header (buttons “Text” / “Images” / “Video”)
-  const tabHeader = document.createElement("div");
-  tabHeader.id = "tab-header";
-  tabHeader.style.display = "flex";
-  tabHeader.style.gap = "8px";
-  tabHeader.style.marginBottom = "12px";
-
+  // Tabs
+  const tabHeader = createEl("div", {
+    id: "tab-header",
+    role: "tablist",
+    class: "tab-header"
+  });
   const tabButtons = {};
-  tabs.forEach((tabName) => {
-    const btn = document.createElement("button");
-    btn.textContent = tabName;
-    btn.dataset.tab = tabName;
-    btn.style.padding = "6px 12px";
-    btn.style.cursor = "pointer";
-    btn.style.border = "1px solid #666";
-    btn.style.background = tabName === activeTab ? "#eee" : "#fff";
+  const panels = {};
 
-    btn.addEventListener("click", () => {
-      switchTab(tabName);
-    });
+  TAB_CONFIG.forEach(cfg => {
+    tabButtons[cfg.name] = createTabButton(cfg.name, () => switchTab(cfg.name));
+    tabHeader.appendChild(tabButtons[cfg.name]);
 
-    tabButtons[tabName] = btn;
-    tabHeader.appendChild(btn);
-  });
-  formcon.appendChild(tabHeader);
+    let child;
+    if (cfg.type === "text") {
+      child = createEl("textarea", {
+        id: "text-input",
+        rows: 4,
+        cols: 50,
+        placeholder: "Write your post…",
+        class: "text-area"
+      });
+    } else {
+      const fileInput = createFileInput(cfg.type, cfg.multiple);
+      const preview = createPreviewContainer(`${cfg.type}-preview`);
+      panels[`${cfg.name}-preview`] = preview;
+      child = createEl("div", {}, [fileInput, preview]);
 
-  // -- 1.2) Panels container (only one panel is visible at a time)
-  const panelWrapper = document.createElement("div");
-  panelWrapper.id = "panel-wrapper";
-  panelWrapper.style.marginBottom = "4px";
-
-  // ---- Text panel
-  const textPanel = document.createElement("div");
-  textPanel.id = "text-panel";
-  const textArea = document.createElement("textarea");
-  textArea.id = "text-input";
-  textArea.placeholder = "Write your post...";
-  textArea.rows = 4;
-  textArea.cols = 50;
-  textArea.style.width = "100%";
-  textPanel.appendChild(textArea);
-  panelWrapper.appendChild(textPanel);
-
-  // ---- Images panel
-  const imagesPanel = document.createElement("div");
-  imagesPanel.id = "images-panel";
-  imagesPanel.style.display = "none";
-  const imgInput = document.createElement("input");
-  imgInput.type = "file";
-  imgInput.accept = "image/*";
-  imgInput.multiple = true;
-  imgInput.id = "img-input";
-  imagesPanel.appendChild(imgInput);
-  const imgPreviewContainer = document.createElement("div");
-  imgPreviewContainer.id = "img-preview";
-  imgPreviewContainer.style.marginTop = "8px";
-  imgPreviewContainer.style.display = "flex";
-  imgPreviewContainer.style.flexWrap = "wrap";
-  imgPreviewContainer.style.gap = "8px";
-  imagesPanel.appendChild(imgPreviewContainer);
-  panelWrapper.appendChild(imagesPanel);
-
-  // ---- Video panel
-  const videoPanel = document.createElement("div");
-  videoPanel.id = "video-panel";
-  videoPanel.style.display = "none";
-  const videoInput = document.createElement("input");
-  videoInput.type = "file";
-  videoInput.accept = "video/*";
-  videoInput.id = "video-input";
-  videoPanel.appendChild(videoInput);
-  const videoPreviewContainer = document.createElement("div");
-  videoPreviewContainer.id = "video-preview";
-  videoPreviewContainer.style.marginTop = "8px";
-  videoPanel.appendChild(videoPreviewContainer);
-  panelWrapper.appendChild(videoPanel);
-
-  formcon.appendChild(panelWrapper);
-
-  // -- 1.3) “Publish” button
-  const publishButton = document.createElement("button");
-  publishButton.id = "publish-btn";
-  publishButton.textContent = "Publish";
-  publishButton.disabled = true;
-  publishButton.style.padding = "8px 16px";
-  publishButton.style.cursor = "pointer";
-  publishButton.style.border = "1px solid #333";
-  publishButton.style.background = "#f5f5f5";
-  formcon.appendChild(publishButton);
-
-  // -- 1.4) Feed container (initially empty)
-  const feedContainer = document.createElement("div");
-  feedContainer.id = "postsContainer";
-  feedContainer.className = "postsContainer";
-  feedContainer.style.marginTop = "24px";
-  container.appendChild(feedContainer);
-
-  // ─────────────────────────────────────────────────────────────────
-  // 2) Tab‐switch logic
-  // ─────────────────────────────────────────────────────────────────
-
-  function switchTab(newTab) {
-    // Hide all panels
-    textPanel.style.display = "none";
-    imagesPanel.style.display = "none";
-    videoPanel.style.display = "none";
-
-    // Reset all tab button backgrounds
-    Object.values(tabButtons).forEach((btn) => {
-      btn.style.background = "#fff";
-    });
-
-    // Show the requested panel and highlight its tab button
-    if (newTab === "Text") {
-      textPanel.style.display = "block";
-    } else if (newTab === "Images") {
-      imagesPanel.style.display = "block";
-    } else if (newTab === "Video") {
-      videoPanel.style.display = "block";
+      fileInput.addEventListener("change", () => {
+        renderPreviewList(Array.from(fileInput.files), preview, cfg.type);
+        checkPublishEnable();
+      });
+      panels[`${cfg.name}-input`] = fileInput;
     }
-    tabButtons[newTab].style.background = "#eee";
 
-    activeTab = newTab;
-    checkPublishEnable();
-  }
+    const panel = createPanel(`${cfg.type}-panel`, [child]);
+    panels[cfg.name] = panel;
+  });
 
-  // Initialize default tab
+  formCon.appendChild(tabHeader);
+
+  const panelWrapper = createEl("div", {
+    id: "panel-wrapper",
+    class: "panel-wrapper"
+  });
+  Object.values(panels)
+    .filter(el => el.getAttribute("role") === "tabpanel")
+    .forEach(panelWrapper.appendChild.bind(panelWrapper));
+  formCon.appendChild(panelWrapper);
+
+  const publishBtn = createEl(
+    "button",
+    { id: "publish-btn", disabled: true, class: "publish-btn" },
+    ["Publish"]
+  );
+  publishBtn.addEventListener("click", handlePublish);
+  formCon.appendChild(publishBtn);
+
   switchTab(activeTab);
+  refreshFeed();
 
-  // ─────────────────────────────────────────────────────────────────
-  // 3) Preview helpers & “Publish”‐enabling logic
-  // ─────────────────────────────────────────────────────────────────
+  // ——— Internal Functions ———
 
-  function clearImagePreviews() {
-    imgPreviewContainer.innerHTML = "";
-  }
-  function clearVideoPreview() {
-    videoPreviewContainer.innerHTML = "";
-  }
-
-  textArea.addEventListener("input", () => {
-    checkPublishEnable();
-  });
-
-  imgInput.addEventListener("change", (e) => {
-    clearImagePreviews();
-    const files = Array.from(e.target.files);
-    if (!files.length) {
-      checkPublishEnable();
-      return;
-    }
-    files.forEach((file) => {
-      if (!file.type.startsWith("image/")) return;
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        const img = document.createElement("img");
-        img.src = ev.target.result;
-        img.style.maxWidth = "120px";
-        img.style.maxHeight = "120px";
-        img.style.objectFit = "cover";
-        img.style.border = "1px solid #ccc";
-        imgPreviewContainer.appendChild(img);
-      };
-      reader.readAsDataURL(file);
+  function switchTab(tabName) {
+    TAB_CONFIG.forEach(cfg => {
+      const panel = panels[cfg.name];
+      panel.style.display = cfg.name === tabName ? "block" : "none";
     });
+    Object.entries(tabButtons).forEach(([name, btn]) => {
+      const selected = name === tabName;
+      btn.setAttribute("aria-selected", selected);
+      btn.classList.toggle("active-tab", selected);
+      if (selected) btn.focus();
+    });
+    activeTab = tabName;
     checkPublishEnable();
-  });
-
-  videoInput.addEventListener("change", (e) => {
-    clearVideoPreview();
-    const file = e.target.files[0];
-    if (!file || !file.type.startsWith("video/")) {
-      checkPublishEnable();
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      const video = document.createElement("video");
-      video.src = ev.target.result;
-      video.controls = true;
-      video.style.maxWidth = "240px";
-      video.style.maxHeight = "240px";
-      videoPreviewContainer.appendChild(video);
-    };
-    reader.readAsDataURL(file);
-    checkPublishEnable();
-  });
+  }
 
   function checkPublishEnable() {
     if (activeTab === "Text") {
-      publishButton.disabled = textArea.value.trim().length === 0;
-    } else if (activeTab === "Images") {
-      publishButton.disabled = imgInput.files.length === 0;
-    } else if (activeTab === "Video") {
-      publishButton.disabled = !(videoInput.files.length === 1);
+      const ta = panels["Text"].querySelector("textarea");
+      publishBtn.disabled = ta.value.trim().length === 0;
+    } else {
+      const cfg = TAB_CONFIG.find(c => c.name === activeTab);
+      const input = panels[`${cfg.name}-input`];
+      const count = input.files.length;
+      publishBtn.disabled = cfg.multiple ? count === 0 : count !== 1;
     }
   }
 
-  // ─────────────────────────────────────────────────────────────────
-  // 4) CSRF + API‐call helpers
-  // ─────────────────────────────────────────────────────────────────
-
-  // (a) GET /api/csrf → { csrf_token: "..." }
-  async function getCSRFToken() {
-    const res = await apiFetch("/csrf");
-    return res.csrf_token || "";
+  async function handlePublish() {
+    publishBtn.disabled = true;
+    try {
+      const formData = await buildFormData();
+      const res = await apiFetch("/feed/post", "POST", formData, {
+        headers: { "X-CSRF-Token": await getCSRFToken() }
+      });
+      if (!res.ok) throw new Error("Upload failed");
+      resetInputs();
+      await refreshFeed();
+    } catch (err) {
+      console.error("Publish error:", err);
+    } finally {
+      publishBtn.disabled = false;
+    }
   }
 
-  // (b) POST /api/feed/post  (multipart/form-data)
-  // Returns JSON: { ok: true, data: { id, content, media: [ ... ], author, created_at } }
-  async function postToFeed(formData, csrfToken) {
-    // We attach CSRF token as a header (many Go middleware expect X-CSRF-Token),
-    // but also append it to FormData if your handler reads it from form values.
-    //
-    // If your middleware expects the token in the header:
-    //
-    const response = await apiFetch("/feed/post", "POST", formData, {
-      headers: {
-        "X-CSRF-Token": csrfToken
-      }
-    },
-    );
-    return await response;
+  function resetInputs() {
+    const ta = panels["Text"].querySelector("textarea");
+    ta.value = "";
+    TAB_CONFIG.filter(c => c.type !== "text").forEach(cfg => {
+      const input = panels[`${cfg.name}-input`];
+      const preview = panels[`${cfg.name}-preview`];
+      input.value = "";
+      preview.innerHTML = "";
+    });
+    checkPublishEnable();
   }
-
-  // // (c) GET /api/feed/feed → [ { id, content, media: [...], author, created_at }, … ]
-  // async function fetchFeed() {
-  //   const res = await apiFetch("/feed/feed");
-  //   if (!Array.isArray(res.data)) {
-  //     throw new Error("Feed did not return an array");
-  //   }
-  //   return res.data;
-  // }
-
-  // ─────────────────────────────────────────────────────────────────
-  // 5) Render a single post in the feed
-  // ─────────────────────────────────────────────────────────────────
-
-  // function createPostElement(post) {
-  //   // `post.media` is assumed to be an array of URLs (could be length=0, =1, or >1)
-  //   const div = document.createElement("div");
-  //   div.className = "feed-post";
-  //   div.style.border = "1px solid #ddd";
-  //   div.style.padding = "12px";
-  //   div.style.marginBottom = "12px";
-
-  //   // -- Author / timestamp
-  //   const meta = document.createElement("div");
-  //   meta.style.marginBottom = "8px";
-  //   meta.style.fontSize = "0.9em";
-  //   meta.style.color = "#555";
-  //   meta.textContent = `${post.author || "Unknown"} · ${new Date(post.created_at).toLocaleString()}`;
-  //   div.appendChild(meta);
-
-  //   // -- Text content (if any)
-  //   if (post.content && post.content.trim().length > 0) {
-  //     const p = document.createElement("p");
-  //     p.textContent = post.content;
-  //     p.style.marginBottom = "8px";
-  //     div.appendChild(p);
-  //   }
-
-  //   // -- Media (images/videos)
-  //   if (Array.isArray(post.media) && post.media.length > 0) {
-  //     const mediaContainer = document.createElement("div");
-  //     mediaContainer.style.display = "flex";
-  //     mediaContainer.style.flexWrap = "wrap";
-  //     mediaContainer.style.gap = "8px";
-
-  //     post.media.forEach((url) => {
-  //       const isImage = /\.(png|jpe?g|gif|webp)$/i.test(url);
-  //       const isVideo = /\.(mp4|webm|ogg)$/i.test(url);
-
-  //       if (isImage) {
-  //         const img = document.createElement("img");
-  //         img.src = url;
-  //         img.style.maxWidth = "160px";
-  //         img.style.maxHeight = "160px";
-  //         img.style.objectFit = "cover";
-  //         imgContainerAppend(img, mediaContainer);
-  //       } else if (isVideo) {
-  //         const video = document.createElement("video");
-  //         video.src = url;
-  //         video.controls = true;
-  //         video.style.maxWidth = "320px";
-  //         video.style.maxHeight = "240px";
-  //         mediaContainer.appendChild(video);
-  //       }
-  //     });
-
-  //     div.appendChild(mediaContainer);
-  //   }
-
-  //   return div;
-  // }
-
-  // function imgContainerAppend(img, container) {
-  //   // Some minimal wrapper if you like; for now, just append
-  //   container.appendChild(img);
-  // }
-
-  
-  // // ─────────────────────────────────────────────────────────────────
-  // // 6) Refresh entire feed from the server
-  // // ─────────────────────────────────────────────────────────────────
-
-  // async function refreshFeed() {
-  //   try {
-  //     const posts = await fetchFeed();
-  //     feedContainer.innerHTML = ""; // clear old
-  //     posts.forEach((post) => {
-  //       const el = createPostElement(post);
-  //       feedContainer.appendChild(el);
-  //     });
-  //   } catch (err) {
-  //     console.error("Could not load feed:", err);
-  //   }
-  // }
 
   async function refreshFeed() {
-    fetchFeed(feedContainer);
+    await fetchFeed(feedContainer);
   }
 
-  // Load feed once on page load
-  refreshFeed();
-
-  // ─────────────────────────────────────────────────────────────────
-  // 7) “Publish” button click handler
-  // ─────────────────────────────────────────────────────────────────
-
-  publishButton.addEventListener("click", async () => {
-    publishButton.disabled = true;
-
-    // 1) Fetch CSRF
-    let csrfToken = "";
-    try {
-      csrfToken = await getCSRFToken();
-    } catch (err) {
-      console.error("Could not fetch CSRF token:", err);
-      publishButton.disabled = false;
-      return;
-    }
-
-    // 2) Build form data
+  async function buildFormData() {
     const formData = new FormData();
-    // Always include a “text” field (empty string if no text)
-    formData.append("text", activeTab === "Text" ? textArea.value.trim() : "");
+    const active = TAB_CONFIG.find(c => c.name === document.querySelector('[aria-selected="true"]').dataset.tab);
+    formData.append("type", active.type);
 
-    // Include exactly one type of media field if activeTab == "Images" or "Video"
-    if (activeTab === "Images") {
-      const files = Array.from(imgInput.files);
-      // Append each image under key “image”
-      files.forEach((file) => {
-        if (!file.type.startsWith("image/")) return;
-        formData.append("type", "image");
-        formData.append("images", file);
+    if (active.type === "text") {
+      const text = document.getElementById("text-input").value.trim();
+      formData.append("text", text);
+    } else {
+      const input = panels[`${active.name}-input`];
+      const field = active.type + (active.multiple ? "s" : "");
+      Array.from(input.files).forEach(file => {
+        formData.append(field, file);
       });
-    } else if (activeTab === "Video") {
-      const file = videoInput.files[0];
-      if (file && file.type.startsWith("video/")) {
-        formData.append("type", "video");
-        formData.append("videos", file);
-      }
     }
 
-    // Append CSRF token (some middleware read it from form-data)
-    formData.append("csrf_token", csrfToken);
+    return formData;
+  }
+}
 
-    // 3) POST to /api/feed/post
-    let result;
-    try {
-      result = await postToFeed(formData, csrfToken);
-    } catch (err) {
-      console.error("Error posting to feed:", err);
-      publishButton.disabled = false;
-      return;
-    }
+// ——— Helper Functions ———
 
-    if (!result || !result.ok) {
-      console.error("Server responded with an error:", result);
-      publishButton.disabled = false;
-      return;
-    }
+function createEl(tag, attrs = {}, children = []) {
+  if (attrs.class && typeof attrs.class === "string") {
+    attrs.class = [attrs.class];
+  }
+  return createElement(tag, attrs, children);
+}
 
-    // 4) On success, clear inputs & refresh feed
-    textArea.value = "";
-    imgInput.value = "";
-    videoInput.value = "";
-    clearImagePreviews();
-    clearVideoPreview();
-    checkPublishEnable();
-    await refreshFeed();
+function createTabButton(label, onClick) {
+  const btn = createEl(
+    "button",
+    {
+      role: "tab",
+      dataset: { tab: label },
+      ariaSelected: "false",
+      class: "tab-btn"
+    },
+    [label]
+  );
+  btn.addEventListener("click", onClick);
+  return btn;
+}
+
+function createPanel(id, children) {
+  return createEl(
+    "div",
+    { id, role: "tabpanel", style: "display: none;", class: "tab-panel" },
+    children
+  );
+}
+
+function createFileInput(type, multiple) {
+  return createEl("input", {
+    type: "file",
+    accept: `${type}/*`,
+    multiple: multiple || undefined,
+    class: "file-input"
   });
 }
+
+function createPreviewContainer(id) {
+  return createEl("div", {
+    id,
+    class: "preview-container"
+  });
+}
+
+function renderPreviewList(files, container, type) {
+  container.innerHTML = "";
+  files.forEach(file => {
+    if (!file.type.startsWith(type)) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      let el;
+      const src = e.target.result;
+      if (type === "image") {
+        el = createEl("img", { src, class: "preview-image" });
+      } else if (type === "video") {
+        el = createEl("video", { src, controls: true, class: "preview-video" });
+      } else {
+        el = createEl("audio", { src, controls: true, class: "preview-audio" });
+      }
+      container.appendChild(el);
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+async function getCSRFToken() {
+  const res = await apiFetch("/csrf");
+  return res.csrf_token || "";
+}
+
+// import { createElement } from "../../components/createElement.js";
+// import { apiFetch } from "../../api/api.js";
+// import { fetchFeed } from "../feed/fetchFeed.js";
+// import { miscnav } from "./miscnav.js";
+
+// const TAB_CONFIG = [
+//   { name: "Text", type: "text", multiple: false },
+//   { name: "Images", type: "image", multiple: true },
+//   { name: "Video", type: "video", multiple: false },
+//   { name: "Audio", type: "audio", multiple: false }
+// ];
+
+// export function displayWeed(isLoggedIn, root) {
+//   let activeTab = TAB_CONFIG[0].name;
+
+//   const layout = createEl("div", { class: "feed-layout" });
+//   root.appendChild(layout);
+
+//   // ─── Misc Nav ───
+//   const miscCon = createEl("div", { class: "vflex misccon", style: "order: 3;" });
+//   miscCon.appendChild(miscnav());
+//   layout.appendChild(miscCon);
+
+//   // ─── Form Container ───
+//   const formCon = createEl("div", { class: "vflex formcon", style: "order: 1;" });
+//   layout.appendChild(formCon);
+
+//   const tabHeader = createEl("div", {
+//     id: "tab-header",
+//     role: "tablist",
+//     class: "tab-header"
+//   });
+//   const tabButtons = {};
+//   const panels = {};
+
+//   TAB_CONFIG.forEach(cfg => {
+//     tabButtons[cfg.name] = createTabButton(cfg.name, () => switchTab(cfg.name));
+//     tabHeader.appendChild(tabButtons[cfg.name]);
+
+//     let child;
+//     if (cfg.type === "text") {
+//       child = createEl("textarea", {
+//         id: "text-input",
+//         rows: 4,
+//         cols: 50,
+//         placeholder: "Write your post…",
+//         class: "text-area"
+//       });
+//     } else {
+//       const fileInput = createFileInput(cfg.type, cfg.multiple);
+//       const preview = createPreviewContainer(`${cfg.type}-preview`);
+//       panels[`${cfg.name}-preview`] = preview;
+//       child = createEl("div", {}, [fileInput, preview]);
+
+//       fileInput.addEventListener("change", () => {
+//         renderPreviewList(Array.from(fileInput.files), preview, cfg.type);
+//         checkPublishEnable();
+//       });
+//       panels[`${cfg.name}-input`] = fileInput;
+//     }
+
+//     const panel = createPanel(`${cfg.type}-panel`, [child]);
+//     panels[cfg.name] = panel;
+//   });
+
+//   formCon.appendChild(tabHeader);
+
+//   const panelWrapper = createEl("div", {
+//     id: "panel-wrapper",
+//     class: "panel-wrapper"
+//   });
+//   Object.values(panels)
+//     .filter(el => el.getAttribute("role") === "tabpanel")
+//     .forEach(panelWrapper.appendChild.bind(panelWrapper));
+//   formCon.appendChild(panelWrapper);
+
+//   const publishBtn = createEl(
+//     "button",
+//     { id: "publish-btn", disabled: true, class: "publish-btn" },
+//     ["Publish"]
+//   );
+//   publishBtn.addEventListener("click", handlePublish);
+//   formCon.appendChild(publishBtn);
+
+//   // ─── Feed Container ───
+//   const feedContainer = createEl("div", {
+//     id: "postsContainer",
+//     class: "postsContainer",
+//     style: "order: 2;"
+//   });
+//   layout.appendChild(feedContainer);
+
+//   switchTab(activeTab);
+//   refreshFeed();
+
+//   // ─── Internal Functions ───
+
+//   function switchTab(tabName) {
+//     TAB_CONFIG.forEach(cfg => {
+//       const panel = panels[cfg.name];
+//       panel.style.display = cfg.name === tabName ? "block" : "none";
+//     });
+//     Object.entries(tabButtons).forEach(([name, btn]) => {
+//       const selected = name === tabName;
+//       btn.setAttribute("aria-selected", selected);
+//       btn.classList.toggle("active-tab", selected);
+//       if (selected) btn.focus();
+//     });
+//     activeTab = tabName;
+//     checkPublishEnable();
+//   }
+
+//   function checkPublishEnable() {
+//     if (activeTab === "Text") {
+//       const ta = panels["Text"].querySelector("textarea");
+//       publishBtn.disabled = ta.value.trim().length === 0;
+//     } else {
+//       const cfg = TAB_CONFIG.find(c => c.name === activeTab);
+//       const input = panels[`${cfg.name}-input`];
+//       const count = input.files.length;
+//       publishBtn.disabled = cfg.multiple ? count === 0 : count !== 1;
+//     }
+//   }
+
+//   async function handlePublish() {
+//     publishBtn.disabled = true;
+//     try {
+//       const formData = await buildFormData();
+//       const res = await apiFetch("/feed/post", "POST", formData, {
+//         headers: { "X-CSRF-Token": await getCSRFToken() }
+//       });
+//       if (!res.ok) throw new Error("Upload failed");
+//       resetInputs();
+//       await refreshFeed();
+//     } catch (err) {
+//       console.error("Publish error:", err);
+//     } finally {
+//       publishBtn.disabled = false;
+//     }
+//   }
+
+//   function resetInputs() {
+//     const ta = panels["Text"].querySelector("textarea");
+//     ta.value = "";
+//     TAB_CONFIG.filter(c => c.type !== "text").forEach(cfg => {
+//       const input = panels[`${cfg.name}-input`];
+//       const preview = panels[`${cfg.name}-preview`];
+//       input.value = "";
+//       preview.innerHTML = "";
+//     });
+//     checkPublishEnable();
+//   }
+
+//   async function refreshFeed() {
+//     await fetchFeed(feedContainer);
+//   }
+// }
+
+// // ─── Helpers ───
+
+// function createEl(tag, attrs = {}, children = []) {
+//   if (attrs.class && typeof attrs.class === "string") {
+//     attrs.class = [attrs.class];
+//   }
+//   return createElement(tag, attrs, children);
+// }
+
+// function createTabButton(label, onClick) {
+//   const btn = createEl(
+//     "button",
+//     {
+//       role: "tab",
+//       dataset: { tab: label },
+//       ariaSelected: "false",
+//       class: "tab-btn"
+//     },
+//     [label]
+//   );
+//   btn.addEventListener("click", onClick);
+//   return btn;
+// }
+
+// function createPanel(id, children) {
+//   return createEl(
+//     "div",
+//     { id, role: "tabpanel", style: "display: none;", class: "tab-panel" },
+//     children
+//   );
+// }
+
+// function createFileInput(type, multiple) {
+//   return createEl("input", {
+//     type: "file",
+//     accept: `${type}/*`,
+//     multiple: multiple || undefined,
+//     class: "file-input"
+//   });
+// }
+
+// function createPreviewContainer(id) {
+//   return createEl("div", {
+//     id,
+//     class: "preview-container"
+//   });
+// }
+
+// function renderPreviewList(files, container, type) {
+//   container.innerHTML = "";
+//   files.forEach(file => {
+//     if (!file.type.startsWith(type)) return;
+//     const reader = new FileReader();
+//     reader.onload = e => {
+//       let el;
+//       const src = e.target.result;
+//       if (type === "image") {
+//         el = createEl("img", { src, class: "preview-image" });
+//       } else if (type === "video") {
+//         el = createEl("video", { src, controls: true, class: "preview-video" });
+//       } else {
+//         el = createEl("audio", { src, controls: true, class: "preview-audio" });
+//       }
+//       container.appendChild(el);
+//     };
+//     reader.readAsDataURL(file);
+//   });
+// }
+
+// async function getCSRFToken() {
+//   const res = await apiFetch("/csrf");
+//   return res.csrf_token || "";
+// }
+
+// async function buildFormData() {
+//   const formData = new FormData();
+//   const active = TAB_CONFIG.find(c => c.name === document.querySelector('[aria-selected="true"]').dataset.tab);
+//   formData.append("type", active.type);
+//   if (active.type === "text") {
+//     const text = document.getElementById("text-input").value.trim();
+//     formData.append("text", text);
+//   } else {
+//     const input = document.querySelector(`#${active.type}-panel input[type="file"]`);
+//     Array.from(input.files).forEach(file => {
+//       const field = active.type + (active.multiple ? "s" : "");
+//       formData.append(field, file);
+//     });
+//   }
+//   return formData;
+// }
+
+// // import { createElement } from "../../components/createElement.js";
+// // import { apiFetch } from "../../api/api.js";
+// // import { fetchFeed } from "../feed/fetchFeed.js";
+// // import { miscnav } from "./miscnav.js";
+
+// // /**
+// //  * Configuration for each tab
+// //  */
+// // const TAB_CONFIG = [
+// //   { name: "Text", type: "text", multiple: false },
+// //   { name: "Images", type: "image", multiple: true },
+// //   { name: "Video", type: "video", multiple: false },
+// //   { name: "Audio", type: "audio", multiple: false }
+// // ];
+
+// // /**
+// //  * Display the “Weed” feed UI: left = form & misc, right = feed
+// //  */
+// // export function displayWeed(isLoggedIn, root) {
+// //   let activeTab = TAB_CONFIG[0].name;
+// //   const layout = createEl("div", { class: "feed-layout" });
+// //   const leftCol = createEl("div", { id: "form-column", class: "form-column" });
+// //   const rightCol = createEl("div", { id: "feed-column", class: "feed-column" });
+
+// //   root.appendChild(layout);
+// //   // layout.append(leftCol, rightCol);
+// //   layout.append(rightCol, leftCol);
+
+// //   // Form container
+// //   const formCon = createEl("div", { class: ["vflex", "formcon"] });
+// //   leftCol.appendChild(formCon);
+
+// //   // Sidebar / misc nav
+// //   const miscCon = createEl("div", { class: ["vflex", "misccon"] });
+// //   miscCon.appendChild(miscnav());
+// //   leftCol.appendChild(miscCon);
+
+// //   // Tabs
+// //   const tabHeader = createEl("div", {
+// //     id: "tab-header",
+// //     role: "tablist",
+// //     class: "tab-header"
+// //   });
+// //   const tabButtons = {};
+// //   const panels = {};
+
+// //   TAB_CONFIG.forEach(cfg => {
+// //     tabButtons[cfg.name] = createTabButton(cfg.name, () => switchTab(cfg.name));
+// //     tabHeader.appendChild(tabButtons[cfg.name]);
+
+// //     // Create each panel
+// //     let child;
+// //     if (cfg.type === "text") {
+// //       child = createEl("textarea", {
+// //         id: "text-input",
+// //         rows: 4,
+// //         cols: 50,
+// //         placeholder: "Write your post…",
+// //         class: "text-area"
+// //       });
+// //     } else {
+// //       const fileInput = createFileInput(cfg.type, cfg.multiple);
+// //       const preview = createPreviewContainer(`${cfg.type}-preview`);
+// //       panels[`${cfg.name}-preview`] = preview;
+// //       child = createEl("div", {}, [fileInput, preview]);
+// //       // bind change event
+// //       fileInput.addEventListener("change", () => {
+// //         renderPreviewList(Array.from(fileInput.files), preview, cfg.type);
+// //         checkPublishEnable();
+// //       });
+// //       panels[`${cfg.name}-input`] = fileInput;
+// //     }
+
+// //     const panel = createPanel(`${cfg.type}-panel`, [child]);
+// //     panels[cfg.name] = panel;
+// //   });
+
+// //   formCon.appendChild(tabHeader);
+
+// //   const panelWrapper = createEl("div", {
+// //     id: "panel-wrapper",
+// //     class: "panel-wrapper"
+// //   });
+// //   Object.values(panels)
+// //     .filter(el => el.getAttribute("role") === "tabpanel")
+// //     .forEach(panelWrapper.appendChild.bind(panelWrapper));
+// //   formCon.appendChild(panelWrapper);
+
+// //   // Publish button
+// //   const publishBtn = createEl(
+// //     "button",
+// //     { id: "publish-btn", disabled: true, class: "publish-btn" },
+// //     ["Publish"]
+// //   );
+// //   publishBtn.addEventListener("click", handlePublish);
+// //   formCon.appendChild(publishBtn);
+
+// //   // Feed container
+// //   const feedContainer = createEl("div", {
+// //     id: "postsContainer",
+// //     class: "postsContainer"
+// //   });
+// //   rightCol.appendChild(feedContainer);
+
+// //   // Initial activation
+// //   switchTab(activeTab);
+// //   refreshFeed();
+
+// //   // ——— Internal Functions ———
+
+// //   function switchTab(tabName) {
+// //     // panels
+// //     TAB_CONFIG.forEach(cfg => {
+// //       const panel = panels[cfg.name];
+// //       panel.style.display = cfg.name === tabName ? "block" : "none";
+// //     });
+// //     // buttons
+// //     Object.entries(tabButtons).forEach(([name, btn]) => {
+// //       const selected = name === tabName;
+// //       btn.setAttribute("aria-selected", selected);
+// //       btn.classList.toggle("active-tab", selected);
+// //       if (selected) btn.focus();
+// //     });
+// //     activeTab = tabName;
+// //     checkPublishEnable();
+// //   }
+
+// //   function checkPublishEnable() {
+// //     if (activeTab === "Text") {
+// //       const ta = panels["Text"].querySelector("textarea");
+// //       publishBtn.disabled = ta.value.trim().length === 0;
+// //     } else {
+// //       const cfg = TAB_CONFIG.find(c => c.name === activeTab);
+// //       const input = panels[`${cfg.name}-input`];
+// //       const count = input.files.length;
+// //       publishBtn.disabled = cfg.multiple ? count === 0 : count !== 1;
+// //     }
+// //   }
+
+// //   async function handlePublish() {
+// //     publishBtn.disabled = true;
+// //     try {
+// //       const formData = await buildFormData();
+// //       const res = await apiFetch("/feed/post", "POST", formData, {
+// //         headers: { "X-CSRF-Token": await getCSRFToken() }
+// //       });
+// //       if (!res.ok) throw new Error("Upload failed");
+// //       resetInputs();
+// //       await refreshFeed();
+// //     } catch (err) {
+// //       console.error("Publish error:", err);
+// //     } finally {
+// //       publishBtn.disabled = false;
+// //     }
+// //   }
+
+// //   function resetInputs() {
+// //     // textarea
+// //     const ta = panels["Text"].querySelector("textarea");
+// //     ta.value = "";
+// //     // files & previews
+// //     TAB_CONFIG.filter(c => c.type !== "text").forEach(cfg => {
+// //       const input = panels[`${cfg.name}-input`];
+// //       const preview = panels[`${cfg.name}-preview`];
+// //       input.value = "";
+// //       preview.innerHTML = "";
+// //     });
+// //     checkPublishEnable();
+// //   }
+
+// //   async function refreshFeed() {
+// //     await fetchFeed(feedContainer);
+// //   }
+// // }
+
+// // /** Helpers **/
+
+// // function createEl(tag, attrs = {}, children = []) {
+// //   // normalize class
+// //   if (attrs.class && typeof attrs.class === "string") {
+// //     attrs.class = [attrs.class];
+// //   }
+// //   return createElement(tag, attrs, children);
+// // }
+
+// // function createTabButton(label, onClick) {
+// //   const btn = createEl(
+// //     "button",
+// //     {
+// //       role: "tab",
+// //       dataset: { tab: label },
+// //       ariaSelected: "false",
+// //       class: "tab-btn"
+// //     },
+// //     [label]
+// //   );
+// //   btn.addEventListener("click", onClick);
+// //   return btn;
+// // }
+
+// // function createPanel(id, children) {
+// //   return createEl(
+// //     "div",
+// //     { id, role: "tabpanel", style: "display: none;", class: "tab-panel" },
+// //     children
+// //   );
+// // }
+
+// // function createFileInput(type, multiple) {
+// //   return createEl("input", {
+// //     type: "file",
+// //     accept: `${type}/*`,
+// //     multiple: multiple || undefined,
+// //     class: "file-input"
+// //   });
+// // }
+
+// // function createPreviewContainer(id) {
+// //   return createEl("div", {
+// //     id,
+// //     class: "preview-container"
+// //   });
+// // }
+
+// // function renderPreviewList(files, container, type) {
+// //   container.innerHTML = "";
+// //   files.forEach(file => {
+// //     if (!file.type.startsWith(type)) return;
+// //     const reader = new FileReader();
+// //     reader.onload = e => {
+// //       let el;
+// //       const src = e.target.result;
+// //       if (type === "image") {
+// //         el = createEl("img", {
+// //           src,
+// //           class: "preview-image"
+// //         });
+// //       } else if (type === "video") {
+// //         el = createEl("video", {
+// //           src,
+// //           controls: true,
+// //           class: "preview-video"
+// //         });
+// //       } else {
+// //         el = createEl("audio", {
+// //           src,
+// //           controls: true,
+// //           class: "preview-audio"
+// //         });
+// //       }
+// //       container.appendChild(el);
+// //     };
+// //     reader.readAsDataURL(file);
+// //   });
+// // }
+
+// // async function getCSRFToken() {
+// //   const res = await apiFetch("/csrf");
+// //   return res.csrf_token || "";
+// // }
+
+// // async function buildFormData() {
+// //   const formData = new FormData();
+// //   const active = TAB_CONFIG.find(c => c.name === document.querySelector('[aria-selected="true"]').dataset.tab);
+// //   formData.append("type", active.type);
+// //   if (active.type === "text") {
+// //     const text = document.getElementById("text-input").value.trim();
+// //     formData.append("text", text);
+// //   } else {
+// //     const input = document.querySelector(`#${active.type}-panel input[type="file"]`);
+// //     Array.from(input.files).forEach(file => {
+// //       const field = active.type + (active.multiple ? "s" : "");
+// //       formData.append(field, file);
+// //     });
+// //   }
+// //   return formData;
+// // }

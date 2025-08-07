@@ -22,7 +22,7 @@ async function createPlace(isLoggedIn) {
     const address = document.getElementById("place-address").value.trim();
     const description = document.getElementById("place-description").value.trim();
     const capacity = document.getElementById("capacity").value.trim();
-    const category = document.getElementById("category").value.trim();
+    const category = document.getElementById("category-sub").value.trim();
     const bannerFile = document.getElementById("place-banner-add").files[0];
 
     // Validate input fields
@@ -56,7 +56,6 @@ async function createPlace(isLoggedIn) {
     try {
         SnackBar("Creating place...", 3000); // Show progress feedback
         const result = await apiFetch('/places/place', 'POST', formData);
-
         SnackBar(`Place created successfully: ${result.name}`, 3000);
         navigate('/place/' + result.placeid); // Navigate to the new place's page
     } catch (error) {

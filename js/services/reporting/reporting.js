@@ -30,7 +30,7 @@ const REPORT_REASONS = [
  * @param {string} targetId    – ID of the item being reported (e.g. post ID or comment ID)
  * @param {string} targetType  – A string (e.g. "post" or "comment")
  */
-export function reportPost(targetId, targetType, entityType="", entityId="") {
+export function reportPost(targetId, targetType, parentType="", parentId="") {
   // 1) Ensure user is logged in
   if (!state.user) {
     alert("You must be logged in to report content.");
@@ -124,8 +124,8 @@ export function reportPost(targetId, targetType, entityType="", entityId="") {
       reportedBy: userId,
       targetId,
       targetType,
-      entityType,
-      entityId,
+      parentType,
+      parentId,
       reason: chosenReason,
       notes
     };

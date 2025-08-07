@@ -9,6 +9,33 @@ let replyTo = null;
 // Get existing WebSocket (if any) from application state
 const socket = getState("socket") || null;
 
+// Notification: listen for new_message events to bump chat icon
+const currentUserId = getState("user");
+
+function markChatIconAsUnread() {
+    const chatLinkEl = document.getElementById("chatNotif");
+    if (!chatLinkEl) return;
+    const svg = chatLinkEl.querySelector("svg");
+    if (!svg) return;
+    svg.setAttribute("stroke-width", "2.5");
+}
+
+if (socket) {
+    socket.addEventListener("message", event => {
+        let payload;
+        try {
+            payload = JSON.parse(event.data);
+        } catch (err) {
+            console.error("Invalid WS JSON:", event.data);
+            return;
+        }
+        if (payload.type === "new_message" && payload.toUser === currentUserId) {
+            markChatIconAsUnread();
+        }
+    });
+}
+
+
 // Simple debounce utility
 function debounce(fn, ms = 300) {
     let timer;
@@ -667,3 +694,16 @@ function isSender(message) {
     }
     return false
 }
+
+// On chat page load, reset chat icon and mark messages read on backend
+document.addEventListener("DOMContentLoaded", () => {
+    const chatLinkEl = document.getElementById("chatNotif");
+    if (chatLinkEl) {
+        const svg = chatLinkEl.querySelector("svg");
+        if (svg) svg.setAttribute("stroke-width", "1");
+    }
+    apiFetch("/notifications/markAllRead", {
+        method: "POST",
+        body: JSON.stringify({ type: "new_message" }),
+    }).catch(err => console.error("Could not mark as read:", err));
+});

@@ -1,198 +1,272 @@
-// Navigation Component
-import { SRC_URL, state } from "../state/state.js";
+// Imports
+import { DEFAULT_IMAGE, SRC_URL, USER_PH, getState, isAdmin, subscribe, unsubscribe } from "../state/state.js";
 import { navigate } from "../routes/index.js";
 import { logout } from "../services/auth/authService.js";
-import { chatSVG, notifSVG } from "./svgs.js";
+import { settingsSVG, searchSVG, moonSVG, profileSVG, shopBagSVG, logoutSVG } from "./svgs.js";
 import { createElement } from "../components/createElement.js";
-
-/** Utility Functions */
-const toggleElement = (selector, className) =>
-    document.querySelector(selector)?.classList.toggle(className);
-const closeElement = (selector, className) =>
-    document.querySelector(selector)?.classList.remove(className);
-
-const handleNavigation = (event, href) => {
-    event.preventDefault();
-    if (!href) return console.error("🚨 handleNavigation received null href!");
-    // console.log("handleNavigation called with href:", href);
-    navigate(href);
-};
-
-/** Dropdown Component */
-const createDropdown = (id, label, links) => {
-    const dropdown = document.createElement("li");
-    dropdown.className = "dropdown";
-
-    const button = document.createElement("button");
-    button.className = "dropdown-toggle";
-    button.id = id;
-    button.textContent = label;
-
-    const menu = document.createElement("div");
-    menu.className = "dropdown-menu";
-    menu.setAttribute("aria-label", `${label} Menu`);
-
-    links.forEach(({ href, text }) => {
-        const anchor = document.createElement("a");
-        anchor.href = href;
-        anchor.className = "dropdown-item nav-link";
-        anchor.textContent = text;
-        anchor.addEventListener("click", (e) => handleNavigation(e, href));
-        menu.appendChild(anchor);
-    });
-
-    dropdown.appendChild(button);
-    dropdown.appendChild(menu);
-    return dropdown;
-};
-
-/** Profile Dropdown */
-const createProfileDropdown = (user) => {
-    const dropdown = document.createElement("div");
-    dropdown.className = "dropdown";
-
-    const toggle = document.createElement("div");
-    toggle.className = "profile-dropdown-toggle hflex";
-    toggle.tabIndex = 0;
-
-    const profilePic = user
-        ? `${SRC_URL}/userpic/thumb/${user}.jpg`
-        : `${SRC_URL}/userpic/thumb/thumb.jpg`;
-
-    const fallbackPic = `${SRC_URL}/userpic/thumb/thumb.jpg`;
-
-    const image = document.createElement("img");
-    image.src = profilePic;
-    image.loading = "lazy";
-    image.alt = "Profile Picture";
-    image.className = "profile-image circle";
-
-    // Set fallback image if the user's picture doesn't load
-    image.onerror = function () {
-        this.onerror = null; // Prevent infinite loop if fallback also fails
-        this.src = fallbackPic;
-    };
-
-    toggle.appendChild(image);
-
-    const menu = document.createElement("div");
-    menu.className = "profile-dropdown-menu";
-
-    const links = [
-        { href: "/profile", text: "Profile" },
-    ];
-    links.forEach(({ href, text }) => {
-        const anchor = document.createElement("a");
-        anchor.href = href;
-        anchor.className = "dropdown-item nav-link";
-        anchor.textContent = text;
-        anchor.addEventListener("click", (e) => handleNavigation(e, href));
-        menu.appendChild(anchor);
-    });
-
-    // Logout Button
-    const logoutButton = document.createElement("button");
-    logoutButton.className = "dropdown-item logout-btn";
-    logoutButton.textContent = "Logout";
-    logoutButton.addEventListener("click", async () => await logout());
-    menu.appendChild(logoutButton);
-
-    dropdown.appendChild(toggle);
-    dropdown.appendChild(menu);
-    return dropdown;
-};
+import {sticky} from "./sticky.js";
+import { resolveImagePath, EntityType, PictureType } from "../utils/imagePaths.js";
 
 
-const createheader = (isLoggedIn) => {
-    // Create Header (with logo and profile or login button)
-    const header = document.createElement("header");
-    header.className = "navbar hflex-sb";
+// Theme logic
+const themes = ["light", "dark", "solarized", "dimmed"];
+let currentThemeIndex = 0;
 
-    const logoDiv = document.createElement("div");
-    logoDiv.className = "logo";
-
-    const logoLink = document.createElement("a");
-    logoLink.href = "/";
-    logoLink.className = "logo-link";
-    logoLink.textContent = "Gallium";
-    logoDiv.appendChild(logoLink);
-
-    header.appendChild(logoDiv);
-
-    const topRightDiv = document.createElement("div");
-    topRightDiv.className = "hflex-sb";
-    header.appendChild(topRightDiv);
-
-    let lynx = [
-        { href: "/create-event", text: "Event" },
-        { href: "/create-place", text: "Venue" },
-        { href: "/create-artist", text: "Artist" },
-        { href: "/create-itinerary", text: "Itinerary" },
-    ]
-
-    topRightDiv.appendChild(createDropdown("create-menu", "Create", lynx));
-
-    const chatspan = createElement('a', { class: "flex-center" }, []);
-    chatspan.innerHTML = chatSVG;
-    chatspan.href = "/chats";
-    const chatLink = createElement('div', { class: "top-svg" }, [chatspan]);
-    topRightDiv.appendChild(chatLink);
-
-
-    const notifspan = createElement('span', { class: "flex-center" }, []);
-    notifspan.innerHTML = notifSVG;
-    const notifLink = createElement('div', { class: "top-svg" }, [notifspan]);
-    topRightDiv.appendChild(notifLink);
-
-    // Add Profile Dropdown or Login Button
-    const profileOrLogin = (node) => {
-        if (isLoggedIn) {
-            node.appendChild(createProfileDropdown(state.user));
-        } else {
-            const loginButton = document.createElement("a");
-            loginButton.className = "btn auth-btn";
-            loginButton.textContent = "Login";
-            loginButton.addEventListener("click", () => navigate("/login"));
-            node.appendChild(loginButton);
-        }
-    };
-    profileOrLogin(topRightDiv);
-
-    // Wrap header and nav in a container so that they are siblings
-    const container = document.createElement("div");
-    container.className = "navigation-container";
-
-
-    container.appendChild(header);
-
-    return container;
+function loadTheme() {
+  const saved = localStorage.getItem("theme");
+  const index = themes.indexOf(saved);
+  if (index >= 0) {
+    document.documentElement.dataset.theme = saved;
+    currentThemeIndex = index;
+  }
 }
 
-/** Attach Navigation Event Listeners */
-const attachNavEventListeners = () => {
-    // Create Dropdown Toggle for "Create" menu
-    document.getElementById("create-menu")?.addEventListener("click", (e) => {
-        e.preventDefault();
-        toggleElement(".dropdown-menu", "show");
+function toggleTheme() {
+  currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+  const theme = themes[currentThemeIndex];
+  document.documentElement.dataset.theme = theme;
+  localStorage.setItem("theme", theme);
+}
+
+// Utility: create icon anchor
+function createIconButton(svg, href, onClick) {
+  const icon = createElement("span", { class: "icon" });
+  icon.innerHTML = svg;
+
+  const anchor = createElement("div", { class: "iconic-button" }, [icon]);
+  if (href) anchor.href = href;
+  if (onClick) anchor.addEventListener("click", onClick);
+
+  return anchor;
+}
+
+// Utility: create dropdown
+function createDropdownMenu(id, labelText, items) {
+  const toggle = createElement("button", { id, class: "menu-toggle" }, [labelText]);
+  const menu = createElement("div", { class: "menu-content", "aria-label": labelText });
+
+  items.forEach(({ href, text }) => {
+    const link = createElement("a", { class: "menu-item", href }, [text]);
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+      navigate(href);
+    });
+    menu.appendChild(link);
+  });
+
+  toggle.addEventListener("click", (e) => {
+    e.stopPropagation();
+    menu.classList.toggle("open");
+  });
+
+  return createElement("div", { class: "dropdown" }, [toggle, menu]);
+}
+
+
+function createProfileSection(userId) {
+  const img = createElement("img", {
+    src: resolveImagePath(EntityType.USER, PictureType.THUMB, `${userId}.jpg`),
+    alt: "Profile",
+    class: "profile-pic"
+  });
+
+  // // fallback if image fails to load
+  // img.onerror = () => {
+  //   img.src = resolveImagePath(EntityType.USER, PictureType.THUMB, "thumb.jpg");
+  // };
+
+  const toggle = createElement("div", {
+    class: "profile-toggle",
+    tabIndex: 0
+  }, [img]);
+
+  const links = [
+    { href: "/profile", text: "Profile", icon: profileSVG },
+    { href: "/my-orders", text: "My Orders", icon: shopBagSVG },
+    ...(isAdmin() ? [{ href: "/admin", text: "Admin" }] : []),
+    { href: "/settings", text: "Settings", icon: settingsSVG }
+  ];
+
+  const menu = createElement("div", { class: "profile-menu" });
+
+  links.forEach(({ href, text, icon }) => {
+    const label = createElement("span", {}, [text]);
+    const iconSpan = createElement("span", {});
+    if (icon) iconSpan.innerHTML = icon;
+
+    const link = createElement("a", { class: "menu-item", href }, [iconSpan, label]);
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+      navigate(href);
     });
 
-    // Profile Dropdown Toggle
-    const profileToggle = document.querySelector(".profile-dropdown-toggle");
-    profileToggle?.addEventListener("click", (e) => {
-        e.stopPropagation();
-        toggleElement(".profile-dropdown-menu", "show");
-    });
+    menu.appendChild(link);
+  });
 
-    // Close Profile Dropdown on Outside Click
-    document.addEventListener("click", () => closeElement(".profile-dropdown-menu", "show"));
+  const logoutBtn = createElement("button", { class: "menu-item logout" }, []);
+  logoutBtn.innerHTML = logoutSVG;
+  logoutBtn.appendChild(createElement("span", {}, ["Logout"]));
+  logoutBtn.addEventListener("click", async () => await logout());
 
-    // Keyboard Accessibility for Profile Dropdown
-    profileToggle?.addEventListener("keydown", (e) => {
-        if (["Enter", " "].includes(e.key)) {
-            toggleElement(".profile-dropdown-menu", "show");
-            e.preventDefault();
-        }
-    });
-};
+  menu.appendChild(logoutBtn);
 
-export { createheader, attachNavEventListeners, createDropdown, createProfileDropdown };
+  toggle.addEventListener("click", (e) => {
+    e.stopPropagation();
+    menu.classList.toggle("open");
+  });
+
+  toggle.addEventListener("keydown", (e) => {
+    if (["Enter", " "].includes(e.key)) {
+      e.preventDefault();
+      menu.classList.toggle("open");
+    }
+  });
+
+  document.addEventListener("click", () => menu.classList.remove("open"));
+
+  return createElement("div", { class: "dropdown" }, [toggle, menu]);
+}
+
+// // Profile dropdown
+// function createProfileSection(userId) {
+//   // const profileImgSrc = userId
+//   //   ? `${SRC_URL}/userpic/thumb/${userId}.jpg`
+//   //   : `${SRC_URL}/userpic/thumb/thumb.jpg`;
+//   const profileImgSrc = `${SRC_URL}/userpic/thumb/${userId}.jpg`;
+//   const img = createElement("img", {
+//     src: profileImgSrc,
+//     alt: "Profile",
+//     // loading: "lazy",
+//     class: "profile-pic"
+//   });
+
+//   // img.onerror = () => {
+//   //   img.src = `${SRC_URL}/userpic/thumb/thumb.jpg`;
+//   // };
+
+//   // img.onerror = () => {
+//   //   img.src = USER_PH;
+//   // };
+
+//   const toggle = createElement("div", {
+//     class: "profile-toggle",
+//     tabIndex: 0
+//   }, [img]);
+
+//   const links = [
+//     { href: "/profile", text: "Profile", icon: profileSVG },
+//     { href: "/my-orders", text: "My Orders", icon: shopBagSVG },
+//     ...(isAdmin() ? [{ href: "/admin", text: "Admin" }] : []),
+//     { href: "/settings", text: "Settings", icon: settingsSVG }
+//   ];
+
+//   const menu = createElement("div", { class: "profile-menu" });
+
+//   links.forEach(({ href, text, icon }) => {
+//     const label = createElement("span", {}, [text]);
+//     const iconSpan = createElement("span", {});
+//     if (icon) iconSpan.innerHTML = icon;
+
+//     const link = createElement("a", { class: "menu-item", href }, [iconSpan, label]);
+//     link.addEventListener("click", (e) => {
+//       e.preventDefault();
+//       navigate(href);
+//     });
+
+//     menu.appendChild(link);
+//   });
+
+//   const logoutBtn = createElement("button", { class: "menu-item logout" }, []);
+//   logoutBtn.innerHTML = logoutSVG;
+//   logoutBtn.appendChild(createElement("span", {}, ["Logout"]));
+//   logoutBtn.addEventListener("click", async () => await logout());
+
+//   menu.appendChild(logoutBtn);
+
+//   toggle.addEventListener("click", (e) => {
+//     e.stopPropagation();
+//     menu.classList.toggle("open");
+//   });
+
+//   toggle.addEventListener("keydown", (e) => {
+//     if (["Enter", " "].includes(e.key)) {
+//       e.preventDefault();
+//       menu.classList.toggle("open");
+//     }
+//   });
+
+//   document.addEventListener("click", () => menu.classList.remove("open"));
+
+//   return createElement("div", { class: "dropdown" }, [toggle, menu]);
+// }
+
+// User Section
+function renderUserSection() {
+  const container = createElement("div", { class: "user-area" });
+
+  function render() {
+    container.innerHTML = "";
+    const userId = getState("user") || localStorage.getItem("user");
+
+    if (!!getState("token")) {
+      container.appendChild(createProfileSection(userId));
+    } else {
+      const loginBtn = createElement("a", { href: "#", class: "login-btn" }, ["Login"]);
+      loginBtn.addEventListener("click", () => navigate("/login"));
+      container.appendChild(loginBtn);
+    }
+  }
+
+  render();
+  const userChangeHandler = () => render();
+  subscribe("user", userChangeHandler);
+
+  const observer = new MutationObserver(() => {
+    if (!document.body.contains(container)) {
+      unsubscribe("user", userChangeHandler);
+      observer.disconnect();
+    }
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
+
+  return container;
+}
+
+// Header builder
+function createHeader() {
+  const header = document.getElementById("pageheader");
+  if (!header) return;
+
+  header.className = "main-header";
+
+  const logo = createElement("div", { class: "logo" }, [
+    createElement("a", { href: "/home", class: "logo-link" }, ["Farmium"])
+  ]);
+
+  let sky = createElement("div",{class:"hflexcen"},[]);
+  // if (location.pathname != "/home") {
+    sky.appendChild(sticky());
+  // }
+
+  const nav = createElement("div", { class: "header-content" }, []);
+
+  const createLinks = [
+    { href: "/create-event", text: "Event" },
+    { href: "/create-place", text: "Place" },
+    { href: "/create-artist", text: "Artist" },
+    { href: "/create-post", text: "Post" },
+    { href: "/create-baito", text: "Baito" },
+    { href: "/create-farm", text: "Farm" },
+    { href: "/create-itinerary", text: "Itinerary" }
+  ];
+  nav.appendChild(createDropdownMenu("create-menu", "Create", createLinks));
+
+  nav.appendChild(createIconButton(moonSVG, null, toggleTheme));
+  nav.appendChild(renderUserSection());
+
+  header.replaceChildren(logo, sky, nav);
+  loadTheme();
+}
+
+
+export { createHeader as createheader };

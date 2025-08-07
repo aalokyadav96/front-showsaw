@@ -13,7 +13,7 @@ import { renderTabContent } from "./tabRenderer.js";
  */
 function createTabStructure(title, tabs, username) {
   const sectionId = `${title.toLowerCase()}-section`;
-
+console.log(title,tabs,username);
   const tabSection = createElement("div", { id: sectionId, style: "display: none;" });
   const tabContainer = createElement("div", { class: `${title.toLowerCase()}-tab-container` });
   const tabButtons = createElement("div", { class: `${title.toLowerCase()}-tab-buttons` });

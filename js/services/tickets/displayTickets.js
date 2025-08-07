@@ -3,7 +3,6 @@ import { Button } from "../../components/base/Button.js";
 import { createElement } from "../../components/createElement.js";
 import { deleteTicket, editTicket } from "./editTicket.js";
 import { showBuyTicketModal } from "./showBuy.js";
-// import { showBuyTicketModal } from "./showBuyModal.js";
 import { verifyTicketAndShowModal } from "./verifyTicket.js";
 import { createButton } from "../../components/eventHelper.js";
 import { addTicketForm } from './ticketService.js';
@@ -51,8 +50,9 @@ async function displayTickets(ticketLixt, ticketData, eventId, isCreator, isLogg
     //         }
     //     }))
     // };
-    
-    if (ticketData && !isCreator) {
+
+
+    if (ticketData && (ticketData.length > 0 ) && !isCreator) {
         ticketLixt.appendChild(createButton({
             text: "Verify Your Ticket",
             classes: ["buttonx", "action-btn"],

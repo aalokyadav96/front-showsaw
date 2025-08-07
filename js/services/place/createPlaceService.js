@@ -1,115 +1,99 @@
+
 import { createElement } from "../../components/createElement.js";
 import Snackbar from '../../components/ui/Snackbar.mjs';
 import { navigate } from "../../routes/index.js";
 import { createPlace } from "./placeService.js";
-
-function createForm(fields, onSubmit) {
-    const form = createElement('form');
-
-    // Handle form submission
-    async function handleFormSubmit(event) {
-        event.preventDefault();
-        const formData = new FormData(form); // Support file inputs
-        try {
-            let resp = await onSubmit(formData);
-            Snackbar("Place created successfully!", 3000);
-            navigate(`/place/${resp.placeid}`); // Redirect to places after success
-        } catch (error) {
-            console.error("Error creating place:", error);
-            Snackbar("Failed to create place. Please try again.", 3000);
-        }
-    }
-
-    // Attach the submit event listener
-    form.addEventListener('submit', handleFormSubmit);
-
-    // Build form fields
-    fields.forEach(field => {
-        const formGroup = createElement('div', { class: 'form-group' });
-
-        // Create label
-        const label = createElement('label', { for: field.id }, [field.label]);
-        formGroup.appendChild(label);
-
-        let inputElement;
-        if (field.type === 'select') {
-            // Create a select dropdown
-            inputElement = createElement('select', { id: field.id, name: field.id, required: field.required }, 
-                field.options.map(option => 
-                    createElement('option', { value: option.value }, [option.label])
-                )
-            );
-        } else {
-            // Create regular input or textarea
-            inputElement = createElement(field.type === 'textarea' ? 'textarea' : 'input', {
-                id: field.id,
-                name: field.id,
-                type: field.type || 'text',
-                placeholder: field.placeholder,
-                value: field.value || '',
-                ...(field.required ? { required: true } : {}),
-                ...(field.type === 'file' && field.accept ? { accept: field.accept } : {}),
-                ...(field.min ? { min: field.min } : {}),
-            });
-        }
-
-        formGroup.appendChild(inputElement);
-        form.appendChild(formGroup);
-    });
-
-    // Add submit button
-    form.appendChild(createElement('button', { type: 'submit' }, ["Submit"]));
-    return form;
-}
+import { createFormGroup } from "./editPlace.js";
 
 async function createPlaceForm(isLoggedIn, createSection) {
-    // Ensure the section is cleared
     createSection.innerHTML = "";
 
-    if (isLoggedIn) {
-        const formFields = [
-            { 
-                id: "category", 
-                label: "Category", 
-                type: "select", 
-                required: true, 
-                options: [
-                    { value: "", label: "Select a category" },
-                    { value: "Restaurant", label: "Restaurant" },
-                    { value: "Cafe", label: "Café" },
-                    { value: "Hotel", label: "Hotel" },
-                    { value: "Park", label: "Park" },
-                    { value: "Museum", label: "Museum" },
-                    { value: "Business", label: "Business" },
-                    { value: "Shop", label: "Shop" },
-                    { value: "Gym", label: "Gym" },
-                    { value: "Theater", label: "Theater" },
-                    { value: "Arena", label: "Arena" },
-                    { value: "Other", label: "Other" }
-                ] 
-            },
-            { id: "place-name", label: "Place Name", placeholder: "Enter the place name", required: true },
-            { id: "place-address", label: "Address", placeholder: "Enter the address", required: true },
-            { id: "place-city", label: "City", placeholder: "Enter the city", required: true },
-            { id: "place-country", label: "Country", placeholder: "Enter the country", required: true },
-            { id: "place-zipcode", label: "Zip Code", placeholder: "Enter the zip code", required: true },
-            { id: "place-description", label: "Description", type: "textarea", placeholder: "Provide a description", required: true },
-            { id: "capacity", label: "Capacity", type: "number", placeholder: "Enter the capacity", required: true, min: 1 },
-            { id: "phone", label: "Phone Number", placeholder: "Enter the phone number" },
-            { id: "place-banner-add", label: "Place Banner", type: "file", accept: "image/*" }
-        ];
-
-        // Create the form with a proper submission callback
-        const form = createForm(formFields, async (formData) => {
-            return await createPlace(formData); // Send the formData to the service
-        });
-
-        createSection.appendChild(createElement('h2', {}, ["Create Place"]));
-        createSection.appendChild(form);
-    } else {
+    if (!isLoggedIn) {
         Snackbar("You must be logged in to create a place.", 3000);
         navigate('/login');
+        return;
     }
+
+    const categoryMap = {
+        Food: ["Restaurant", "Cafe", "Bakery", "Hotel"],
+        Health: ["Hospital", "Clinic", "Gym", "Yoga Center"],
+        Entertainment: ["Theater", "Stadium", "Arena", "Park", "Museum"],
+        Services: ["Business", "Shop", "Toilet", "Petrol Pump", "Other"]
+    };
+
+    const form = document.createElement('form');
+
+    // Main category
+    form.appendChild(createFormGroup({
+        label: "Main Category",
+        inputType: "select",
+        inputId: "category-main",
+        isRequired: true,
+        options: [{ value: "", label: "Select main category" }, ...Object.keys(categoryMap).map(key => ({ value: key, label: key }))]
+    }));
+
+    // Sub category
+    form.appendChild(createFormGroup({
+        label: "Sub Category",
+        inputType: "select",
+        inputId: "category-sub",
+        isRequired: true,
+        options: [{ value: "", label: "Select sub category" }]
+    }));
+
+    // Remaining fields
+    const fields = [
+        { label: "Place Name", inputType: "text", inputId: "place-name", placeholder: "Place Name", isRequired: true },
+        { label: "Address", inputType: "text", inputId: "place-address", placeholder: "Address", isRequired: true },
+        { label: "City", inputType: "text", inputId: "place-city", placeholder: "City", isRequired: true },
+        { label: "Country", inputType: "text", inputId: "place-country", placeholder: "Country", isRequired: true },
+        { label: "Zip Code", inputType: "text", inputId: "place-zipcode", placeholder: "Zip Code", isRequired: true },
+        { label: "Description", inputType: "textarea", inputId: "place-description", placeholder: "Description", isRequired: true },
+        { label: "Capacity", inputType: "number", inputId: "capacity", placeholder: "Capacity", isRequired: true, additionalProps: { min: 1 } },
+        { label: "Phone Number", inputType: "text", inputId: "phone", placeholder: "Phone Number" },
+        { label: "Place Banner", inputType: "file", inputId: "place-banner-add", additionalProps: { accept: 'image/*' } },
+    ];
+
+    fields.forEach(field => form.appendChild(createFormGroup(field)));
+
+    // Handle subcategory options
+    form.querySelector("#category-main").addEventListener('change', (e) => {
+        const sub = form.querySelector("#category-sub");
+        sub.innerHTML = '<option value="">Select sub category</option>';
+        const selected = categoryMap[e.target.value] || [];
+        selected.forEach(subcat => {
+            const option = document.createElement("option");
+            option.value = subcat;
+            option.textContent = subcat;
+            sub.appendChild(option);
+        });
+    });
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(form);
+        try {
+            await createPlace(formData);
+            // const resp = await createPlace(formData);
+            Snackbar("Place created successfully!", 3000);
+            // navigate(`/place/${resp.placeid}`);
+        } catch (err) {
+            Snackbar("Failed to create place. Try again.", 3000);
+            console.error("Error creating place:", err);
+        }
+    });
+
+    const submitButton = document.createElement('button');
+    submitButton.type = 'submit';
+    submitButton.textContent = 'Create Place';
+    submitButton.classList.add('btn', 'btn-primary'); // optional: styling class
+    
+    form.appendChild(submitButton);
+    
+    createSection.appendChild(createElement('h2', {}, ["Create Place"]));
+    createSection.appendChild(form);
 }
 
-export { createPlaceForm, createForm };
+
+export { createPlaceForm };
+

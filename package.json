@@ -1,19 +1,19 @@
 {
-  "name": "vite-project",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
+  "name": "naevis",
+  "version": "1.0.0",
+  "description": "Gallium",
+  "main": "js/inapp.js",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
   },
   "devDependencies": {
-    "vite": "^5.4.10"
+    "vite": "^6.3.5"
   },
+  "author": "",
+  "license": "ISC",
   "dependencies": {
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "terser": "^5.36.0"
+    "terser": "^5.43.1"
   }
 }

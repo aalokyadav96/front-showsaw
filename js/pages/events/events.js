@@ -1,4 +1,4 @@
-import { displayEvents } from "../../services/event/displayEventsService.js";
+import { displayEvents } from "../../services/event/displayEvents.js";
 
 async function Events(isLoggedIn, contentContainer) {
     contentContainer.innerHTML = '';

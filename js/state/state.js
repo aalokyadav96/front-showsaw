@@ -1,115 +1,268 @@
-// import { renderPage } from "../routes/index.js";
-
-/******* */
-
-// const API_URL = "http://localhost:4000/api";
-// const SRC_URL = "http://localhost:4000/static";
-// const SEARCH_URL = "http://localhost:4000/api";
-// const AGI_URL = "http://localhost:4000/agi";
-// const FORUM_URL = "http://localhost:4000/api/forum";
-// const CHAT_URL = "http://localhost:4000/api/chats";
-
-const SRC_URL       = "https://gallium.onrender.com/static";
-const API_URL       = "https://gallium.onrender.com/api";
-const SEARCH_URL    = "https://gallium.onrender.com/api";
-const AGI_URL       = "https://gallium.onrender.com/agi";
-const FORUM_URL       = "https://gallium.onrender.com/api/forum";
-const CHAT_URL       = "https://gallium.onrender.com/api/chats";
-
-// const AGI_URL       = "https://minihomepy.onrender.com/api";
-
-// const API_URL = "/api"; // Adjust the URL as needed
-// const AGI_URL = "/agi"; // Adjust the URL as needed
-// const SRC_URL = "/static"; // Adjust the URL as needed
-// const SEARCH_URL = "/api"; // Adjust the URL as needed
-// const FORUM_URL = "/api/forum"; // Adjust the URL as needed
-// const CHAT_URL = "/api/chats"; // Adjust the URL as needed
-
-
-/*********** */
-
-
-// const AGI_URL = "http://localhost:5000/api"; // Adjust the URL as needed
-// const API_URL = "http://localhost:4000/api"; // Adjust the URL as needed
-// const SRC_URL = "http://localhost:4000/static"; // Adjust the URL as needed
-
-// State management
-const state = {
-    token: sessionStorage.getItem("token") || localStorage.getItem("token") || null,
-    userProfile: JSON.parse(sessionStorage.getItem("userProfile") || localStorage.getItem("userProfile")) || null,
-    user: JSON.parse(sessionStorage.getItem("user") || localStorage.getItem("user")) || null,
-    lastPath: window.location.pathname // Store last visited path to prevent redundant re-renders
-};
-
-function getState(key) {
-    return state[key];
-}
-
-
-/**
- * Updates the application state and persists changes to storage.
- * @param {Object} newState - The new state properties to merge.
- * @param {boolean} persist - Whether to store the state in localStorage (default: false).
- */
-function setState(newState, persist = false) {
-    Object.assign(state, newState);
-
-    // Store in sessionStorage or localStorage if needed
-    if (persist) {
-        if (newState.token) localStorage.setItem("token", newState.token);
-        if (newState.userProfile) localStorage.setItem("userProfile", JSON.stringify(newState.userProfile));
-        if (newState.user) localStorage.setItem("user", JSON.stringify(newState.user));
-    } else {
-        if (newState.token) sessionStorage.setItem("token", newState.token);
-        if (newState.userProfile) sessionStorage.setItem("userProfile", JSON.stringify(newState.userProfile));
-        if (newState.user) sessionStorage.setItem("user", JSON.stringify(newState.user));
-    }
-}
-
-/**
- * Clears the state and removes stored user data.
- */
-function clearState() {
-    sessionStorage.clear();
-    localStorage.removeItem("token");
-    localStorage.removeItem("userProfile");
-    localStorage.removeItem("user");
-
-    state.token = null;
-    state.userProfile = null;
-    state.user = null;
-
-    // renderPage(); // Ensure the UI updates after logout
-}
-
-/**
- * Prevents redundant re-renders on back/forward navigation.
- */
-window.addEventListener("popstate", () => {
-    if (window.location.pathname !== state.lastPath) {
-        console.log("🔄 Back/Forward navigation detected, updating content...");
-        state.lastPath = window.location.pathname;
-        // renderPage(); // Load the new content only if the path changes
-    }
-});
-
-/**
- * Restores session state when returning from bfcache.
- */
-window.addEventListener("pageshow", (event) => {
-    if (event.persisted) {
-        console.log("Restoring session state from bfcache...");
-        state.token = sessionStorage.getItem("token") || localStorage.getItem("token");
-        state.userProfile = JSON.parse(sessionStorage.getItem("userProfile") || localStorage.getItem("userProfile"));
-        state.user = JSON.parse(sessionStorage.getItem("user") || localStorage.getItem("user"));
-
-        if (window.location.pathname !== state.lastPath) {
-            state.lastPath = window.location.pathname;
-            // renderPage(); // Ensure content updates properly
-        }
-    }
-});
+// --- API URLs ---
+const API_URL = "http://localhost:4000/api/v1";
+const AGI_URL = "http://localhost:4000/api/v1";
+const SRC_URL = "http://localhost:4000/static";
+const SEARCH_URL = "http://localhost:4000/api/search";
+// const API_URL = "https://gallium.onrender.com/api/v1";
+// const AGI_URL = "https://gallium.onrender.com/api/v1";
+// const SRC_URL = "https://gallium.onrender.com/static";
+// const SEARCH_URL = "https://gallium.onrender.com/api/search";
 
 const DEFAULT_IMAGE = `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/wcAAwAB/hsbRWkAAAAASUVORK5CYII=`;
+const USER_PH = `data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMu...`;
 
-export { API_URL, AGI_URL, SRC_URL, CHAT_URL, FORUM_URL, SEARCH_URL, DEFAULT_IMAGE, state, setState, clearState, getState };
+// --- Allowed and persisted keys ---
+const allowedKeys = new Set([
+  "token", "user", "username", "userProfile", "refreshToken", "socket", "role",
+  "lang", "lastPath", "currentRoute", "routeCache", "routeState", "currentChatId", "isLoading"
+]);
+
+const PERSISTED_KEYS = ["token", "userProfile", "refreshToken", "user"];
+
+// --- Event system ---
+const globalEvents = {};
+
+function publish(eventName, data) {
+  if (globalEvents[eventName]) {
+    globalEvents[eventName].forEach(cb => cb(data));
+  }
+}
+
+function globalSubscribe(eventName, callback) {
+  if (!globalEvents[eventName]) globalEvents[eventName] = [];
+  globalEvents[eventName].push(callback);
+}
+
+// --- Safe JSON parse ---
+function safeParse(key) {
+  try {
+    return JSON.parse(sessionStorage.getItem(key) || localStorage.getItem(key)) || null;
+  } catch {
+    return null;
+  }
+}
+
+// --- Core state object ---
+const state = {
+  token: sessionStorage.getItem("token") || localStorage.getItem("token") || null,
+  userProfile: safeParse("userProfile"),
+  user: safeParse("user"),
+  refreshToken: sessionStorage.getItem("refreshToken") || localStorage.getItem("refreshToken") || null,
+  lastPath: window.location.pathname,
+  lang: "en",
+  currentRoute: null,
+  routeCache: new Map(),
+  routeState: new Map(),
+
+  get role() {
+    const raw = safeParse("userProfile");
+    if (!raw || !raw.role) return [];
+    return Array.isArray(raw.role) ? raw.role : [raw.role];
+  }
+};
+
+// --- Reactivity system ---
+const listeners = new Map(); // key => Set<callback>
+
+function notify(key, value) {
+  const fns = listeners.get(key);
+  if (fns) {
+    for (const fn of fns) fn(value);
+  }
+  publish(`${key}Changed`, value);
+  publish("stateChange", { [key]: value });
+}
+
+// --- State manipulation ---
+function getState(key) {
+  if (!allowedKeys.has(key)) throw new Error(`Invalid state key: ${key}`);
+  return state[key];
+}
+
+function setState(keyOrObj, persist = false, value = undefined) {
+  if (typeof keyOrObj === "object" && keyOrObj !== null) {
+    for (const [key, val] of Object.entries(keyOrObj)) {
+      if (!allowedKeys.has(key)) throw new Error(`Invalid state key: ${key}`);
+      state[key] = val;
+
+      if (persist && PERSISTED_KEYS.includes(key)) {
+        const str = typeof val === "string" ? val : JSON.stringify(val);
+        sessionStorage.setItem(key, str);
+        localStorage.setItem(key, str);
+      }
+
+      notify(key, val);
+    }
+    return;
+  }
+
+  const key = keyOrObj;
+  if (!allowedKeys.has(key)) throw new Error(`Invalid state key: ${key}`);
+  state[key] = value;
+
+  if (persist && PERSISTED_KEYS.includes(key)) {
+    const str = typeof value === "string" ? value : JSON.stringify(value);
+    sessionStorage.setItem(key, str);
+    localStorage.setItem(key, str);
+  }
+
+  notify(key, value);
+  return value;
+}
+
+// --- Subscriptions ---
+function subscribe(key, fn) {
+  if (!allowedKeys.has(key)) throw new Error(`Cannot subscribe to invalid key: ${key}`);
+  if (!listeners.has(key)) listeners.set(key, new Set());
+  listeners.get(key).add(fn);
+}
+
+function unsubscribe(key, fn) {
+  listeners.get(key)?.delete(fn);
+}
+
+// --- Store initialization ---
+function initStore() {
+  const saved = localStorage.getItem("user");
+  if (saved) {
+    state.user = JSON.parse(saved);
+    publish("userChanged", state.user);
+    publish("stateChange", { user: state.user });
+  }
+}
+
+// --- Route Cache ---
+function getRouteModule(path) {
+  return state.routeCache.get(path);
+}
+
+function setRouteModule(path, module) {
+  state.routeCache.set(path, module);
+}
+
+function hasRouteModule(path) {
+  return state.routeCache.has(path);
+}
+
+function clearRouteCache() {
+  state.routeCache.clear();
+  state.routeState.clear();
+}
+
+// --- Per-Route State ---
+function getRouteState(path) {
+  let route = state.routeState.get(path);
+  if (!route) {
+    route = Object.create(null);
+    state.routeState.set(path, route);
+  }
+  return route;
+}
+
+function setRouteState(path, value) {
+  state.routeState.set(path, value);
+}
+
+// --- Clear State ---
+function clearState(preserveKeys = []) {
+  const preserved = {};
+  for (const key of preserveKeys) {
+    if (PERSISTED_KEYS.includes(key)) {
+      preserved[key] = sessionStorage.getItem(key);
+    }
+  }
+
+  sessionStorage.clear();
+  localStorage.clear();
+
+  for (const key of allowedKeys) {
+    if (preserveKeys.includes(key) || key === "role") continue;
+    if (key === "routeCache" || key === "routeState") {
+      state[key].clear?.();
+    } else {
+      state[key] = null;
+      notify(key, null);
+    }
+  }
+
+  for (const [key, value] of Object.entries(preserved)) {
+    sessionStorage.setItem(key, value);
+    localStorage.setItem(key, value);
+  }
+}
+
+// --- Scroll State ---
+function saveScroll(container, scrollState) {
+  scrollState.scrollY = container?.scrollTop || 0;
+}
+
+function restoreScroll(container, scrollState) {
+  if (scrollState?.scrollY) container.scrollTop = scrollState.scrollY;
+}
+
+// --- Role helpers ---
+function hasRole(...roles) {
+  const current = state.role;
+  if (!Array.isArray(current)) return false;
+  return roles.some(r => current.includes(r));
+}
+
+function isAdmin() {
+  return hasRole("admin");
+}
+
+function getGlobalSnapshot() {
+  return Object.freeze({ ...state });
+}
+
+// --- High-level actions ---
+
+function setLoading(val) {
+  setState("isLoading", val);
+}
+
+// --- Exports ---
+export {
+  state,
+  API_URL,
+  AGI_URL,
+  SRC_URL,
+  SEARCH_URL,
+  DEFAULT_IMAGE,
+  USER_PH,
+
+  // core
+  getState,
+  setState,
+  clearState,
+  getGlobalSnapshot,
+
+  // subscriptions
+  subscribe,
+  unsubscribe,
+  publish,
+  globalSubscribe,
+
+  // scroll
+  saveScroll,
+  restoreScroll,
+
+  // routing
+  getRouteModule,
+  setRouteModule,
+  hasRouteModule,
+  clearRouteCache,
+  getRouteState,
+  setRouteState,
+
+  // init/store
+  initStore,
+
+  // roles
+  hasRole,
+  isAdmin,
+
+  // actions
+  setLoading
+};
+

@@ -13,7 +13,7 @@ async function displayPost(isLoggedIn, postId, contentContainer) {
             contentContainer = document.getElementById("content");
         }
         contentContainer.innerHTML = "";
-        renderPost(postData, contentContainer, 0);
+        renderNewPost(postData, contentContainer, 0);
     } catch (error) {
         contentContainer.innerHTML = "";
         if (error.message === '404') {

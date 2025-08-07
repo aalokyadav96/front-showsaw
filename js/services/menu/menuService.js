@@ -1,15 +1,71 @@
-// import { state } from "../../state/state.js";
 import { apiFetch } from "../../api/api.js";
 import MenuCard from '../../components/ui/MenuCard.mjs';
 import { Button } from "../../components/base/Button.js";
 import { createElement } from "../../components/createElement.js";
 import { SRC_URL } from "../../state/state.js";
-import {handlePurchase} from '../payment/paymentService.js';
 import SnackBar from "../../components/ui/Snackbar.mjs";
 import Modal from "../../components/ui/Modal.mjs";
+import { handlePurchase } from "../payment/pay.js";
+import { EntityType, PictureType, resolveImagePath } from "../../utils/imagePaths.js";
 
-// Add Menu to the event
+// // Add Menu to the event
+// async function addMenu(placeId, menuList) {
+//     const menuName = document.getElementById('menu-name').value.trim();
+//     const menuPrice = parseFloat(document.getElementById('menu-price').value);
+//     const menuStock = parseInt(document.getElementById('menu-stock').value);
+//     const menuImageFile = document.getElementById('menu-image').files[0];
+
+//     if (!menuName || isNaN(menuPrice) || isNaN(menuStock)) {
+//         alert("Please fill in all fields correctly.");
+//         return;
+//     }
+
+//     // Check if image file is valid (optional)
+//     if (menuImageFile && !menuImageFile.type.startsWith('image/')) {
+//         alert("Please upload a valid image file.");
+//         return;
+//     }
+
+//     const formData = new FormData();
+//     formData.append('name', menuName);
+//     formData.append('price', menuPrice);
+//     formData.append('stock', menuStock);
+
+//     if (menuImageFile) {
+//         formData.append('image', menuImageFile);
+//     }
+
+//     try {
+//         const response = await apiFetch(`/places/menu/${placeId}`, 'POST', formData);
+
+//         if (response && response.data.menuid) {
+//             SnackBar("Menu added successfully!");
+//             clearMenuForm(menuList);  // Optionally clear the form after success
+//             // displayNewMenu(response.data, menuList);  // Display the newly added Menu
+//             MenuCard({
+//                 name: menuName,
+//                 price: menuPrice,
+//                 image: `${SRC_URL}/menupic/${menu.menu_pic}`,
+//                 stock: menuStock,
+//                 isCreator,
+//                 isLoggedIn,
+//                 // onBuy: () => buyMenu(menu.menuid, placeId),
+//                 onBuy: () => promptMenuNote(menu, placeId),
+//                 onEdit: () => editMenuForm(menu.menuid, placeId),
+//                 onDelete: () => deleteMenu(menu.menuid, placeId),
+//             });
+//         } else {
+//             alert(`Failed to add Menu: ${response?.message || 'Unknown error'}`);
+//         }
+//     } catch (error) {
+//         alert(`Error adding Menu: ${error.message}`);
+//     }
+// }
+
 async function addMenu(placeId, menuList) {
+    let isCreator = true;
+    let isLoggedIn = true;
+
     const menuName = document.getElementById('menu-name').value.trim();
     const menuPrice = parseFloat(document.getElementById('menu-price').value);
     const menuStock = parseInt(document.getElementById('menu-stock').value);
@@ -20,14 +76,8 @@ async function addMenu(placeId, menuList) {
         return;
     }
 
-    // Check if image file is valid (optional)
     if (menuImageFile && !menuImageFile.type.startsWith('image/')) {
         alert("Please upload a valid image file.");
-        return;
-    }
-
-    if (!menuName || isNaN(menuPrice) || isNaN(menuStock)) {
-        alert("Please fill in all fields correctly.");
         return;
     }
 
@@ -35,18 +85,33 @@ async function addMenu(placeId, menuList) {
     formData.append('name', menuName);
     formData.append('price', menuPrice);
     formData.append('stock', menuStock);
-
-    if (menuImageFile) {
-        formData.append('image', menuImageFile);
-    }
+    if (menuImageFile) formData.append('image', menuImageFile);
 
     try {
         const response = await apiFetch(`/places/menu/${placeId}`, 'POST', formData);
 
-        if (response && response.data.menuid) {
+        if (response && response.data && response.data.menuid) {
             SnackBar("Menu added successfully!");
-            clearMenuForm(menuList);  // Optionally clear the form after success
-            displayNewMenu(response.data, menuList);  // Display the newly added Menu
+            
+            // Optionally clear list and refetch everything:
+            // await displayMenu(menuList.parentElement, placeId, isCreator, isLoggedIn);
+            
+            // Or just append new menu card directly:
+            const menu = response.data;
+            const card = MenuCard({
+                name: menu.name,
+                price: menu.price,
+                // image: `${SRC_URL}/menupic/${menu.menu_pic}`,
+                image: resolveImagePath(EntityType.MENU,PictureType.THUMB,menu.menu_pic),
+                stock: menu.stock,
+                isCreator,
+                isLoggedIn,
+                onBuy: () => promptMenuNote(menu, placeId),
+                onEdit: () => editMenuForm(menu.menuid, placeId),
+                onDelete: () => deleteMenu(menu.menuid, placeId),
+            });
+            menuList.appendChild(card);
+
         } else {
             alert(`Failed to add Menu: ${response?.message || 'Unknown error'}`);
         }
@@ -55,9 +120,41 @@ async function addMenu(placeId, menuList) {
     }
 }
 
+
 // Clear the Menu form
 function clearMenuForm(menuList) {
     menuList.innerHTML = '';
+}
+
+
+function displayNewMenu(menuData, menuList) {
+    // const menuList = document.getElementById("menu-list");
+
+    const menuItem = document.createElement("div");
+    menuItem.className = "menu-item";
+
+    const menuName = document.createElement("h3");
+    menuName.textContent = menuData.name;
+
+    const menuPrice = document.createElement("p");
+    menuPrice.textContent = `Price: $${(menuData.price / 100).toFixed(2)}`;
+
+    const menuStock = document.createElement("p");
+    menuStock.textContent = `Available: ${menuData.stock}`;
+
+    menuItem.append(menuName, menuPrice, menuStock);
+
+    if (menuData.menu_pic) {
+        const menuImage = document.createElement("img");
+        // menuImage.src = `${SRC_URL}/menupic/${menuData.menu_pic}`;
+        menuImage.src = resolveImagePath(EntityType.MENU,PictureType.THUMB,menu.menu_pic);
+        menuImage.alt = menuData.name;
+        menuImage.loading = "lazy";
+        menuImage.style.maxWidth = "160px";
+        menuItem.appendChild(menuImage);
+    }
+
+    menuList.prepend(menuItem);
 }
 
 async function deleteMenu(menuId, placeId) {
@@ -84,12 +181,6 @@ async function deleteMenu(menuId, placeId) {
 async function editMenuForm(menuId, placeId) {
     try {
         const response = await apiFetch(`/places/menu/${placeId}/${menuId}`, 'GET');
-
-        // const editDiv = document.getElementById('editplace');
-        // editDiv.textContent = ""; // Clear existing content
-
-        // const heading = document.createElement("h3");
-        // heading.textContent = "Edit Menu";
 
         const form = document.createElement("form");
         form.id = "edit-menu-form";
@@ -146,11 +237,8 @@ async function editMenuForm(menuId, placeId) {
             submitButton
         );
 
-        // // Append form and heading to the editDiv
-        // editDiv.append(heading, form);
-
         const modal = Modal({
-            title: "Edit Merchandise",
+            title: "Edit Menu",
             content: form,
             onClose: () => modal.remove()
         });
@@ -186,49 +274,6 @@ async function editMenuForm(menuId, placeId) {
     }
 }
 
-// function addMenuForm(placeId, menuList) {
-//     // const editEventDiv = document.getElementById('editevent');
-//     const editEventDiv = menuList;
-//     editEventDiv.textContent = ""; // Clear existing content
-
-//     const heading = document.createElement("h3");
-//     heading.textContent = "Add Menu";
-
-//     const menuNameInput = document.createElement("input");
-//     menuNameInput.type = "text";
-//     menuNameInput.id = "menu-name";
-//     menuNameInput.placeholder = "Menu Name";
-//     menuNameInput.required = true;
-
-//     const menuPriceInput = document.createElement("input");
-//     menuPriceInput.type = "number";
-//     menuPriceInput.id = "menu-price";
-//     menuPriceInput.placeholder = "Price";
-//     menuPriceInput.required = true;
-
-//     const menuStockInput = document.createElement("input");
-//     menuStockInput.type = "number";
-//     menuStockInput.id = "menu-stock";
-//     menuStockInput.placeholder = "Stock Available";
-//     menuStockInput.required = true;
-
-//     const menuImageInput = document.createElement("input");
-//     menuImageInput.type = "file";
-//     menuImageInput.id = "menu-image";
-//     menuImageInput.accept = "image/*";
-
-//     const addButton = document.createElement("button");
-//     addButton.id = "add-menu-btn";
-//     addButton.textContent = "Add Menu";
-//     addButton.addEventListener("click", () => addMenu(placeId, menuList));
-
-//     const cancelButton = document.createElement("button");
-//     cancelButton.id = "cancel-menu-btn";
-//     cancelButton.textContent = "Cancel";
-//     cancelButton.addEventListener("click", clearMenuForm);
-
-//     editEventDiv.append(heading, menuNameInput, menuPriceInput, menuStockInput, menuImageInput, addButton, cancelButton);
-// }
 
 function addMenuForm(placeId, menuList) {
     const form = document.createElement("form");
@@ -282,45 +327,21 @@ function addMenuForm(placeId, menuList) {
 
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
-        await addMenu(placeId, menuList); // You may need to modify this if it needs values from the form.
+        // await addMenu(placeId, menuList); // You may need to modify this if it needs values from the form
+        await addMenu(placeId, menuList);
         modal.remove();
+        document.body.style.overflow = "";
     });
 
     cancelButton.addEventListener("click", () => modal.remove());
 }
 
-function displayNewMenu(menuData, menuList) {
-    // const menuList = document.getElementById("menu-list");
-
-    const menuItem = document.createElement("div");
-    menuItem.className = "menu-item";
-
-    const menuName = document.createElement("h3");
-    menuName.textContent = menuData.name;
-
-    const menuPrice = document.createElement("p");
-    menuPrice.textContent = `Price: $${(menuData.price / 100).toFixed(2)}`;
-
-    const menuStock = document.createElement("p");
-    menuStock.textContent = `Available: ${menuData.stock}`;
-
-    menuItem.append(menuName, menuPrice, menuStock);
-
-    if (menuData.menu_pic) {
-        const menuImage = document.createElement("img");
-        menuImage.src = `${SRC_URL}/menupic/${menuData.menu_pic}`;
-        menuImage.alt = menuData.name;
-        menuImage.loading = "lazy";
-        menuImage.style.maxWidth = "160px";
-        menuItem.appendChild(menuImage);
-    }
-
-    menuList.prepend(menuItem);
-}
-
 // Update the usage of MenuCard in displayMenu
-async function displayMenu(menuList, placeId, isCreator, isLoggedIn) {
-    menuList.innerHTML = ""; // Clear existing content
+async function displayMenu(menuListcon, placeId, isCreator, isLoggedIn) {
+    menuListcon.innerHTML = ""; // Clear existing content
+
+    let menuList = createElement('div',{class:"hvflex"},[]);
+    menuListcon.appendChild(menuList);
 
     const menuData = await apiFetch(`/places/menu/${placeId}`);
 
@@ -330,7 +351,7 @@ async function displayMenu(menuList, placeId, isCreator, isLoggedIn) {
             mouseenter: () => console.log("Button hovered"),
         });
 
-        menuList.appendChild(button);
+        menuListcon.prepend(button);
     }
 
     if (!Array.isArray(menuData)) {
@@ -347,11 +368,13 @@ async function displayMenu(menuList, placeId, isCreator, isLoggedIn) {
         const card = MenuCard({
             name: menu.name,
             price: menu.price,
-            image: `${SRC_URL}/menupic/${menu.menu_pic}`,
+            // image: `${SRC_URL}/menupic/${menu.menu_pic}`,
+            image: resolveImagePath(EntityType.MENU,PictureType.THUMB,menu.menu_pic),
             stock: menu.stock,
             isCreator,
             isLoggedIn,
-            onBuy: () => buyMenu(menu.menuid, placeId),
+            // onBuy: () => buyMenu(menu.menuid, placeId),
+            onBuy: () => promptMenuNote(menu, placeId),
             onEdit: () => editMenuForm(menu.menuid, placeId),
             onDelete: () => deleteMenu(menu.menuid, placeId),
         });
@@ -360,11 +383,68 @@ async function displayMenu(menuList, placeId, isCreator, isLoggedIn) {
     });
 }
 
-// Wrappers for buying menu and tickets
-function buyMenu(menuId, placeId, maxStock = 2) {
-    alert(menuId, placeId);
-    handlePurchase("menu", menuId, placeId, maxStock);
+
+function showToast(message, timeout = 3000) {
+    const toast = document.createElement("div");
+    toast.textContent = message;
+    Object.assign(toast.style, {
+        position: "fixed",
+        bottom: "20px",
+        left: "50%",
+        transform: "translateX(-50%)",
+        background: "#333",
+        color: "#fff",
+        padding: "10px 20px",
+        borderRadius: "5px",
+        zIndex: "1000",
+        cursor: "pointer",
+        fontFamily: "sans-serif"
+    });
+
+    document.body.appendChild(toast);
+    toast.addEventListener("click", () => toast.remove());
+    setTimeout(() => toast.remove(), timeout);
+    return toast;
 }
 
 
-export { addMenuForm, addMenu, displayNewMenu, clearMenuForm, displayMenu, deleteMenu, editMenuForm };
+function promptMenuNote(menu, placeId) {
+    Modal({
+        title: `Customize: ${menu.name}`,
+        content: `
+            <label for="menu-note">Special request (optional)</label>
+            <textarea id="menu-note" rows="3" placeholder="e.g. Less spicy, no onions..."></textarea>
+        `,
+        onConfirm: () => {
+            const note = document.getElementById('menu-note').value.trim();
+            buyMenu(menu.menuid, placeId, note);
+        },
+        autofocusSelector: "#menu-note"
+    });
+}
+
+async function buyMenu(menuId, placeId, note = "") {
+    try {
+        const { stock } = await apiFetch(`/places/menu/${placeId}/${menuId}/stock`);
+
+        if (stock <= 0) {
+            showToast("❌ Out of stock.");
+            return;
+        }
+
+        let maxQuantity = 3;
+        handlePurchase("menu", menuId, placeId, maxQuantity, stock, note);
+
+    } catch (e) {
+        console.error(e);
+        const toast = showToast(`⚠️ Error: ${e.message}. Click to retry.`, 5000);
+        toast.onclick = () => {
+            toast.remove();
+            setTimeout(() => buyMenu(menuId, placeId, note), 100); // short delay to avoid event stack overflow
+        };
+    } 
+
+}
+
+
+export { addMenuForm, addMenu, clearMenuForm, displayMenu, deleteMenu, editMenuForm };

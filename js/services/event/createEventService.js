@@ -12,36 +12,6 @@ async function createEventForm(isLoggedIn, content) {
         header.textContent = "Create Event";
         createSection.appendChild(header);
 
-        // // Define form fields
-        // const formFields = [
-        //     {
-        //         type: "select", id: "category", label: "Event Type", required: true,
-        //         options: [
-        //             { value: "", label: "Select a Type" },
-        //             { value: "conference", label: "Conference" },
-        //             { value: "concert", label: "Concert" },
-        //             { value: "sports", label: "Sports" },
-        //             { value: "festival", label: "Festival" },
-        //             { value: "meetup", label: "Meetup" },
-        //             { value: "workshop", label: "Workshop" },
-        //             { value: "theater", label: "Theater" },
-        //             { value: "other", label: "Other" }
-        //         ]
-        //     },
-        //     { type: "text", id: "event-title", label: "Event Title", required: true },
-        //     { type: "textarea", id: "event-description", label: "Event Description", required: true },
-        //     { type: "text", id: "event-place", label: "Event Place", required: true },
-        //     { type: "text", id: "event-location", label: "Event Location", required: true },
-        //     { type: "date", id: "event-date", label: "Select a Date", required: true },
-        //     { type: "time", id: "event-time", label: "Select a Time", required: true },
-        //     { type: "text", id: "organizer-name", label: "Organizer Name", required: true },
-        //     { type: "text", id: "organizer-contact", label: "Organizer Contact", required: true },
-        //     { type: "number", id: "total-capacity", label: "Total Capacity", required: true },
-        //     { type: "url", id: "website-url", label: "Website URL" },
-        //     { type: "file", id: "event-banner", label: "Event Banner", accept: "image/*" },
-        //     { type: "file", id: "event-seating", label: "Event Seating", accept: "image/*" },
-        // ];
-
         const formFields = [
             {
                 type: "select", id: "category", label: "Event Type", required: true,
@@ -69,20 +39,8 @@ async function createEventForm(isLoggedIn, content) {
             { type: "file", id: "event-banner", label: "Event Banner", accept: "image/*" },
             { type: "file", id: "event-seating", label: "Event Seating", accept: "image/*" },
             
-            // ➡️ NEW: Artist Multi-Select Field
-            {
-                type: "multiselect", id: "artist-select", label: "Select Artists",
-                options: [ 
-                    { value: "artistid1", label: "Artist One" },
-                    { value: "artistid2", label: "Artist Two" },
-                    { value: "artistid3", label: "Artist Three" }
-                ]
-            }
         ];
         
-
-        // // Create and append form fields
-        // formFields.forEach(field => createSection.appendChild(createFormField(field)));
         
         formFields.forEach(field => {
             if (field.id === "event-place") {

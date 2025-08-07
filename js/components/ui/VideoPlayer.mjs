@@ -17,7 +17,7 @@ const VideoPlayer = (
   container.className = `video-container theme-${theme}`;
 
   const controlsContainer = document.createElement("div");
-  controlsContainer.className = "hflex-sb buttcon";
+  controlsContainer.className = "hflex-sb vcon";
 
   const videocon = document.createElement("div");
   videocon.className = "videocon";
@@ -54,7 +54,7 @@ const VideoPlayer = (
             : `${baseSrc}-${q}p.mp4`,
         })),
       }),
-  });
+  }, "buttonx");
 
   video.setAttribute("aria-label", "Video Player");
   theaterButton.setAttribute("title", "Activate Theater Mode");

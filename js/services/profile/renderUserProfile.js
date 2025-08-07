@@ -2,7 +2,7 @@
 import Button from "../../components/base/Button.js";
 import { getState } from "../../state/state.js";
 import { displayUserProfileData } from "./otherUserProfileService.js";
-import { displayFollowSuggestions } from "./displayFollowSugg.js";
+// import { displayFollowSuggestions } from "./displayFollowSugg.js";
 import { createBanner, createBannerEditButton, createProfilePicture, createProfileDetails, createStatistics } from "./profileGenHelpers.js";
 import { othusrdata } from "./otheruserdata.js";
 import { createElement } from "../../components/createElement.js";
@@ -32,7 +32,7 @@ function profilGen(profile, isLoggedIn) {
 
     const suggs = document.createElement("section");
     suggs.className = "followcon hflex";
-    displayFollowSuggestions(profile.userid, suggs);
+    // displayFollowSuggestions(profile.userid, suggs);
 
     appendChildren(
         section,
@@ -63,6 +63,6 @@ function profilGen(profile, isLoggedIn) {
     return profileContainer;
 }
 
-export { displayFollowSuggestions };
+// export { displayFollowSuggestions };
 
 export default profilGen;

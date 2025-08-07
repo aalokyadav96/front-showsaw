@@ -170,6 +170,13 @@ function displayItinerary(isLoggedIn, divContainerNode) {
         const visitDiv = document.createElement('div');
         visitDiv.className = 'itinerary-visit';
 
+        // Transport only for visits after the first one
+        if (vi > 0 && visit.transport) {
+          const transP = document.createElement('p');
+          transP.innerHTML = `<strong>Transport:</strong> ${visit.transport}`;
+          visitDiv.appendChild(transP);
+        }
+
         const timeP = document.createElement('p');
         timeP.innerHTML = `<strong>Time:</strong> ${visit.start_time} – ${visit.end_time}`;
 
@@ -177,13 +184,6 @@ function displayItinerary(isLoggedIn, divContainerNode) {
         locP.innerHTML = `<strong>Location:</strong> ${visit.location}`;
 
         visitDiv.append(timeP, locP);
-
-        // Transport only for visits after the first one
-        if (vi > 0 && visit.transport) {
-          const transP = document.createElement('p');
-          transP.innerHTML = `<strong>Transport:</strong> ${visit.transport}`;
-          visitDiv.appendChild(transP);
-        }
 
         dayDiv.appendChild(visitDiv);
       });
@@ -231,194 +231,3 @@ function displayItinerary(isLoggedIn, divContainerNode) {
 }
 
 export { displayItinerary };
-
-// import { apiFetch } from "../../api/api.js";
-// import { navigate } from "../../routes/index.js";
-// import { editItinerary } from "./itineraryEdit.js";
-
-// function displayItinerary(isLoggedIn, divContainerNode) {
-//   divContainerNode.innerHTML = '';
-
-//   if (!isLoggedIn) {
-//     divContainerNode.innerHTML = '<p>Please log in to view and manage your itineraries.</p>';
-//     return;
-//   }
-
-//   // Main container layout: list on the left, details on the right
-//   const layout = document.createElement('div');
-//   layout.className = 'itinerary-layout';
-
-//   // Left side (List + Search)
-//   const leftPane = document.createElement('div');
-//   leftPane.className = 'itinerary-left';
-
-//   // Right side (Details)
-//   const rightPane = document.createElement('div');
-//   rightPane.className = 'itinerary-right';
-//   rightPane.innerHTML = '<p>Select an itinerary to see details here.</p>';
-
-//   layout.appendChild(leftPane);
-//   layout.appendChild(rightPane);
-//   divContainerNode.appendChild(layout);
-
-//   // --- Search Form ---
-//   const searchForm = document.createElement('form');
-//   searchForm.id = 'searchForm';
-//   searchForm.innerHTML = `
-//     <input type="text" name="start_date" placeholder="Start Date (YYYY-MM-DD)">
-//     <input type="text" name="location" placeholder="Location">
-//     <input type="text" name="status" placeholder="Status (Draft/Confirmed)">
-//     <button type="submit">Search</button>
-//   `;
-  
-//   // --- Create Button ---
-//   const createBtn = document.createElement('button');
-//   createBtn.textContent = 'Create Itinerary';
-//   createBtn.className = 'itinerary-create-btn';
-//   createBtn.addEventListener('click', () => navigate('/create-itinerary'));
-//   leftPane.appendChild(createBtn);
-
-//   // --- List Container ---
-//   const listDiv = document.createElement('div');
-//   listDiv.id = 'itineraryList';
-//   leftPane.appendChild(listDiv);
-
-//   searchForm.addEventListener('submit', function (e) {
-//     e.preventDefault();
-//     const formData = new FormData(searchForm);
-//     const query = new URLSearchParams();
-//     for (const [key, value] of formData.entries()) {
-//       if (value.trim()) query.append(key, value.trim());
-//     }
-//     searchItineraries(query.toString());
-//   });
-
-//   loadItineraries();
-
-//   // ---------- Core Methods ----------
-
-//   async function loadItineraries() {
-//     listDiv.innerHTML = '<p>Loading...</p>';
-//     try {
-//       const itineraries = await apiFetch('/itineraries');
-//       renderItineraryList(itineraries);
-//     } catch (err) {
-//       console.error(err);
-//       listDiv.innerHTML = '<p>Error loading itineraries.</p>';
-//     }
-//   }
-
-//   async function searchItineraries(queryString) {
-//     listDiv.innerHTML = '<p>Searching...</p>';
-//     try {
-//       const itineraries = await apiFetch(`/itineraries/search?${queryString}`);
-//       renderItineraryList(itineraries);
-//     } catch (err) {
-//       console.error(err);
-//       listDiv.innerHTML = '<p>Error searching itineraries.</p>';
-//     }
-//   }
-
-//   function renderItineraryList(itineraries) {
-//     listDiv.innerHTML = '';
-//     if (itineraries.length === 0) {
-//       listDiv.innerHTML = '<p>No itineraries found.</p>';
-//       return;
-//     }
-
-//     const ul = document.createElement('ul');
-//     itineraries.forEach(itinerary => ul.appendChild(createItineraryListItem(itinerary)));
-//     listDiv.appendChild(ul);
-//   }
-
-//   function createItineraryListItem(itinerary) {
-//     const li = document.createElement('li');
-//     li.style.marginBottom = '10px';
-//     li.innerHTML = `<strong>${itinerary.name}</strong> (${itinerary.status}) `;
-
-//     const actions = [
-//       { text: 'View', handler: () => viewItinerary(itinerary.itineraryid) },
-//       { text: 'Edit', handler: () => editxItinerary(isLoggedIn, itinerary.itineraryid) },
-//       { text: 'Delete', handler: () => deleteItinerary(itinerary.itineraryid) },
-//       { text: 'Fork', handler: () => forkItinerary(itinerary.itineraryid) },
-//     ];
-
-//     if (!itinerary.published) {
-//       actions.push({ text: 'Publish', handler: () => publishItinerary(itinerary.itineraryid) });
-//     }
-
-//     actions.forEach(({ text, handler }) => {
-//       const btn = document.createElement('button');
-//       btn.textContent = text;
-//       btn.style.marginLeft = '5px';
-//       btn.addEventListener('click', handler);
-//       li.appendChild(btn);
-//     });
-
-//     return li;
-//   }
-
-//   async function viewItinerary(id) {
-//     try {
-//       const itinerary = await apiFetch(`/itineraries/all/${id}`);
-//       renderItineraryDetails(itinerary);
-//     } catch (err) {
-//       console.error(err);
-//       rightPane.innerHTML = '<p>Error loading itinerary details.</p>';
-//     }
-//   }
-
-//   function renderItineraryDetails(itinerary) {
-//     rightPane.innerHTML = `
-//       <h2>${itinerary.name}</h2>
-//       <p><strong>Status:</strong> ${itinerary.status}</p>
-//       <p><strong>Location:</strong> ${itinerary.location}</p>
-//       <p><strong>Start Date:</strong> ${itinerary.start_date}</p>
-//       <p><strong>End Date:</strong> ${itinerary.end_date}</p>
-//       <p><strong>Description:</strong> ${itinerary.description || 'N/A'}</p>
-//     `;
-//   }
-
-//   function editxItinerary(isLoggedIn, id) {
-//     // navigate(`/edit-itinerary?id=${id}`);
-//     rightPane.innerHTML = "";
-//     editItinerary(isLoggedIn, rightPane, id);
-//   }
-
-//   async function deleteItinerary(id) {
-//     if (!confirm('Are you sure you want to delete this itinerary?')) return;
-//     try {
-//       await apiFetch(`/itineraries/${id}`, 'DELETE');
-//       alert('Itinerary deleted successfully');
-//       loadItineraries();
-//       rightPane.innerHTML = '<p>Select an itinerary to see details here.</p>';
-//     } catch (err) {
-//       console.error(err);
-//       alert('Error deleting itinerary');
-//     }
-//   }
-
-//   async function forkItinerary(id) {
-//     try {
-//       await apiFetch(`/itineraries/${id}/fork`, 'POST');
-//       alert('Itinerary forked successfully');
-//       loadItineraries();
-//     } catch (err) {
-//       console.error(err);
-//       alert('Error forking itinerary');
-//     }
-//   }
-
-//   async function publishItinerary(id) {
-//     try {
-//       await apiFetch(`/itineraries/${id}/publish`, 'PUT');
-//       alert('Itinerary published successfully');
-//       loadItineraries();
-//     } catch (err) {
-//       console.error(err);
-//       alert('Error publishing itinerary');
-//     }
-//   }
-// }
-
-// export { displayItinerary };

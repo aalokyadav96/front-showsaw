@@ -5,7 +5,7 @@ import { apiFetch } from "../../api/api.js";
 import { Button } from "../../components/base/Button.js";
 import Modal from "../../components/ui/Modal.mjs";
 import { navigate } from "../../routes/index.js";
-import { logActivity } from "../activity/activity.js";
+import { logActivity } from "../activity/activity_x.js";
 
 // --- Configuration for Entity Types ---
 
@@ -125,7 +125,7 @@ function createFormModal({ title, fields, onSubmit, onClose }) {
  * @param {string} eventId - The event or place identifier
  * @param {number} maxQuantity - Maximum selectable quantity or pre-determined value for "menu"
  */
-async function handlePurchase(type = "merch", itemId, eventId, maxQuantity) {
+async function handlePurchase(type = "merch", itemId, eventId, maxQuantity, stock, note) {
   // Define the high-level entity type used for routing (ticket/merch are part of 'event', menu is under 'place')
   const entityType = type === "menu" ? "place" : "event";
 
@@ -253,84 +253,146 @@ function showPaymentModal(entityType, type, paymentSession, eventId, itemId) {
   document.body.appendChild(paymentModal);
 }
 
-/**
- * Submits the payment after validating card fields. Uses a simple payment adapter
- * pattern so that you can plug in different payment processing logic later.
- *
- * @param {string} entityType - "event" or "place"
- * @param {string} itemType - "merch", "ticket", or "menu"
- * @param {Object} paymentSession - The session object from createPaymentSession
- * @param {HTMLElement} paymentMessage - The DOM element where messages are shown
- * @param {string} eventId
- * @param {string} itemId
- * @param {FormData} formData - Form data from the payment modal
- */
-async function submitPayment(entityType, itemType, paymentSession, paymentMessage, eventId, itemId, formData) {
-  // Disable the payment button (the button has id "modal-submit-btn")
+// /**
+//  * Submits the payment after validating card fields. Uses a simple payment adapter
+//  * pattern so that you can plug in different payment processing logic later.
+//  *
+//  * @param {string} entityType - "event" or "place"
+//  * @param {string} itemType - "merch", "ticket", or "menu"
+//  * @param {Object} paymentSession - The session object from createPaymentSession
+//  * @param {HTMLElement} paymentMessage - The DOM element where messages are shown
+//  * @param {string} eventId
+//  * @param {string} itemId
+//  * @param {FormData} formData - Form data from the payment modal
+//  */
+// async function submitPayment(entityType, itemType, paymentSession, paymentMessage, eventId, itemId, formData) {
+//   // Disable the payment button (the button has id "modal-submit-btn")
+//   const submitBtn = document.getElementById("modal-submit-btn");
+//   if (submitBtn) submitBtn.disabled = true;
+
+//   // Retrieve form field values
+// //   const cardNumber = formData.get("card-number")?.trim();
+//   const cardNumber = document.getElementById("card-number").value;
+// //   const expiryDate = formData.get("expiry-date")?.trim();
+//   const expiryDate = document.getElementById("expiry-date").value;
+// //   const cvv = formData.get("cvv")?.trim();
+//   const cvv = document.getElementById("cvv").value;
+
+//   // Basic client-side validations using regex
+//   const cardNumberRegex = /^\d{16}$/;
+//   const expiryDateRegex = /^(0[1-9]|1[0-2])\/?([0-9]{2})$/;
+//   const cvvRegex = /^\d{3}$/;
+//     console.log(cardNumber);
+//     console.log(expiryDate);
+//     console.log(cvv);
+//   if (!cardNumber || !expiryDate || !cvv ||
+//       !cardNumberRegex.test(cardNumber) ||
+//       !expiryDateRegex.test(expiryDate) ||
+//       !cvvRegex.test(cvv)) {
+//     paymentMessage.textContent = "Please fill in all fields correctly.";
+//     if (submitBtn) submitBtn.disabled = false;
+//     return;
+//   }
+
+//   paymentMessage.textContent = "Processing payment...";
+  
+//   // Simulate a delay or use a spinner here
+//   // In development mode, you might simulate payment success without an API call.
+//   const isDevelopment = (typeof process !== "undefined" && process.env && process.env.NODE_ENV === "development");
+
+//   if (isDevelopment) {
+//     setTimeout(() => {
+//       alert(`${itemType.charAt(0).toUpperCase() + itemType.slice(1)} purchased successfully! [Development Mode]`);
+//       logActivity(`${itemType}_purchased`, { itemId, eventId });
+//       window.location.href = `/${entityType}/${eventId}`;
+//     }, 1000);
+//     return;
+//   }
+
+//   // Real payment simulation using API
+//   setTimeout(async () => {
+//     try {
+//       if (!CONFIRM_PURCHASE_CONFIG[itemType]) {
+//         throw new Error(`Unsupported entity type: ${itemType}`);
+//       }
+//       const apiUrl = CONFIRM_PURCHASE_CONFIG[itemType].apiPath(eventId, itemId);
+//       const payload = JSON.stringify(CONFIRM_PURCHASE_CONFIG[itemType].payload(paymentSession));
+//       const response = await apiFetch(apiUrl, "POST", payload);
+
+//       // Check for a structured success flag
+//       if (response?.success) {
+//         alert(`${itemType.charAt(0).toUpperCase() + itemType.slice(1)} purchased successfully!`);
+//         logActivity(`${itemType}_purchased`, { itemId, eventId });
+//         window.location.href = `/${entityType}/${eventId}`;
+//       } else {
+//         throw new Error(response?.message || "Unexpected response from backend.");
+//       }
+//     } catch (error) {
+//       console.error("Error during payment:", error);
+//       alert("Payment failed! Please try again.");
+//       paymentMessage.textContent = "Payment failed. Please try again.";
+//       if (submitBtn) submitBtn.disabled = false;
+//     }
+//   }, 2000);
+// }
+async function submitPayment(entityType, itemType, paymentSession, paymentMessage, eventId, itemId) {
   const submitBtn = document.getElementById("modal-submit-btn");
   if (submitBtn) submitBtn.disabled = true;
 
-  // Retrieve form field values
-//   const cardNumber = formData.get("card-number")?.trim();
-  const cardNumber = document.getElementById("card-number").value;
-//   const expiryDate = formData.get("expiry-date")?.trim();
-  const expiryDate = document.getElementById("expiry-date").value;
-//   const cvv = formData.get("cvv")?.trim();
-  const cvv = document.getElementById("cvv").value;
+  // Grab and trim input values
+  const cardNumber = (document.getElementById("card-number")?.value || "").trim();
+  const expiryDate = (document.getElementById("expiry-date")?.value || "").trim();
+  const cvv = (document.getElementById("cvv")?.value || "").trim();
 
-  // Basic client-side validations using regex
-  const cardNumberRegex = /^\d{16}$/;
-  const expiryDateRegex = /^(0[1-9]|1[0-2])\/?([0-9]{2})$/;
-  const cvvRegex = /^\d{3}$/;
-    console.log(cardNumber);
-    console.log(expiryDate);
-    console.log(cvv);
-  if (!cardNumber || !expiryDate || !cvv ||
-      !cardNumberRegex.test(cardNumber) ||
-      !expiryDateRegex.test(expiryDate) ||
-      !cvvRegex.test(cvv)) {
+  // Regex validations
+  const isValidCardNumber = /^\d{16}$/.test(cardNumber);
+  const isValidExpiryDate = /^(0[1-9]|1[0-2])\/?([0-9]{2})$/.test(expiryDate);
+  const isValidCvv = /^\d{3}$/.test(cvv);
+
+  if (!isValidCardNumber || !isValidExpiryDate || !isValidCvv) {
     paymentMessage.textContent = "Please fill in all fields correctly.";
     if (submitBtn) submitBtn.disabled = false;
     return;
   }
 
   paymentMessage.textContent = "Processing payment...";
-  
-  // Simulate a delay or use a spinner here
-  // In development mode, you might simulate payment success without an API call.
-  const isDevelopment = (typeof process !== "undefined" && process.env && process.env.NODE_ENV === "development");
 
+  const redirectTo = `/${entityType}/${eventId}`;
+  const itemName = itemType.charAt(0).toUpperCase() + itemType.slice(1);
+  const isDevelopment = (typeof process !== "undefined" && process.env?.NODE_ENV === "development");
+
+  // Simulated development mode
   if (isDevelopment) {
     setTimeout(() => {
-      alert(`${itemType.charAt(0).toUpperCase() + itemType.slice(1)} purchased successfully! [Development Mode]`);
+      alert(`${itemName} purchased successfully! [Development Mode]`);
       logActivity(`${itemType}_purchased`, { itemId, eventId });
-      window.location.href = `/${entityType}/${eventId}`;
+      window.location.href = redirectTo;
     }, 1000);
     return;
   }
 
-  // Real payment simulation using API
+  // Real or simulated API payment
   setTimeout(async () => {
     try {
-      if (!CONFIRM_PURCHASE_CONFIG[itemType]) {
-        throw new Error(`Unsupported entity type: ${itemType}`);
-      }
-      const apiUrl = CONFIRM_PURCHASE_CONFIG[itemType].apiPath(eventId, itemId);
-      const payload = JSON.stringify(CONFIRM_PURCHASE_CONFIG[itemType].payload(paymentSession));
+      const config = CONFIRM_PURCHASE_CONFIG[itemType];
+      if (!config) throw new Error(`Unsupported itemType: ${itemType}`);
+
+      const apiUrl = config.apiPath(eventId, itemId);
+      const payload = JSON.stringify(config.payload(paymentSession));
+
       const response = await apiFetch(apiUrl, "POST", payload);
 
-      // Check for a structured success flag
       if (response?.success) {
-        alert(`${itemType.charAt(0).toUpperCase() + itemType.slice(1)} purchased successfully!`);
+        alert(`${itemName} purchased successfully!`);
         logActivity(`${itemType}_purchased`, { itemId, eventId });
-        window.location.href = `/${entityType}/${eventId}`;
+        window.location.href = redirectTo;
       } else {
         throw new Error(response?.message || "Unexpected response from backend.");
       }
-    } catch (error) {
-      console.error("Error during payment:", error);
-      alert("Payment failed! Please try again.");
+    } catch (err) {
+      console.error("Payment failed:", err);
       paymentMessage.textContent = "Payment failed. Please try again.";
+      alert("❌ Payment failed.");
       if (submitBtn) submitBtn.disabled = false;
     }
   }, 2000);

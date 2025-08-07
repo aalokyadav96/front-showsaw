@@ -9,6 +9,7 @@ import { handlePurchase } from '../payment/paymentService.js';
 import SnackBar from "../../components/ui/Snackbar.mjs";
 import Modal from "../../components/ui/Modal.mjs";
 
+import { EntityType, PictureType, resolveImagePath } from "../../utils/imagePaths.js";
 import { reportPost } from "../reporting/reporting.js";
 
 // Add merchandise to the event
@@ -85,150 +86,6 @@ async function deleteMerch(entityType, merchId, eventId) {
     }
 }
 
-// async function editMerchForm(entityType, merchId, eventId) {
-//     try {
-//         const response = await apiFetch(`/merch/${entityType}/${eventId}/${merchId}`, 'GET');
-
-//         // const editDiv = document.getElementById('editevent');
-//         const editDiv = document.getElementById('edittabs');
-//         editDiv.textContent = ""; // Clear existing content
-
-//         const heading = document.createElement("h3");
-//         heading.textContent = "Edit Merchandise";
-
-//         const form = document.createElement("form");
-//         form.id = "edit-merch-form";
-
-//         const merchIdInput = document.createElement("input");
-//         merchIdInput.type = "hidden";
-//         merchIdInput.name = "merchid";
-//         merchIdInput.value = merchId;
-
-//         const nameLabel = document.createElement("label");
-//         nameLabel.setAttribute("for", "merchName");
-//         nameLabel.textContent = "Name:";
-
-//         const nameInput = document.createElement("input");
-//         nameInput.type = "text";
-//         nameInput.id = "merchName";
-//         nameInput.name = "merchName";
-//         nameInput.value = response.name;
-//         nameInput.required = true;
-
-//         const priceLabel = document.createElement("label");
-//         priceLabel.setAttribute("for", "merchPrice");
-//         priceLabel.textContent = "Price:";
-
-//         const priceInput = document.createElement("input");
-//         priceInput.type = "number";
-//         priceInput.id = "merchPrice";
-//         priceInput.name = "merchPrice";
-//         priceInput.value = response.price;
-//         priceInput.required = true;
-//         priceInput.step = "0.01";
-
-//         const stockLabel = document.createElement("label");
-//         stockLabel.setAttribute("for", "merchStock");
-//         stockLabel.textContent = "Stock:";
-
-//         const stockInput = document.createElement("input");
-//         stockInput.type = "number";
-//         stockInput.id = "merchStock";
-//         stockInput.name = "merchStock";
-//         stockInput.value = response.stock;
-//         stockInput.required = true;
-
-//         const submitButton = document.createElement("button");
-//         submitButton.type = "submit";
-//         submitButton.className = "button";
-//         submitButton.textContent = "Update Merchandise";
-
-//         // Append all elements to the form
-//         form.append(
-//             merchIdInput,
-//             nameLabel, nameInput,
-//             priceLabel, priceInput,
-//             stockLabel, stockInput,
-//             submitButton
-//         );
-
-//         // Append form and heading to the editDiv
-//         editDiv.append(heading, form);
-
-//         // Attach the submit event listener
-//         form.addEventListener("submit", async (event) => {
-//             event.preventDefault();
-
-//             // Prepare data to send to the backend
-//             const merchData = {
-//                 name: nameInput.value,
-//                 price: parseFloat(priceInput.value),
-//                 stock: parseInt(stockInput.value)
-//             };
-
-//             try {
-//                 // Send a PUT request with JSON data
-//                 const updateResponse = await apiFetch(`/merch/${entityType}/${eventId}/${merchId}`, 'PUT', JSON.stringify(merchData), { 'Content-Type': 'application/json' });
-
-//                 if (updateResponse.success) {
-//                     alert('Merchandise updated successfully!');
-//                 } else {
-//                     alert(`Failed to update merchandise: ${updateResponse.message}`);
-//                 }
-//             } catch (error) {
-//                 console.error('Error updating merchandise:', error);
-//                 alert('An error occurred while updating the merchandise.');
-//             }
-//         });
-//     } catch (error) {
-//         console.error('Error fetching merchandise details:', error);
-//         alert('An error occurred while fetching the merchandise details.');
-//     }
-// }
-
-// function addMerchForm(entityType, eventId, merchList) {
-//     // const editEventDiv = document.getElementById('editevent');
-//     const editEventDiv = document.getElementById('edittabs');
-//     editEventDiv.textContent = ""; // Clear existing content
-
-//     const heading = document.createElement("h3");
-//     heading.textContent = "Add Merchandise";
-
-//     const merchNameInput = document.createElement("input");
-//     merchNameInput.type = "text";
-//     merchNameInput.id = "merch-name";
-//     merchNameInput.placeholder = "Merchandise Name";
-//     merchNameInput.required = true;
-
-//     const merchPriceInput = document.createElement("input");
-//     merchPriceInput.type = "number";
-//     merchPriceInput.id = "merch-price";
-//     merchPriceInput.placeholder = "Price";
-//     merchPriceInput.required = true;
-
-//     const merchStockInput = document.createElement("input");
-//     merchStockInput.type = "number";
-//     merchStockInput.id = "merch-stock";
-//     merchStockInput.placeholder = "Stock Available";
-//     merchStockInput.required = true;
-
-//     const merchImageInput = document.createElement("input");
-//     merchImageInput.type = "file";
-//     merchImageInput.id = "merch-image";
-//     merchImageInput.accept = "image/*";
-
-//     const addButton = document.createElement("button");
-//     addButton.id = "add-merch-btn";
-//     addButton.textContent = "Add Merchandise";
-//     addButton.addEventListener("click", () => addMerchandise(entityType, eventId, merchList));
-
-//     const cancelButton = document.createElement("button");
-//     cancelButton.id = "cancel-merch-btn";
-//     cancelButton.textContent = "Cancel";
-//     cancelButton.addEventListener("click", clearMerchForm);
-
-//     editEventDiv.append(heading, merchNameInput, merchPriceInput, merchStockInput, merchImageInput, addButton, cancelButton);
-// }
 
 
 async function editMerchForm(entityType, merchId, eventId) {
@@ -313,6 +170,7 @@ async function editMerchForm(entityType, merchId, eventId) {
                 if (updateResponse.success) {
                     alert('Merchandise updated successfully!');
                     modal.remove();
+                    document.body.style.overflow="";
                 } else {
                     alert(`Failed to update merchandise: ${updateResponse.message}`);
                 }
@@ -383,7 +241,7 @@ function addMerchForm(entityType, eventId, merchList) {
         modal.remove();
     });
 
-    cancelButton.addEventListener("click", () => modal.remove());
+    cancelButton.addEventListener("click", () => {modal.remove();document.body.style.overflow="";});
 }
 
 function displayNewMerchandise(merchData, merchList) {
@@ -405,7 +263,8 @@ function displayNewMerchandise(merchData, merchList) {
 
     if (merchData.merch_pic) {
         const merchImage = document.createElement("img");
-        merchImage.src = `${SRC_URL}/merchpic/${merchData.merch_pic}`;
+        // merchImage.src = `${SRC_URL}/merchpic/${merchData.merch_pic}`;
+        merchImage.src = resolveImagePath(EntityType.MERCH, PictureType.THUMB, data.merch_pic);
         merchImage.alt = merchData.name;
         merchImage.loading = "lazy";
         merchImage.style.maxWidth = "160px";
@@ -447,7 +306,8 @@ async function displayMerchandise(merchcon, merchData, entityType, eventId, isCr
         const card = MerchCard({
             name: merch.name,
             price: merch.price,
-            image: `${SRC_URL}/merchpic/${merch.merch_pic}`,
+            // image: `${SRC_URL}/merchpic/${merch.merch_pic}`,
+            image: resolveImagePath(EntityType.MERCH, PictureType.THUMB, merch.merch_pic),
             stock: merch.stock,
             isCreator,
             isLoggedIn,

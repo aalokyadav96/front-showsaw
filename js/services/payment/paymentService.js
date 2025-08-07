@@ -1,7 +1,7 @@
 import { apiFetch } from "../../api/api.js";
 import { Button } from "../../components/base/Button.js";
 import Modal from "../../components/ui/Modal.mjs";
-import { logActivity } from "../activity/activity.js";
+import { logActivity } from "../activity/activity_x.js";
 
 // Purchase entry point
 async function handlePurchase(entityType, itemType = "merch", itemId, eventId, maxQuantity) {

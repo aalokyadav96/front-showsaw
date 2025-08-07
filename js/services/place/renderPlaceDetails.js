@@ -2,6 +2,8 @@ import { createElement } from "../../components/createElement.js";
 import { editPlaceForm, deletePlace, analyticsPlace } from "./placeService.js";
 import Button from "../../components/base/Button.js";
 import { SRC_URL } from "../../api/api.js";
+import { reportPost } from "../reporting/reporting.js";
+import { resolveImagePath, EntityType, PictureType } from "../../utils/imagePaths.js";
 
 function renderPlaceDetails(isLoggedIn, content, place, isCreator) {
     content.innerHTML = "";
@@ -12,13 +14,34 @@ function renderPlaceDetails(isLoggedIn, content, place, isCreator) {
     const longitude = place.coordinates?.lng || "N/A";
 
     // Banner section
-    const bannerSection = createElement("section", { id: "place-banner", class: "placedetails" }, [
-        createElement("img", {
-            src: place.banner ? `${SRC_URL}/placepic/${place.banner}` : "https://via.placeholder.com/1200x400?text=No+Banner",
-            alt: place.name,
-            loading: "lazy",
-        }),
-    ]);
+    const bannerFilename = place.banner || "placeholder.png";
+    const bannerSrc = resolveImagePath(EntityType.PLACE, PictureType.BANNER, bannerFilename);
+
+    const bannerImg = createElement("img", {
+        src: bannerSrc,
+        alt: place.name || "Place Banner",
+        loading: "lazy",
+        style: "width:100%;max-height:400px;object-fit:cover;"
+    });
+
+    // Fallback logic if image fails to load
+    bannerImg.onerror = () => {
+        bannerImg.src = resolveImagePath(EntityType.DEFAULT, PictureType.STATIC, "placeholder.png");
+    };
+
+    const bannerSection = createElement("section", {
+        id: "place-banner",
+        class: "placedetails"
+    }, [bannerImg]);
+
+    // // Banner section
+    // const bannerSection = createElement("section", { id: "place-banner", class: "placedetails" }, [
+    //     createElement("img", {
+    //         src: place.banner ? `${SRC_URL}/placepic/${place.banner}` : "https://via.placeholder.com/1200x400?text=No+Banner",
+    //         alt: place.name,
+    //         loading: "lazy",
+    //     }),
+    // ]);
 
     // Core details section
     const detailsSection = createElement("section", { id: "placedetails", class: "placedetails" }, [
@@ -40,23 +63,33 @@ function renderPlaceDetails(isLoggedIn, content, place, isCreator) {
         actionsWrapper.appendChild(
             Button("Edit Place", "edit-place-btn", {
                 click: () => editPlaceForm(isLoggedIn, place.placeid, editContainer),
-            })
+            }, "buttonx")
         );
 
         actionsWrapper.appendChild(
             Button("Delete Place", "delete-place-btn", {
                 click: () => deletePlace(isLoggedIn, place.placeid),
-            }, "delete-btn")
+            }, "delete-btn buttonx")
         );
 
         actionsWrapper.appendChild(
             Button("View Analytics", "analytics-place-btn", {
                 click: () => analyticsPlace(isLoggedIn, place.placeid),
-            })
+            }, "buttonx")
         );
 
         detailsSection.appendChild(actionsWrapper);
         detailsSection.appendChild(editContainer);
+    } else {
+        const reportBtn = document.createElement("button");
+        reportBtn.textContent = "Report";
+        reportBtn.className = "report-comment";
+        reportBtn.type = "button";
+
+        reportBtn.addEventListener("click", () =>
+            reportPost(place.placeid, "place", "", "")
+        );
+        detailsSection.appendChild(reportBtn);
     }
 
     // Final composition
@@ -65,68 +98,3 @@ function renderPlaceDetails(isLoggedIn, content, place, isCreator) {
 }
 
 export { renderPlaceDetails };
-
-// import { createElement } from "../../components/createElement.js";
-// import { editPlaceForm, deletePlace, analyticsPlace } from "./placeService.js";
-// import Button from "../../components/base/Button.js";
-// import { SRC_URL } from "../../api/api.js";
-
-// function renderPlaceDetails(isLoggedIn, content, place, isCreator) {
-//     const createdDate = new Date(place.created_at).toLocaleString();
-//     const updatedDate = new Date(place.updated_at).toLocaleString();
-//     const latitude = place.coordinates?.lat || "N/A";
-//     const longitude = place.coordinates?.lng || "N/A";
-
-//     // const detailsS = createElement('section', { id: 'placedetcon', class: 'placedetails' }, [
-//     const detailsS = createElement('section', { id: 'placedetcon' }, [
-//         createElement("div", { id: "place-banner" }, [
-//             createElement("img", {
-//                 src: place.banner ? `${SRC_URL}/placepic/${place.banner}` : "default-banner.jpg",
-//                 alt: place.name,
-//                 loading: "lazy",
-//             }),
-//         ]),
-//     ])
-    
-//     const detailsSection = createElement('section', { id: 'placedetails', class: 'placedetails' }, [
-//         createElement('h1', {}, [place.name]),
-//         createElement('p', {}, [createElement('strong', {}, ["Description: "]), place.description || "N/A"]),
-//         createElement('p', {}, [createElement('strong', {}, ["Address: "]), place.address || "N/A"]),
-//         createElement('p', {}, [createElement('strong', {}, ["Coordinates: "]), `Lat: ${latitude}, Lng: ${longitude}`]),
-//         createElement('p', {}, [createElement('strong', {}, ["Category: "]), place.category || "N/A"]),
-//     ]);
-
-//     if (isCreator) {
-//         // const detailsSection = createElement('section', { class: 'placedetails' }, []);
-
-//         detailsSection.appendChild(detailsS);
-//         let contenty = createElement('div', { 'class': 'hvflex' }, []);
-//         detailsSection.appendChild(contenty);
-//         contenty.appendChild(
-//             Button("Edit Place", "edit-place-btn", {
-//                 click: () => editPlaceForm(isLoggedIn, place.placeid, contentx),
-//                 mouseenter: () => console.log("Button hovered"),
-//             })
-//         );
-//         contenty.appendChild(
-//             Button("Delete Place", "delete-place-btn", {
-//                 click: () => deletePlace(isLoggedIn, place.placeid),
-//                 mouseenter: () => console.log("Button hovered"),
-//             }, "delete-btn")
-//         );
-//         contenty.appendChild(
-//             Button("View Place Analytics", "analytics-place-btn", {
-//                 click: () => analyticsPlace(isLoggedIn, place.placeid),
-//                 mouseenter: () => console.log("Analytics Button hovered"),
-//             })
-//         );
-
-//         let contentx = createElement('div', { 'id': 'editplace' }, []);
-//         detailsSection.appendChild(contentx);
-//         content.appendChild(detailsSection);
-//     }
-//     content.appendChild(detailsSection);
-// }
-
-
-// export { renderPlaceDetails };
